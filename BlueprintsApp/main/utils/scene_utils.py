@@ -11,6 +11,7 @@ DEVELOP_SCENE = "D_S"
 CONFIG_SCENE = "C_S"
 PROJECT_CREATION_SCENE = "PC_S"
 
+
 def get_scene(type, display, theme, project=None):
     if type == WELCOME_SCENE:
         return WelcomeScene(display, theme)

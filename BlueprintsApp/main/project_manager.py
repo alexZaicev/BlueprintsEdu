@@ -16,8 +16,8 @@ class ProjectManager(object):
         object.__init__(self)
         raise TypeError("Cannot instantiate static managers")
 
-    @staticmethod
-    def get_projects(theme):
+    @classmethod
+    def get_projects(cls, theme):
         result = []
         ProjectManager.LOGGER.info("Fetching Existing Projects")
         if not os.path.exists(ProjectManager.PATH):
@@ -40,6 +40,19 @@ class ProjectManager(object):
         return result
 
     @classmethod
+    def create_project(cls, project):
+        try:
+            path = "{}{}".format(ProjectManager.PATH, project[0])
+            os.mkdir(path)
+            file = open("{}\{}{}".format(path, project[0], ProjectManager.PROJECT_FILE_EXTENSION), "w", newline="")
+            file.write("PROJECT_NAME={}\r\n".format(project[0]))
+            file.write("PROJECT_API={}\r\n".format(project[1]))
+            # TODO write additional API details
+            file.close()
+        except Exception as ex:
+            ProjectManager.LOGGER.error("Failed to create project directory [{}]".format(str(ex)))
+
+    @classmethod
     def is_valid_project(cls, dir):
         check = False
         try:
@@ -54,12 +67,12 @@ class ProjectManager(object):
             ProjectManager.LOGGER.error("Failed to check project directories")
         return check
 
-    @staticmethod
-    def get_project_files(directory):
+    @classmethod
+    def get_project_files(cls, directory):
         pass
 
-    @staticmethod
-    def delete_project(directory):
+    @classmethod
+    def delete_project(cls, directory):
         ProjectManager.LOGGER.debug("Directory: " + directory)
         if os.path.isdir(os.path.join(ProjectManager.PATH, directory)):
             shutil.rmtree(ProjectManager.PATH + directory)

@@ -83,11 +83,6 @@ class ProjectCreationScene(SceneBuilder):
 
     def draw_drop_down(self, font):
         if self.__is_drop_down_pressed:
-            #     self.__is_drop_down_pressed = False
-            #     self.__menu_counter += 1
-            #     if self.__menu_counter == len(GameApi.APIS):
-            #         self.__menu_counter = 0
-            # self.__api = GameApi.get_api(self.__menu_counter)[1]
             self.__menu_content.clear()
             for pos in range(self.__menu_counter, len(GameApi.APIS), 1):
                 if (pos - self.__menu_counter) < 3:
@@ -144,7 +139,8 @@ class ProjectCreationScene(SceneBuilder):
 
     def check_button_pressed(self, event, board, pos):
         if self.btn_create.get_rect().collidepoint(pos) == 1:
-            self.btn_create.on_click(board)
+            # TODO validate project details
+            self.btn_create.on_click(board, (self.__project_name, self.__api))
         elif self.btn_cancel.get_rect().collidepoint(pos) == 1:
             self.btn_cancel.on_click(board)
         elif self.btn_drop_down[1].collidepoint(pos) == 1:

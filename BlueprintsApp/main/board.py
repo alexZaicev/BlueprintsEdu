@@ -6,6 +6,7 @@ from utils.enums import status
 from utils import scene_utils
 from utils import gui_utils
 
+
 class Board(object):
 
     def __init__(self):
