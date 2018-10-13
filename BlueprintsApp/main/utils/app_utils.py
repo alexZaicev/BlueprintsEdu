@@ -1,4 +1,5 @@
 from utils.utils import Utils
+from utils.string_utils import StringUtils
 
 CAPTION = "BlueprintEdu V1.0"
 
@@ -51,6 +52,7 @@ class GameApi(Utils):
     APIS = [
         ["CAR_SIMULATOR_API", "Car Simulator"]
     ]
+    DEFAULT_API = " --- {} ---".format(StringUtils.get_string("ID_SELECT"))
 
     @staticmethod
     def get_api(id):

@@ -20,24 +20,25 @@ PRINCESS = "ST_2"
 
 # THEME STYLE MAP
 DARK_KNIGHT_DICT = {
-    "font" : Colors.WHITE,
-    "button_font_style" : Fonts.SANSATION_BOLD,
-    "banner_font_style" : Fonts.ARCHISTICO_BOLD,
-    "text_font_style" : Fonts.SANSATION_REGULAR,
-    "font_error" : Colors.DARK_ORANGE,
-    "background" : Colors.BLACK,
-    "button" : Colors.LIGHT_GREY,
-    "panel_background" : Colors.GREY,
-    "panel_front_light" : Colors.SILVER,
-    "panel_front_dark" : Colors.SLATE_GREY,
-    "line_separation" : Colors.BLACK,
-    "notification_background" : Colors.WHITE_SMOKE,
-    "selection_background" : Colors.DEEP_SKY_BLUE,
-    "selection_boarder" : Colors.BLACK,
-    "selection_font" : Colors.BLACK,
-    "front_screen" : Colors.DIM_GREY,
-    "text_area_background" : Colors.WHITE,
-    "text_area_text" : Colors.BLACK
+    "font": Colors.WHITE,
+    "button_font_style": Fonts.SANSATION_BOLD,
+    "banner_font_style": Fonts.ARCHISTICO_BOLD,
+    "text_font_style": Fonts.SANSATION_REGULAR,
+    "font_error": Colors.DARK_ORANGE,
+    "background": Colors.BLACK,
+    "button": Colors.LIGHT_GREY,
+    "panel_background": Colors.GREY,
+    "panel_front_light": Colors.SILVER,
+    "panel_front_dark": Colors.SLATE_GREY,
+    "line_separation": Colors.BLACK,
+    "notification_background": Colors.WHITE_SMOKE,
+    "notification_error_background": Colors.DARK_ORANGE,
+    "selection_background": Colors.DEEP_SKY_BLUE,
+    "selection_boarder": Colors.BLACK,
+    "selection_font": Colors.BLACK,
+    "front_screen": Colors.DIM_GREY,
+    "text_area_background": Colors.WHITE,
+    "text_area_text": Colors.BLACK
 }
 DAY_LIGHT_DICT = {
 

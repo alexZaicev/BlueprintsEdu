@@ -7,6 +7,7 @@ from utils.app_utils import Images
 from gui.buttons.cancel_button import CancelButton
 from gui.buttons.create_button import CreateButton
 from utils.app_utils import GameApi
+from gui.popup import Popup
 
 
 class ProjectCreationScene(SceneBuilder):
@@ -17,7 +18,7 @@ class ProjectCreationScene(SceneBuilder):
         self.input = None
         self.__project_name = ""
         self.api_select = None
-        self.__api = " --- " + StringUtils.get_string("ID_SELECT") + " --- "
+        self.__api = GameApi.DEFAULT_API
         self.btn_drop_down = None
         self.btn_create = CreateButton(self.theme, 0)
         self.btn_create.set_custom_coordinates(
@@ -28,6 +29,7 @@ class ProjectCreationScene(SceneBuilder):
         self.__is_drop_down_pressed = False
         self.__menu_content = []
         self.__menu_counter = 0
+        self.__popup = None
 
     def get_icon(self, menu):
         img = pg.image.load(Images.DROP_DOWN)
@@ -79,6 +81,8 @@ class ProjectCreationScene(SceneBuilder):
         self.draw_buttons()
         self.draw_drop_down(font)
         self.check_button_hover()
+        if self.__popup is not None:
+            self.__popup.draw(self.display, self.theme)
         super().draw_scene()
 
     def draw_drop_down(self, font):
@@ -114,7 +118,9 @@ class ProjectCreationScene(SceneBuilder):
     def check_events(self, event, board):
         super().check_events(event, board)
         self.check_key_pressed(event)
-        if event.type == MOUSEBUTTONUP:
+        if (event.type == MOUSEBUTTONDOWN) or (event.type == KEYDOWN):
+            self.__popup = None
+        elif event.type == MOUSEBUTTONUP:
             if event.button != 4 and event.button != 5:
                 self.check_button_pressed(event, board, pg.mouse.get_pos())
                 self.check_menu_pressed(pg.mouse.get_pos())
@@ -138,7 +144,7 @@ class ProjectCreationScene(SceneBuilder):
                     self.__selected = True
 
     def check_button_pressed(self, event, board, pos):
-        if self.btn_create.get_rect().collidepoint(pos) == 1:
+        if self.btn_create.get_rect().collidepoint(pos) == 1 and self.valide_project_info():
             # TODO validate project details
             self.btn_create.on_click(board, (self.__project_name, self.__api))
         elif self.btn_cancel.get_rect().collidepoint(pos) == 1:
@@ -149,6 +155,19 @@ class ProjectCreationScene(SceneBuilder):
             else:
                 self.__is_drop_down_pressed = True
                 self.__menu_counter = 0
+
+    def valide_project_info(self):
+        valid = True
+        if (self.__api == GameApi.DEFAULT_API) and (len(self.__project_name) < 5):
+            valid = False
+            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), "Incorrect project details")
+        elif self.__api == GameApi.DEFAULT_API:
+            valid = False
+            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), "API must be selected")
+        elif len(self.__project_name) < 5:
+            valid = False
+            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), "Project name should be greater than 5 chars")
+        return valid
 
     def check_button_hover(self):
         # BUTTON HOVERING
