@@ -1,12 +1,14 @@
 from gui.scenes.scene_builder import SceneBuilder
 from utils import logger_utils
 
+
 class DevelopmentScene(SceneBuilder):
 
     def __init__(self, display, theme, project):
         SceneBuilder.__init__(self, display, theme)
         self.__logger = logger_utils.get_logger(__name__)
         self.__project = project
+        self.__logger.debug("{} --- {}".format(project[0], project[1]))
 
     def draw_scene(self):
         # PREPARE DATA

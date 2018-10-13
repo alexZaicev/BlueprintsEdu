@@ -41,16 +41,20 @@ class ProjectManager(object):
 
     @classmethod
     def get_project_info(cls, project_name):
+        api = ""
         try:
-            file = open("{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name, ProjectManager.PROJECT_FILE_EXTENSION), "r"):
+            fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name,
+                                       ProjectManager.PROJECT_FILE_EXTENSION)
+            file = open(fname, "r")
             content = file.readlines()
             for line in content:
                 if "PROJECT_API=" in line:
-                    api = line[12:]
+                    api = line[12:-1]
                     ProjectManager.LOGGER.debug(api)
             file.close
         except OSError as ex:
             ProjectManager.LOGGER.error("Failed to get project files [{}]".format(project_name))
+        return (project_name, api)
 
     @classmethod
     def create_project(cls, project):
