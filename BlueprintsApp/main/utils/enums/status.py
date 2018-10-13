@@ -1,0 +1,4 @@
+
+EXIT = 0
+STARTED = 1
+SAVE = 2
