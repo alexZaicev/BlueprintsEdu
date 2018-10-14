@@ -1,13 +1,11 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
-from utils.enums import status
 
 
-class ExitButton(Button):
+class ConfigLanguageButton(Button):
 
     def __init__(self, pos):
-        Button.__init__(self, StringUtils.get_string("ID_EXIT"), pos)
+        Button.__init__(self, StringUtils.get_string("ID_LANGUAGE"), pos)
 
     def on_click(self, board):
-        board.app_status = status.EXIT
         super().on_click(board)

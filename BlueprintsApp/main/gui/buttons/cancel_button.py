@@ -5,8 +5,8 @@ from utils import scene_utils
 
 class CancelButton(Button):
 
-    def __init__(self, theme, pos):
-        Button.__init__(self, StringUtils.get_string("ID_CANCEL"), theme, pos)
+    def __init__(self, pos):
+        Button.__init__(self, StringUtils.get_string("ID_CANCEL"), pos)
 
     def on_click(self, board):
         board.set_scene(scene_utils.WELCOME_SCENE)

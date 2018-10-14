@@ -8,22 +8,23 @@ from gui.buttons.cancel_button import CancelButton
 from gui.buttons.create_button import CreateButton
 from utils.app_utils import GameApi
 from gui.popup import Popup
+from utils.gui_utils import Themes
 
 
 class ProjectCreationScene(SceneBuilder):
 
-    def __init__(self, display, theme):
-        SceneBuilder.__init__(self, display, theme)
+    def __init__(self, display):
+        SceneBuilder.__init__(self, display)
         self.__logger = logger_utils.get_logger(__name__)
         self.input = None
         self.__project_name = ""
         self.api_select = None
         self.__api = GameApi.DEFAULT_API
         self.btn_drop_down = None
-        self.btn_create = CreateButton(self.theme, 0)
+        self.btn_create = CreateButton(0)
         self.btn_create.set_custom_coordinates(
             (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .8))
-        self.btn_cancel = CancelButton(self.theme, 0)
+        self.btn_cancel = CancelButton(0)
         self.btn_cancel.set_custom_coordinates(
             (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .9))
         self.__is_drop_down_pressed = False
@@ -40,41 +41,41 @@ class ProjectCreationScene(SceneBuilder):
 
     def draw_scene(self):
         # PREPARE DATA
-        font = pg.font.Font(self.theme.get("banner_font_style"),
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
                             int(app_utils.BOARD_WIDTH * .05))
         txt_title = font.render(StringUtils.get_string(
-            "ID_TITLE") + ":", True, self.theme.get("font"))
+            "ID_TITLE") + ":", True, Themes.DEFAULT_THEME.get("font"))
         rect_title = txt_title.get_rect()
         rect_title.topleft = (int(app_utils.BOARD_WIDTH * .05),
                               int(app_utils.BOARD_HEGHT * .15))
         txt_api = font.render(StringUtils.get_string(
-            "ID_GAME_API") + ":", True, self.theme.get("font"))
+            "ID_GAME_API") + ":", True, Themes.DEFAULT_THEME.get("font"))
         rect_api = txt_api.get_rect()
         rect_api.topleft = (int(int(app_utils.BOARD_WIDTH * .05)),
                             int(rect_title.top + rect_title.height + app_utils.BOARD_HEGHT * .1))
         self.input = pg.Rect((int(rect_api.right + app_utils.BOARD_WIDTH * .05), int(rect_title.top)),
                              (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
-        font = pg.font.Font(self.theme.get("text_font_style"),
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                             int(app_utils.BOARD_WIDTH * .03))
         txt_input = font.render(self.__project_name,
-                                True, self.theme.get("text_area_text"))
+                                True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_input = txt_input.get_rect()
         rect_input.center = self.input.center
         self.api_select = pg.Rect((int(rect_api.right + app_utils.BOARD_WIDTH * .05), int(rect_api.top)),
                                   (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
         txt_select = font.render(
-            self.__api, True, self.theme.get("text_area_text"))
+            self.__api, True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_select = txt_select.get_rect()
         rect_select.center = self.api_select.center
         self.btn_drop_down = self.get_icon(self.api_select)
         # DISPLAY
-        self.display.fill(self.theme.get("front_screen"))
+        self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(txt_title, rect_title)
         self.display.blit(txt_api, rect_api)
-        pg.draw.rect(self.display, self.theme.get(
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
             "text_area_background"), self.input, 0)
         self.display.blit(txt_input, rect_input)
-        pg.draw.rect(self.display, self.theme.get(
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
             "text_area_background"), self.api_select, 0)
         self.display.blit(self.btn_drop_down[0], self.btn_drop_down[1])
         self.display.blit(txt_select, rect_select)
@@ -82,7 +83,7 @@ class ProjectCreationScene(SceneBuilder):
         self.draw_drop_down(font)
         self.check_button_hover()
         if self.__popup is not None:
-            self.__popup.draw(self.display, self.theme)
+            self.__popup.draw(self.display, Themes.DEFAULT_THEME)
         super().draw_scene()
 
     def draw_drop_down(self, font):
@@ -93,14 +94,14 @@ class ProjectCreationScene(SceneBuilder):
                     rect = pg.Rect((self.api_select.x, int(self.api_select.y + self.api_select.height * ((pos - self.__menu_counter) + 1))),
                                    (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
                     txt = font.render(GameApi.get_api(
-                        pos)[1], True, self.theme.get("text_area_text"))
+                        pos)[1], True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
                     rect_txt.center = rect.center
                     self.__menu_content.append(
                         [rect, txt, rect_txt]
                     )
             for i in range(0, len(self.__menu_content), 1):
-                pg.draw.rect(self.display, self.theme.get(
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
                     "text_area_background"), self.__menu_content[i][0], 0)
                 self.display.blit(
                     self.__menu_content[i][1], self.__menu_content[i][2])
@@ -172,13 +173,13 @@ class ProjectCreationScene(SceneBuilder):
     def check_button_hover(self):
         # BUTTON HOVERING
         if self.btn_create.is_hovered(pg.mouse.get_pos()):
-            self.btn_create.color = self.theme.get("selection_background")
+            self.btn_create.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_create.color = self.theme.get("button")
+            self.btn_create.color = Themes.DEFAULT_THEME.get("button")
         if self.btn_cancel.is_hovered(pg.mouse.get_pos()):
-            self.btn_cancel.color = self.theme.get("selection_background")
+            self.btn_cancel.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_cancel.color = self.theme.get("button")
+            self.btn_cancel.color = Themes.DEFAULT_THEME.get("button")
 
     def check_key_pressed(self, event):
         if event.type == KEYDOWN:

@@ -4,6 +4,7 @@ import time
 import datetime
 import shutil
 from project import Project
+from utils.gui_utils import Themes
 
 
 class ProjectManager(object):
@@ -17,7 +18,7 @@ class ProjectManager(object):
         raise TypeError("Cannot instantiate static managers")
 
     @classmethod
-    def get_projects(cls, theme):
+    def get_projects(cls):
         result = []
         ProjectManager.LOGGER.info("Fetching Existing Projects")
         if not os.path.exists(ProjectManager.PATH):
@@ -34,7 +35,8 @@ class ProjectManager(object):
                     ]
             for dir in dirs:
                 t = time.ctime(max(os.path.getmtime(root) for root, _, _ in os.walk(ProjectManager.PATH + dir)))
-                result.append(Project(dir, str(datetime.datetime.strptime(t, "%a %b %d %H:%M:%S %Y")), theme))
+                result.append(Project(dir, str(datetime.datetime.strptime(
+                    t, "%a %b %d %H:%M:%S %Y"))))
         else:
             ProjectManager.LOGGER.info("No saved projects exists")
         return result

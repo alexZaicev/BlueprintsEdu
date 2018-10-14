@@ -9,16 +9,18 @@ from gui.buttons.configuration_button import ConfigurationButton
 from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
 from utils.string_utils import StringUtils
+from utils.gui_utils import Themes
+
 
 class WelcomeScene(SceneBuilder):
 
-    def __init__(self, display, theme):
-        SceneBuilder.__init__(self, display, theme)
+    def __init__(self, display):
+        SceneBuilder.__init__(self, display)
         self.logger = logger_utils.get_logger(__name__)
-        self.btn_new = NewButton(theme, 0)
-        self.btn_load = LoadButton(theme, 1)
-        self.btn_conf = ConfigurationButton(theme, 2)
-        self.btn_exit = ExitButton(theme, 3)
+        self.btn_new = NewButton(0)
+        self.btn_load = LoadButton(1)
+        self.btn_conf = ConfigurationButton(2)
+        self.btn_exit = ExitButton(3)
 
     def draw_buttons(self):
         # PREPARE BUTTON RECTANGLES
@@ -33,17 +35,17 @@ class WelcomeScene(SceneBuilder):
 
     def draw_scene(self):
         # PREPARE DATA TO DISPLAY
-        font = pg.font.Font(self.theme.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .2))
-        txt_banner = font.render(StringUtils.get_string("ID_WELCOME"), True, self.theme.get("font"))
-        font = pg.font.Font(self.theme.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .06))
-        txt_sub_banner = font.render(app_utils.CAPTION, True, self.theme.get("font"))
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .2))
+        txt_banner = font.render(StringUtils.get_string("ID_WELCOME"), True, Themes.DEFAULT_THEME.get("font"))
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .06))
+        txt_sub_banner = font.render(app_utils.CAPTION, True, Themes.DEFAULT_THEME.get("font"))
 
         rect_banner = txt_banner.get_rect()
         rect_banner.midtop = (int(app_utils.BOARD_WIDTH / 2), int(app_utils.BOARD_HEGHT * .05))
         rect_sub_banner = txt_sub_banner.get_rect()
         rect_sub_banner.midtop = (int(app_utils.BOARD_WIDTH / 2), int(rect_banner.bottom + app_utils.BOARD_HEGHT * .02))
         # PUSH TO DISPLAY
-        self.display.fill(self.theme.get("front_screen"))
+        self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(txt_banner, rect_banner)
         self.display.blit(txt_sub_banner, rect_sub_banner)
         self.draw_buttons()
@@ -70,18 +72,18 @@ class WelcomeScene(SceneBuilder):
     def check_button_hover(self):
         # BUTTON HOVERING
         if self.btn_new.is_hovered(pg.mouse.get_pos()):
-            self.btn_new.color = self.theme.get("selection_background")
+            self.btn_new.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_new.color = self.theme.get("button")
+            self.btn_new.color = Themes.DEFAULT_THEME.get("button")
         if self.btn_load.is_hovered(pg.mouse.get_pos()):
-            self.btn_load.color = self.theme.get("selection_background")
+            self.btn_load.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_load.color = self.theme.get("button")
+            self.btn_load.color = Themes.DEFAULT_THEME.get("button")
         if self.btn_conf.is_hovered(pg.mouse.get_pos()):
-            self.btn_conf.color = self.theme.get("selection_background")
+            self.btn_conf.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_conf.color = self.theme.get("button")
+            self.btn_conf.color = Themes.DEFAULT_THEME.get("button")
         if self.btn_exit.is_hovered(pg.mouse.get_pos()):
-            self.btn_exit.color = self.theme.get("selection_background")
+            self.btn_exit.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_exit.color = self.theme.get("button")
+            self.btn_exit.color = Themes.DEFAULT_THEME.get("button")

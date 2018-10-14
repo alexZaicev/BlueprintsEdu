@@ -12,14 +12,14 @@ CONFIG_SCENE = "C_S"
 PROJECT_CREATION_SCENE = "PC_S"
 
 
-def get_scene(type, display, theme, project=None):
+def get_scene(type, display, project=None):
     if type == WELCOME_SCENE:
-        return WelcomeScene(display, theme)
+        return WelcomeScene(display)
     elif type == LOAD_SCENE:
-        return LoadScene(display, theme)
+        return LoadScene(display)
     elif type == DEVELOP_SCENE:
-        return DevelopmentScene(display, theme, project)
+        return DevelopmentScene(display, project)
     elif type == CONFIG_SCENE:
-        return ConfigurationScene(display, theme)
+        return ConfigurationScene(display)
     elif type == PROJECT_CREATION_SCENE:
-        return ProjectCreationScene(display, theme)
+        return ProjectCreationScene(display)

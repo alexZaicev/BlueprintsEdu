@@ -24,10 +24,12 @@ class StringUtils(Utils):
         "ID_GAME_API": "Game API",
         "ID_CANCEL": "Cancel",
         "ID_CREATE": "Create",
-        "ID_SELECT": "Select"
+        "ID_SELECT": "Select",
+        "ID_THEME": "Theme",
+        "ID_LANGUAGE": "Language"
     }
 
-    @staticmethod
-    def get_string(word_id):
+    @classmethod
+    def get_string(cls, word_id):
         if StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES.get("ID_ENGLISH"):
             return StringUtils.ENGLISH_DICT.get(word_id)

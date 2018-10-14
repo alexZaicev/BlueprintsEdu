@@ -8,43 +8,31 @@ from gui.buttons.select_button import SelectButton
 from gui.buttons.delete_button import DeleteButton
 from utils.string_utils import StringUtils
 from project_manager import ProjectManager
+from utils.gui_utils import Themes
 
 
 class LoadScene(SceneBuilder):
 
-    def __init__(self, display, theme):
-        SceneBuilder.__init__(self, display, theme)
+    def __init__(self, display):
+        SceneBuilder.__init__(self, display)
         self.__logger = logger_utils.get_logger(__name__)
-        self.icons = self.get_icons()
-        self.btn_select = SelectButton(theme, 0)
-        self.btn_delete = DeleteButton(theme, 0)
+        self.btn_select = SelectButton(0)
+        self.btn_delete = DeleteButton(0)
         self.file_container = pg.Rect((int(app_utils.BOARD_WIDTH * .01), int(app_utils.BOARD_HEGHT * 0.22)),
                                       (int(app_utils.BOARD_WIDTH * .98), int(app_utils.BOARD_HEGHT * .66)))
-        self.files = ProjectManager.get_projects(self.theme)
+        self.files = ProjectManager.get_projects()
         self.__logger.debug(self.files)
-
-    def get_icons(self):
-        result = []
-        img = pg.image.load(Images.UNDO)
-        img_rect = img.get_rect()
-        img_rect.topleft = (int(app_utils.BOARD_WIDTH * .01),
-                            int(app_utils.BOARD_HEGHT * 0.02))
-        result.append([img, img_rect])
-        return result
 
     def draw_scene(self):
         # PREPARE DATA FOR DISPLAY
-        font = pg.font.Font(self.theme.get("banner_font_style"),
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
                             int(app_utils.BOARD_HEGHT * 0.09))
         header = font.render(StringUtils.get_string(
-            "ID_SAVED_PROJECTS"), True, self.theme.get("font"))
+            "ID_SAVED_PROJECTS"), True, Themes.DEFAULT_THEME.get("font"))
         header_rect = header.get_rect()
-        header_rect.topleft = (
-            int(app_utils.BOARD_WIDTH * .05), int(app_utils.BOARD_HEGHT * 0.1))
+        header_rect.topleft = (int(app_utils.BOARD_WIDTH * .02), int(app_utils.BOARD_HEGHT * .05))
         # PUSH TO DISPLAY
-        self.display.fill(self.theme.get("front_screen"))
-        for i in self.icons:
-            self.display.blit(i[0], i[1])
+        self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(header, header_rect)
         self.draw_container(header_rect)
         self.draw_buttons()
@@ -59,7 +47,7 @@ class LoadScene(SceneBuilder):
         self.btn_delete.set_custom_coordinates((
             int((app_utils.BOARD_WIDTH - self.btn_delete.get_rect().width * 1.5) * .965),
             int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_delete.get_rect().height * .5)))
-        pg.draw.rect(self.display, self.theme.get(
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
             "panel_background"), self.file_container, 0)
         # DISPLAY PROJECT FILES
         for pos in range(0, len(self.files), 1):
@@ -67,14 +55,14 @@ class LoadScene(SceneBuilder):
             if pos % 2 == 0:
                 # color light
                 self.files[pos].set_rect(self.file_container, pos)
-                pg.draw.rect(self.display, self.theme.get("panel_front_light"),
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_front_light"),
                              self.files[pos].get_rect(), 0)
                 self.display.blit(text[0][0], text[0][1])
                 self.display.blit(text[1][0], text[1][1])
             else:
                 # color dark
                 self.files[pos].set_rect(self.file_container, pos)
-                pg.draw.rect(self.display, self.theme.get("panel_front_dark"),
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_front_dark"),
                              self.files[pos].get_rect(), 0)
                 self.display.blit(text[0][0], text[0][1])
                 self.display.blit(text[1][0], text[1][1])
@@ -92,13 +80,11 @@ class LoadScene(SceneBuilder):
     def draw_selected_file_boarder(self):
         for f in self.files:
             if f.pressed:
-                pg.draw.rect(self.display, self.theme.get(
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
                     "selection_background"), f.get_rect(), 10)
 
     def check_button_press(self, pos, board):
-        if self.icons[0][1].collidepoint(pos) == 1:
-            board.set_scene(scene_utils.WELCOME_SCENE)
-        elif self.btn_select.get_rect().collidepoint(pos) == 1:
+        if self.btn_select.get_rect().collidepoint(pos) == 1:
             self.__logger.debug("Select pressed")
             for f in self.files:
                 if f.pressed:
@@ -111,7 +97,7 @@ class LoadScene(SceneBuilder):
                     self.update_file_container()
 
     def update_file_container(self):
-        self.files = ProjectManager.get_projects(self.theme)
+        self.files = ProjectManager.get_projects()
 
     def check_file_press(self, pos):
         for f in self.files:
@@ -128,10 +114,10 @@ class LoadScene(SceneBuilder):
     def check_button_hover(self):
         # BUTTON HOVERING
         if self.btn_select.is_hovered(pg.mouse.get_pos()):
-            self.btn_select.color = self.theme.get("selection_background")
+            self.btn_select.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_select.color = self.theme.get("button")
+            self.btn_select.color = Themes.DEFAULT_THEME.get("button")
         if self.btn_delete.is_hovered(pg.mouse.get_pos()):
-            self.btn_delete.color = self.theme.get("selection_background")
+            self.btn_delete.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_delete.color = self.theme.get("button")
+            self.btn_delete.color = Themes.DEFAULT_THEME.get("button")

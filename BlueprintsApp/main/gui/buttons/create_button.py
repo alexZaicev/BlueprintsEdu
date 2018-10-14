@@ -6,8 +6,8 @@ from project_manager import ProjectManager
 
 class CreateButton(Button):
 
-    def __init__(self, theme, pos):
-        Button.__init__(self, StringUtils.get_string("ID_CREATE"), theme, pos)
+    def __init__(self, pos):
+        Button.__init__(self, StringUtils.get_string("ID_CREATE"), pos)
 
     def on_click(self, board, project_info):
         ProjectManager.create_project(project_info)

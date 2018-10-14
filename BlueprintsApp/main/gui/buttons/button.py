@@ -3,15 +3,17 @@ import pygame as pg
 from utils import gui_utils
 from utils import app_utils
 import os
+from utils.gui_utils import Themes
+
 
 class Button(ABC):
 
-    def __init__(self, text, theme, pos):
-        font = pg.font.Font(theme.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
-        self.__text = font.render(text, True, theme.get("font"))
+    def __init__(self, text, pos):
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
+        self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
         self.__width = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[0])
         self.__height = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[1])
-        self.color = theme.get("button")
+        self.color = Themes.DEFAULT_THEME.get("button")
         self.set_coordinates(pos)
 
     @abstractmethod
@@ -47,8 +49,7 @@ class Button(ABC):
     def is_hovered(self, coords):
         r = self.get_rect()
         return (coords[0] >= r.x and coords[0] <= (r.x + r.width) and
-            coords[1] >= r.y and coords[1] <= (r.y + r.height))
-
+                coords[1] >= r.y and coords[1] <= (r.y + r.height))
 
     def get_rect(self):
         return pg.Rect(self.get_topleft(), (self.__width, self.__height))

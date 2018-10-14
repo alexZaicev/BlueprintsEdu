@@ -1,12 +1,13 @@
 import pygame as pg
+from utils.gui_utils import Themes
+
 
 class Project(object):
 
-    def __init__(self, directory, date, theme):
+    def __init__(self, directory, date):
         object.__init__(self)
         self.__dir = directory
         self.__date = date
-        self.theme = theme
         self.pressed = False
         self.__rect = None
 
@@ -22,12 +23,13 @@ class Project(object):
 
     def get_texts(self, container, pos):
         section_height = int(container.height / 10)
-        font = pg.font.Font(self.theme.get("text_font_style"), int(section_height * .70))
-        fn = font.render(self.__dir, True, self.theme.get("font"))
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(section_height * .70))
+        fn = font.render(self.__dir, True, Themes.DEFAULT_THEME.get("font"))
         fn_rect = fn.get_rect()
-        fn_rect.topleft = (int(container.x + (container.width * 0.02)), int(container.midtop[1]*1.03 + section_height*pos))
-        dt = font.render(self.__date, True, self.theme.get("font"))
+        fn_rect.topleft = (int(container.x + (container.width * 0.02)),
+                           int(container.midtop[1]*1.03 + section_height*pos))
+        dt = font.render(self.__date, True, Themes.DEFAULT_THEME.get("font"))
         dt_rect = dt.get_rect()
         dt_rect.topleft = (int((container.x + container.width) - (container.width * 0.02 + dt_rect.width)),
-            int(container.midtop[1]*1.03 + section_height*pos))
+                           int(container.midtop[1]*1.03 + section_height*pos))
         return ((fn, fn_rect), (dt, dt_rect))

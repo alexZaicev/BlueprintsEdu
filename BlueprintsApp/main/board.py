@@ -5,6 +5,7 @@ from pygame.locals import *
 from utils.enums import status
 from utils import scene_utils
 from utils import gui_utils
+from utils.gui_utils import Themes
 
 
 class Board(object):
@@ -20,8 +21,7 @@ class Board(object):
         self.clock = pg.time.Clock()
         self.display = pg.display.set_mode((app_utils.BOARD_WIDTH, app_utils.BOARD_HEGHT))
         # TODO load saved theme from config
-        self.__theme = gui_utils.DARK_KNIGHT_DICT
-        self.__scene_builder = scene_utils.get_scene(scene_utils.WELCOME_SCENE, self.display, self.__theme)
+        self.__scene_builder = scene_utils.get_scene(scene_utils.WELCOME_SCENE, self.display)
         pg.display.set_caption(app_utils.CAPTION)
 
     def close(self):
@@ -40,4 +40,4 @@ class Board(object):
         return status.SAVE
 
     def set_scene(self, scene, project=None):
-        self.__scene_builder = scene_utils.get_scene(scene, self.display, self.__theme, project)
+        self.__scene_builder = scene_utils.get_scene(scene, self.display, project)

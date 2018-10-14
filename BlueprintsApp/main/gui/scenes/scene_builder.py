@@ -2,12 +2,12 @@ import abc
 from abc import abstractmethod
 from pygame.locals import *
 
+
 class SceneBuilder(abc.ABC):
 
-    def __init__(self, display, theme):
+    def __init__(self, display):
         abc.ABC.__init__(self)
         self.display = display
-        self.theme = theme
 
     @abstractmethod
     def draw_scene(self):
