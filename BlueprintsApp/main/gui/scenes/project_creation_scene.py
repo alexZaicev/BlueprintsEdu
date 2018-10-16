@@ -83,7 +83,7 @@ class ProjectCreationScene(SceneBuilder):
         self.draw_drop_down(font)
         self.check_button_hover()
         if self.__popup is not None:
-            self.__popup.draw(self.display, Themes.DEFAULT_THEME)
+            self.__popup.draw(self.display)
         super().draw_scene()
 
     def draw_drop_down(self, font):
@@ -142,11 +142,9 @@ class ProjectCreationScene(SceneBuilder):
                 if self.__menu_content[i][0].collidepoint(pos) == 1:
                     self.__api = GameApi.APIS[i + self.__menu_counter][1]
                     self.__is_drop_down_pressed = False
-                    self.__selected = True
 
     def check_button_pressed(self, event, board, pos):
         if self.btn_create.get_rect().collidepoint(pos) == 1 and self.valide_project_info():
-            # TODO validate project details
             self.btn_create.on_click(board, (self.__project_name, self.__api))
         elif self.btn_cancel.get_rect().collidepoint(pos) == 1:
             self.btn_cancel.on_click(board)

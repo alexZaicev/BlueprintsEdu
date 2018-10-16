@@ -9,6 +9,7 @@ from gui.buttons.delete_button import DeleteButton
 from utils.string_utils import StringUtils
 from project_manager import ProjectManager
 from utils.gui_utils import Themes
+from gui.buttons.back_button import BackButton
 
 
 class LoadScene(SceneBuilder):
@@ -18,6 +19,7 @@ class LoadScene(SceneBuilder):
         self.__logger = logger_utils.get_logger(__name__)
         self.btn_select = SelectButton(0)
         self.btn_delete = DeleteButton(0)
+        self.btn_back = BackButton(0)
         self.file_container = pg.Rect((int(app_utils.BOARD_WIDTH * .01), int(app_utils.BOARD_HEGHT * 0.22)),
                                       (int(app_utils.BOARD_WIDTH * .98), int(app_utils.BOARD_HEGHT * .66)))
         self.files = ProjectManager.get_projects()
@@ -41,12 +43,6 @@ class LoadScene(SceneBuilder):
         super().draw_scene()
 
     def draw_container(self, header_rect):
-        self.btn_select.set_custom_coordinates((
-            int((app_utils.BOARD_WIDTH - self.btn_select.get_rect().width * .5) * .98),
-            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_select.get_rect().height * .5)))
-        self.btn_delete.set_custom_coordinates((
-            int((app_utils.BOARD_WIDTH - self.btn_delete.get_rect().width * 1.5) * .965),
-            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_delete.get_rect().height * .5)))
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
             "panel_background"), self.file_container, 0)
         # DISPLAY PROJECT FILES
@@ -68,6 +64,15 @@ class LoadScene(SceneBuilder):
                 self.display.blit(text[1][0], text[1][1])
 
     def draw_buttons(self):
+        self.btn_select.set_custom_coordinates((
+            int((app_utils.BOARD_WIDTH - self.btn_select.get_rect().width * .5) * .98),
+            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_select.get_rect().height * .5)))
+        self.btn_delete.set_custom_coordinates((
+            int((app_utils.BOARD_WIDTH - self.btn_delete.get_rect().width * 1.5) * .965),
+            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_delete.get_rect().height * .5)))
+        self.btn_back.set_custom_coordinates((
+            int((app_utils.BOARD_WIDTH - self.btn_back.get_rect().width * 2.5) * .935),
+            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_back.get_rect().height * .5)))
         pg.draw.rect(self.display, self.btn_select.color,
                      self.btn_select.get_rect(), 0)
         self.display.blit(self.btn_select.get_text(),
@@ -76,6 +81,10 @@ class LoadScene(SceneBuilder):
                      self.btn_delete.get_rect(), 0)
         self.display.blit(self.btn_delete.get_text(),
                           self.btn_delete.get_text_rect())
+        pg.draw.rect(self.display, self.btn_back.color,
+                     self.btn_back.get_rect(), 0)
+        self.display.blit(self.btn_back.get_text(),
+                          self.btn_back.get_text_rect())
 
     def draw_selected_file_boarder(self):
         for f in self.files:
@@ -95,6 +104,8 @@ class LoadScene(SceneBuilder):
                 if f.pressed:
                     self.btn_delete.on_click(board, f.get_name())
                     self.update_file_container()
+        elif self.btn_back.get_rect().collidepoint(pos) == 1:
+            self.btn_back.on_click(board)
 
     def update_file_container(self):
         self.files = ProjectManager.get_projects()
@@ -121,3 +132,7 @@ class LoadScene(SceneBuilder):
             self.btn_delete.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
             self.btn_delete.color = Themes.DEFAULT_THEME.get("button")
+        if self.btn_back.is_hovered(pg.mouse.get_pos()):
+            self.btn_back.color = Themes.DEFAULT_THEME.get("selection_background")
+        else:
+            self.btn_back.color = Themes.DEFAULT_THEME.get("button")

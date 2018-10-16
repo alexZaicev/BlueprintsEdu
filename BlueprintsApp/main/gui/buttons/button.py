@@ -10,11 +10,18 @@ class Button(ABC):
 
     def __init__(self, text, pos):
         font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
+        self.__text_str = text
         self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
         self.__width = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[0])
         self.__height = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[1])
         self.color = Themes.DEFAULT_THEME.get("button")
         self.set_coordinates(pos)
+
+    def update_colors(self):
+        if not self.is_hovered(pg.mouse.get_pos()):
+            self.color = Themes.DEFAULT_THEME.get("button")
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
+            self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
     def on_click(self, board):
@@ -27,8 +34,8 @@ class Button(ABC):
         return self.color
 
     def set_coordinates(self, pos):
-        self.__x = int(app_utils.BOARD_WIDTH * .5)
-        start = int(app_utils.BOARD_HEGHT * .6)
+        self.__x = int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_WIDTH + self.__width * .5)
+        start = int(app_utils.BOARD_HEGHT * .73)
         if pos > 0:
             self.__y = int(start + (self.__height + int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_HEGHT)) * pos)
         else:

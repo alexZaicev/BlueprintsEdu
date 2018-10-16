@@ -20,7 +20,6 @@ class WelcomeScene(SceneBuilder):
         self.btn_new = NewButton(0)
         self.btn_load = LoadButton(1)
         self.btn_conf = ConfigurationButton(2)
-        self.btn_exit = ExitButton(3)
 
     def draw_buttons(self):
         # PREPARE BUTTON RECTANGLES
@@ -30,8 +29,6 @@ class WelcomeScene(SceneBuilder):
         self.display.blit(self.btn_load.get_text(), self.btn_load.get_text_rect())
         pg.draw.rect(self.display, self.btn_conf.color, self.btn_conf.get_rect(), 0)
         self.display.blit(self.btn_conf.get_text(), self.btn_conf.get_text_rect())
-        pg.draw.rect(self.display, self.btn_exit.color, self.btn_exit.get_rect(), 0)
-        self.display.blit(self.btn_exit.get_text(), self.btn_exit.get_text_rect())
 
     def draw_scene(self):
         # PREPARE DATA TO DISPLAY
@@ -54,10 +51,8 @@ class WelcomeScene(SceneBuilder):
 
     def check_events(self, event, board):
         super().check_events(event, board)
-        if event.type == MOUSEBUTTONUP:
+        if event.type == MOUSEBUTTONDOWN:
             self.check_button_press(pg.mouse.get_pos(), board)
-        elif event.type == MOUSEBUTTONDOWN:
-            self.check_button_press(pg.mouse.get_pos(), board, draw_boarder=True)
 
     def check_button_press(self, pos, board, draw_boarder=False):
         if self.btn_new.get_rect().collidepoint(pos) == 1:
@@ -66,8 +61,6 @@ class WelcomeScene(SceneBuilder):
             self.btn_load.on_click(board)
         elif self.btn_conf.get_rect().collidepoint(pos) == 1:
             self.btn_conf.on_click(board)
-        elif self.btn_exit.get_rect().collidepoint(pos) == 1:
-            self.btn_exit.on_click(board)
 
     def check_button_hover(self):
         # BUTTON HOVERING
@@ -83,7 +76,3 @@ class WelcomeScene(SceneBuilder):
             self.btn_conf.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
             self.btn_conf.color = Themes.DEFAULT_THEME.get("button")
-        if self.btn_exit.is_hovered(pg.mouse.get_pos()):
-            self.btn_exit.color = Themes.DEFAULT_THEME.get("selection_background")
-        else:
-            self.btn_exit.color = Themes.DEFAULT_THEME.get("button")

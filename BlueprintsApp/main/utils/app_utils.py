@@ -15,6 +15,7 @@ FPS = 90
 
 class Colors(Utils):
     BLACK = (0, 0, 0)
+    RED = (255, 0, 0)
     WHITE = (255, 255, 255)
     DIM_GREY = (105, 105, 105)
     GREY = (128, 128, 128)
@@ -28,6 +29,23 @@ class Colors(Utils):
     DARK_ORANGE = (255, 140, 0)
     RANGE_RED = (255, 69, 0)
     DEEP_SKY_BLUE = (0, 191, 255)
+    LIGHT_CYAN = (224, 255, 255)
+    PALE_TURQUOISE = (175, 238, 238)
+    POWDER_BLUE = (176, 224, 230)
+    LIGHT_BLUE = (173, 216, 230)
+    LAVENDER = (230, 230, 250)
+    ALICE_BLUE = (240, 248, 255)
+    SNOW = (255, 250, 250)
+    ORCHID = (218, 112, 214)
+    HOT_PINK = (255, 105, 180)
+    PALE_VIOLET_RED = (218, 112, 147)
+    VIOLET = (238, 130, 238)
+    PURPLE = (128, 0, 128)
+    MAGENTA = (255, 0, 255)
+    DEEP_PINK = (255, 20, 147)
+    LIGHT_PINK = (255, 182, 193)
+    PINK = (255, 192, 203)
+    MEDIUM_ORCHID = (186, 85, 211)
 
 
 class Fonts(Utils):
@@ -50,7 +68,7 @@ class Images(Utils):
 
 class GameApi(Utils):
     APIS = [
-        ["CAR_SIMULATOR_API", "Car Simulator"]
+        ["CAR_SIMULATOR_API", StringUtils.get_string("ID_CAR_SIMULATOR")]
     ]
     DEFAULT_API = " --- {} ---".format(StringUtils.get_string("ID_SELECT"))
 
