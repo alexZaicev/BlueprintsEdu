@@ -60,6 +60,7 @@ class ProjectManager(object):
 
     @classmethod
     def create_project(cls, project):
+        # TODO don't allow to create with already existing project name OR override the existing one
         try:
             path = "{}{}".format(ProjectManager.PATH, project[0])
             os.mkdir(path)

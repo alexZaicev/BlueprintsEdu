@@ -38,7 +38,13 @@ class StringUtils(Utils):
         "ID_CAR_SIMULATOR": "Car Simulator",
         "ID_DARK_KNIGHT": "Dark Knight",
         "ID_DAY_LIGHT": "Day Light",
-        "ID_PRINCESS": "Princess"
+        "ID_PRINCESS": "Princess",
+        "ID_FILE": "File",
+        "ID_RUN": "Run",
+        "ID_BUILD": "Build",
+        "ID_SETTINGS": "Settings",
+        "ID_SAVE": "Save",
+        "ID_CONTROL_PANEL": "Control Panel"
     }
 
     RUSSIAN_DICT = {

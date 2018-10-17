@@ -12,6 +12,7 @@ class Button(ABC):
         font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
         self.__text_str = text
         self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
+        # TODO set button size according to the text object size
         self.__width = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[0])
         self.__height = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[1])
         self.color = Themes.DEFAULT_THEME.get("button")

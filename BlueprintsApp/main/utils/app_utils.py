@@ -4,8 +4,8 @@ from utils.string_utils import StringUtils
 CAPTION = "BlueprintEdu V1.0"
 
 # WINDOW SIZING
-BOARD_WIDTH = 1280
-BOARD_HEGHT = 800
+BOARD_WIDTH = 640#1280
+BOARD_HEGHT = 480#800
 
 # FRAMES PER SECOND
 FPS = 90
@@ -21,6 +21,7 @@ class Colors(Utils):
     GREY = (128, 128, 128)
     DARK_GREY = (169, 169, 169)
     SILVER = (192, 192, 192)
+    NIGHT_GREY = (28, 28, 28)
     LIGHT_GREY = (211, 211, 211)
     GAINSBORO = (220, 220, 220)
     WHITE_SMOKE = (245, 245, 245)

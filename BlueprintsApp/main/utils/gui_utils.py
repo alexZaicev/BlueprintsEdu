@@ -35,6 +35,7 @@ class Themes(Utils):
         "font_error": Colors.RANGE_RED,
         "background": Colors.BLACK,
         "button": Colors.LIGHT_GREY,
+        "panel_disabled": Colors.NIGHT_GREY,
         "panel_background": Colors.GREY,
         "panel_front_light": Colors.SILVER,
         "panel_front_dark": Colors.SLATE_GREY,
@@ -133,5 +134,6 @@ class Themes(Utils):
 
 # WIDGETS
 BUTTON_MARGIN = .02
+BUTTON_MENU_MARGIN = 0.005
 BUTTON_PRIMARY = (.32, .08)
 BUTTON_MENU = ()
