@@ -9,3 +9,6 @@ class ConfigLanguageButton(Button):
 
     def on_click(self, board):
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_LANGUAGE"))

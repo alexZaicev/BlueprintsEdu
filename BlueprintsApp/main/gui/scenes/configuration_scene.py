@@ -42,10 +42,10 @@ class ConfigurationScene(SceneBuilder):
         self.frm_lang.draw_form()
 
     def draw_buttons(self):
-        # UPDATE BUTTON COLORS AFTER THEME SET
-        self.btn_theme.update_colors()
-        self.btn_language.update_colors()
-        self.btn_back.update_colors()
+        # UPDATE BUTTON AFTER THEME/LANGUAGE SET
+        self.btn_theme.update_button()
+        self.btn_language.update_button()
+        self.btn_back.update_button()
         #
         x = int(app_utils.BOARD_WIDTH * .02)
         y = app_utils.BOARD_HEGHT * .93

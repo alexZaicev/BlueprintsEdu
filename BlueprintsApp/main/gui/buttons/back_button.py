@@ -15,3 +15,6 @@ class BackButton(Button):
             board.set_scene(scene_utils.WELCOME_SCENE)
         else:
             board.set_scene(scene)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_BACK"))

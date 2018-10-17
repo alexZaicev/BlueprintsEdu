@@ -1,17 +1,23 @@
 from utils.utils import Utils
+from utils import logger_utils
 
 
 class StringUtils(Utils):
 
-    LANGUAGES = {
-        "ID_ENGLISH": "English",
-        "ID_RUSSIAN": "Русский"
-    }
+    __LOGGER = logger_utils.get_logger(__name__)
 
-    DEFAULT_LANGUAGE = LANGUAGES.get("ID_ENGLISH")
+    LANGUAGES = [
+        ["ID_ENGLISH", "English"],
+        ["ID_RUSSIAN", "Русский"]
+    ]
+
+    # TODO load saved language from config file
+    DEFAULT_LANGUAGE = LANGUAGES[0][0]
 
     # LANGUAGE [ID - WORD] DICTIONARY
     ENGLISH_DICT = {
+        "ID_ENGLISH": "English",
+        "ID_RUSSIAN": "Русский",
         "ID_NEW_PROJECT": "New Project",
         "ID_LOAD_PROJECT": "Load Project",
         "ID_CONFIGURATION": "Configuration",
@@ -61,5 +67,15 @@ class StringUtils(Utils):
 
     @classmethod
     def get_string(cls, word_id):
-        if StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES.get("ID_ENGLISH"):
+        if StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[0][0]:
             return StringUtils.ENGLISH_DICT.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[1][0]:
+            return StringUtils.RUSSIAN_DICT.get(word_id)
+
+    @classmethod
+    def set_language(cls, lang_id):
+        for i in range(0, len(StringUtils.LANGUAGES), 1):
+            if lang_id == StringUtils.LANGUAGES[i][0]:
+                StringUtils.DEFAULT_LANGUAGE = lang_id
+        if lang_id != StringUtils.DEFAULT_LANGUAGE:
+            StringUtils.__LOGGER.error("Failed to set unknown language: " + lang_id)

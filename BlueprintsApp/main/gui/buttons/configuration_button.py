@@ -11,3 +11,6 @@ class ConfigurationButton(Button):
     def on_click(self, board):
         board.set_scene(scene_utils.CONFIG_SCENE)
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_CONFIGURATION"))

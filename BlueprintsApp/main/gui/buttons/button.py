@@ -17,7 +17,9 @@ class Button(ABC):
         self.color = Themes.DEFAULT_THEME.get("button")
         self.set_coordinates(pos)
 
-    def update_colors(self):
+    @abstractmethod
+    def update_button(self, text):
+        self.__text_str = text
         if not self.is_hovered(pg.mouse.get_pos()):
             self.color = Themes.DEFAULT_THEME.get("button")
             font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))

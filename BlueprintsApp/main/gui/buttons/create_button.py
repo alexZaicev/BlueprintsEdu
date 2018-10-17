@@ -13,3 +13,6 @@ class CreateButton(Button):
         ProjectManager.create_project(project_info)
         board.set_scene(scene_utils.DEVELOP_SCENE, project=project_info)
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_CREATE"))

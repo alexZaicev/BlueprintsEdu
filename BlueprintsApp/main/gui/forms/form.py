@@ -27,7 +27,7 @@ class Form(ABC):
     @abstractmethod
     def draw_form(self):
         if self.visible:
-            self.btn_apply.update_colors()
+            self.btn_apply.update_button()
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), self.get_rect(), 0)
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_front_light"), self.get_rect(), 3)
             pg.draw.rect(self.display, self.btn_apply.color, self.btn_apply.get_rect(), 0)

@@ -11,3 +11,6 @@ class ExitButton(Button):
     def on_click(self, board):
         board.app_status = status.EXIT
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_EXIT"))

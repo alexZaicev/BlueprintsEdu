@@ -12,3 +12,6 @@ class SelectButton(Button):
     def on_click(self, board, project):
         board.set_scene(scene_utils.DEVELOP_SCENE, ProjectManager.get_project_info(project))
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_SELECT"))

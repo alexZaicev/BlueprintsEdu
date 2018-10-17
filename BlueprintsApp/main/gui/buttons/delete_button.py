@@ -11,3 +11,6 @@ class DeleteButton(Button):
     def on_click(self, board, directory):
         ProjectManager.delete_project(directory)
         super().on_click(board)
+
+    def update_button(self):
+        super().update_button(StringUtils.get_string("ID_DELETE"))
