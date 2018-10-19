@@ -18,8 +18,11 @@ class WelcomeScene(SceneBuilder):
         SceneBuilder.__init__(self, display)
         self.logger = logger_utils.get_logger(__name__)
         self.btn_new = NewButton(0)
+        self.btn_new.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_load = LoadButton(1)
+        self.btn_load.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_conf = ConfigurationButton(2)
+        self.btn_conf.color = Themes.DEFAULT_THEME.get("front_screen")
 
     def draw_buttons(self):
         # PREPARE BUTTON RECTANGLES
@@ -67,12 +70,12 @@ class WelcomeScene(SceneBuilder):
         if self.btn_new.is_hovered(pg.mouse.get_pos()):
             self.btn_new.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_new.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_new.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_load.is_hovered(pg.mouse.get_pos()):
             self.btn_load.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_load.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_load.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_conf.is_hovered(pg.mouse.get_pos()):
             self.btn_conf.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_conf.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_conf.color = Themes.DEFAULT_THEME.get("front_screen")

@@ -13,16 +13,16 @@ class Button(ABC):
         self.__text_str = text
         self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
         # TODO set button size according to the text object size
-        self.__width = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[0])
+        self.__width = int(font.size(self.__text_str)[0] * 1.1)
         self.__height = int(app_utils.BOARD_HEGHT * gui_utils.BUTTON_PRIMARY[1])
-        self.color = Themes.DEFAULT_THEME.get("button")
+        self.color = Themes.DEFAULT_THEME.get("button") # Default color but overrides in scene drawings
         self.set_coordinates(pos)
 
     @abstractmethod
-    def update_button(self, text):
+    def update_button(self, text, color):
         self.__text_str = text
         if not self.is_hovered(pg.mouse.get_pos()):
-            self.color = Themes.DEFAULT_THEME.get("button")
+            self.color = color
             font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
             self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
 

@@ -2,6 +2,7 @@ from gui.buttons.button import Button
 from utils.string_utils import StringUtils
 from utils import scene_utils
 import time
+from utils.gui_utils import Themes
 
 
 class BackButton(Button):
@@ -16,5 +17,5 @@ class BackButton(Button):
         else:
             board.set_scene(scene)
 
-    def update_button(self):
-        super().update_button(StringUtils.get_string("ID_BACK"))
+    def update_button(self, color=Themes.DEFAULT_THEME.get("button")):
+        super().update_button(StringUtils.get_string("ID_BACK"), color)

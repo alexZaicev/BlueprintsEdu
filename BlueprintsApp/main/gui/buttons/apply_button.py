@@ -1,6 +1,7 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
 from utils import scene_utils
+from utils.gui_utils import Themes
 
 
 class ApplyButton(Button):
@@ -12,5 +13,5 @@ class ApplyButton(Button):
         board.set_scene(scene_utils.WELCOME_SCENE)
         super().on_click(board)
 
-    def update_button(self):
-        super().update_button(StringUtils.get_string("ID_APPLY"))
+    def update_button(self, color=Themes.DEFAULT_THEME.get("button")):
+        super().update_button(StringUtils.get_string("ID_APPLY"), color)

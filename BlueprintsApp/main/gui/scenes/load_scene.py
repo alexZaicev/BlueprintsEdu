@@ -18,8 +18,11 @@ class LoadScene(SceneBuilder):
         SceneBuilder.__init__(self, display)
         self.__logger = logger_utils.get_logger(__name__)
         self.btn_select = SelectButton(0)
+        self.btn_select.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_delete = DeleteButton(0)
+        self.btn_delete.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_back = BackButton(0)
+        self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")
         self.file_container = pg.Rect((int(app_utils.BOARD_WIDTH * .01), int(app_utils.BOARD_HEGHT * 0.22)),
                                       (int(app_utils.BOARD_WIDTH * .98), int(app_utils.BOARD_HEGHT * .66)))
         self.files = ProjectManager.get_projects()
@@ -68,10 +71,10 @@ class LoadScene(SceneBuilder):
             int((app_utils.BOARD_WIDTH - self.btn_select.get_rect().width * .5) * .98),
             int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_select.get_rect().height * .5)))
         self.btn_delete.set_custom_coordinates((
-            int((app_utils.BOARD_WIDTH - self.btn_delete.get_rect().width * 1.5) * .965),
+            int(self.btn_select.get_rect().left - (app_utils.BOARD_WIDTH * .005 + self.btn_delete.get_rect().width * .5)),
             int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_delete.get_rect().height * .5)))
         self.btn_back.set_custom_coordinates((
-            int((app_utils.BOARD_WIDTH - self.btn_back.get_rect().width * 2.5) * .935),
+            int(self.btn_delete.get_rect().left - (app_utils.BOARD_WIDTH * .005 + self.btn_back.get_rect().width * .5)),
             int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_back.get_rect().height * .5)))
         pg.draw.rect(self.display, self.btn_select.color,
                      self.btn_select.get_rect(), 0)
@@ -127,12 +130,12 @@ class LoadScene(SceneBuilder):
         if self.btn_select.is_hovered(pg.mouse.get_pos()):
             self.btn_select.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_select.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_select.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_delete.is_hovered(pg.mouse.get_pos()):
             self.btn_delete.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_delete.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_delete.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_back.is_hovered(pg.mouse.get_pos()):
             self.btn_back.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_back.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")

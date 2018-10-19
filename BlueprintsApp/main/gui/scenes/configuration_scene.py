@@ -18,8 +18,11 @@ class ConfigurationScene(SceneBuilder):
         SceneBuilder.__init__(self, display)
         self.__logger = logger_utils.get_logger(__name__)
         self.btn_theme = ConfigThemeButton(0)
+        self.btn_theme.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_language = ConfigLanguageButton(0)
+        self.btn_language.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_back = BackButton(0)
+        self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")
         self.frm_theme = ThemeSelectionForm(self.display)
         self.frm_lang = LanguageSelectForm(self.display)
 
@@ -43,9 +46,9 @@ class ConfigurationScene(SceneBuilder):
 
     def draw_buttons(self):
         # UPDATE BUTTON AFTER THEME/LANGUAGE SET
-        self.btn_theme.update_button()
-        self.btn_language.update_button()
-        self.btn_back.update_button()
+        self.btn_theme.update_button(color=Themes.DEFAULT_THEME.get("front_screen"))
+        self.btn_language.update_button(color=Themes.DEFAULT_THEME.get("front_screen"))
+        self.btn_back.update_button(color=Themes.DEFAULT_THEME.get("front_screen"))
         #
         x = int(app_utils.BOARD_WIDTH * .02)
         y = app_utils.BOARD_HEGHT * .93
@@ -86,15 +89,15 @@ class ConfigurationScene(SceneBuilder):
         if self.btn_theme.is_hovered(pg.mouse.get_pos()):
             self.btn_theme.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_theme.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_theme.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_language.is_hovered(pg.mouse.get_pos()):
             self.btn_language.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_language.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_language.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_back.is_hovered(pg.mouse.get_pos()):
             self.btn_back.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_back.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")
 
     def check_button_press(self, board, pos):
         if self.btn_theme.get_rect().collidepoint(pos) == 1:

@@ -173,11 +173,11 @@ class ProjectCreationScene(SceneBuilder):
         if self.btn_create.is_hovered(pg.mouse.get_pos()):
             self.btn_create.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_create.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_create.color = Themes.DEFAULT_THEME.get("front_screen")
         if self.btn_cancel.is_hovered(pg.mouse.get_pos()):
             self.btn_cancel.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_cancel.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_cancel.color = Themes.DEFAULT_THEME.get("front_screen")
 
     def check_key_pressed(self, event):
         if event.type == KEYDOWN:

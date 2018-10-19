@@ -1,5 +1,6 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
+from utils.gui_utils import Themes
 
 
 class ConfigThemeButton(Button):
@@ -10,5 +11,5 @@ class ConfigThemeButton(Button):
     def on_click(self, board):
         super().on_click(board)
 
-    def update_button(self):
-        super().update_button(StringUtils.get_string("ID_THEME"))
+    def update_button(self, color=Themes.DEFAULT_THEME.get("button")):
+        super().update_button(StringUtils.get_string("ID_THEME"), color)

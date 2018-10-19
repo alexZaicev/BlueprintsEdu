@@ -18,8 +18,11 @@ class DevelopmentScene(SceneBuilder):
         self.__logger.debug("{} --- {}".format(project[0], project[1]))
         pg.display.set_caption("{} - {}   {}".format(project[0], project[1], app_utils.CAPTION))
         self.btn_file = DevFileButton(0)
+        self.btn_file.color = Themes.DEFAULT_THEME.get("background")
         self.btn_run = DevRunButton(0)
+        self.btn_run.color = Themes.DEFAULT_THEME.get("background")
         self.btn_settings = DevSettingsButton(0)
+        self.btn_settings.color = Themes.DEFAULT_THEME.get("background")
         self.__cont_panel = None
         self.__bp_panel = None
         self.__bp_focused = False
@@ -45,6 +48,7 @@ class DevelopmentScene(SceneBuilder):
             Button <<RUN>>: Opens run/build project manipulation to the user
             Button <<SETTINGS>>: Opens blueprints/blueprint development window manipulation to the user
         """
+        self.check_button_hover()
         pg.draw.rect(self.display, self.btn_settings.color, self.btn_settings.get_rect(), 0)
         self.display.blit(self.btn_settings.get_text(), self.btn_settings.get_text_rect())
         pg.draw.rect(self.display, self.btn_run.color, self.btn_run.get_rect(), 0)
@@ -67,7 +71,7 @@ class DevelopmentScene(SceneBuilder):
         self.display.blit(txt, rect_txt)
 
     def draw_blueprint_control(self):
-        self.__bp_panel = pg.Rect((self.btn_file.get_rect().left, int(self.btn_file.get_rect().bottom * 1.05)),
+        self.__bp_panel = pg.Rect((int(self.__cont_panel.right + app_utils.BOARD_WIDTH * .005), int(self.btn_file.get_rect().bottom * 1.05)),
             (int(app_utils.BOARD_WIDTH * .723),
                 int(app_utils.BOARD_HEGHT * (1.0 - gui_utils.BUTTON_PRIMARY[1] - .007))))
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), self.__bp_panel, 0)
@@ -81,6 +85,20 @@ class DevelopmentScene(SceneBuilder):
         self.draw_control_panel()
         self.draw_blueprint_control()
         super().draw_scene()
+
+    def check_button_hover(self):
+        if self.btn_settings.is_hovered(pg.mouse.get_pos()):
+            self.btn_settings.color = Themes.DEFAULT_THEME.get("selection_background")
+        else:
+            self.btn_settings.color = Themes.DEFAULT_THEME.get("background")
+        if self.btn_run.is_hovered(pg.mouse.get_pos()):
+            self.btn_run.color = Themes.DEFAULT_THEME.get("selection_background")
+        else:
+            self.btn_run.color = Themes.DEFAULT_THEME.get("background")
+        if self.btn_file.is_hovered(pg.mouse.get_pos()):
+            self.btn_file.color = Themes.DEFAULT_THEME.get("selection_background")
+        else:
+            self.btn_file.color = Themes.DEFAULT_THEME.get("background")
 
     def check_events(self, event, board):
         super().check_events(event, board)

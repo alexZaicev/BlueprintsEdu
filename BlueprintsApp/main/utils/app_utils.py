@@ -4,8 +4,8 @@ from utils.string_utils import StringUtils
 CAPTION = "BlueprintEdu V1.0"
 
 # WINDOW SIZING
-BOARD_WIDTH = 640#1280
-BOARD_HEGHT = 480#800
+BOARD_WIDTH = 800#1280
+BOARD_HEGHT = 600#800
 
 # FRAMES PER SECOND
 FPS = 90

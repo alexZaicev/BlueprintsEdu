@@ -20,6 +20,7 @@ class Form(ABC):
         else:
             self.coords = coords
         self.btn_apply = ApplyButton(0)
+        self.btn_apply.color = Themes.DEFAULT_THEME.get("panel_background")
         self.btn_apply.set_custom_coordinates(
             (int((self.coords[0] + self.size[0]) - self.btn_apply.get_rect().width * .53),
              int((self.coords[1] + self.size[1]) - self.btn_apply.get_rect().height * .6)))
@@ -27,7 +28,7 @@ class Form(ABC):
     @abstractmethod
     def draw_form(self):
         if self.visible:
-            self.btn_apply.update_button()
+            self.btn_apply.update_button(Themes.DEFAULT_THEME.get("panel_background"))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), self.get_rect(), 0)
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_front_light"), self.get_rect(), 3)
             pg.draw.rect(self.display, self.btn_apply.color, self.btn_apply.get_rect(), 0)
@@ -46,4 +47,4 @@ class Form(ABC):
         if self.btn_apply.is_hovered(pg.mouse.get_pos()):
             self.btn_apply.color = Themes.DEFAULT_THEME.get("selection_background")
         else:
-            self.btn_apply.color = Themes.DEFAULT_THEME.get("button")
+            self.btn_apply.color = Themes.DEFAULT_THEME.get("panel_background")

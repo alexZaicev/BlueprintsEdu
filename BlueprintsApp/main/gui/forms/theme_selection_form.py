@@ -43,8 +43,8 @@ class ThemeSelectionForm(Form):
             self.btn_drop_down = img[1]
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.theme_select, 0)
             self.display.blit(img[0], img[1])
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.theme_select.height * 0.6))
 
-            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.theme_select.height * 0.85))
             txt = font.render(self.__theme, True, Themes.DEFAULT_THEME.get("text_area_text"))
             rect_txt = txt.get_rect()
             rect_txt.center = self.theme_select.center
@@ -60,7 +60,7 @@ class ThemeSelectionForm(Form):
                                                              self.theme_select.height * ((pos - self.__theme_counter) + 1))),
                                    self.theme_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
-                                        int(self.theme_select.height * 0.85))
+                                        int(self.theme_select.height * 0.6))
                     txt = font.render(Themes.THEMES[pos][1], True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
                     rect_txt.center = rect.center
