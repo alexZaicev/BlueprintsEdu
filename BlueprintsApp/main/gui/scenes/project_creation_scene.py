@@ -21,12 +21,12 @@ class ProjectCreationScene(SceneBuilder):
         self.api_select = None
         self.__api = GameApi.DEFAULT_API
         self.btn_drop_down = None
-        self.btn_create = CreateButton(0)
-        self.btn_create.set_custom_coordinates(
-            (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .8))
+        self.btn_create = CreateButton(1)
+        # self.btn_create.set_custom_coordinates(
+        #     (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .8))
         self.btn_cancel = CancelButton(0)
-        self.btn_cancel.set_custom_coordinates(
-            (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .9))
+        # self.btn_cancel.set_custom_coordinates(
+        #     (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .9))
         self.__is_drop_down_pressed = False
         self.__menu_content = []
         self.__menu_counter = 0

@@ -17,11 +17,11 @@ class WelcomeScene(SceneBuilder):
     def __init__(self, display):
         SceneBuilder.__init__(self, display)
         self.logger = logger_utils.get_logger(__name__)
-        self.btn_new = NewButton(0)
+        self.btn_new = NewButton(2)
         self.btn_new.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_load = LoadButton(1)
         self.btn_load.color = Themes.DEFAULT_THEME.get("front_screen")
-        self.btn_conf = ConfigurationButton(2)
+        self.btn_conf = ConfigurationButton(0)
         self.btn_conf.color = Themes.DEFAULT_THEME.get("front_screen")
 
     def draw_buttons(self):

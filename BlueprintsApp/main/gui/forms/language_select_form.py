@@ -44,7 +44,7 @@ class LanguageSelectForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.lang_select, 0)
             self.display.blit(img[0], img[1])
 
-            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.lang_select.height * 0.85))
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.lang_select.height * 0.6))
             txt = font.render(self.__lang, True, Themes.DEFAULT_THEME.get("text_area_text"))
             rect_txt = txt.get_rect()
             rect_txt.center = self.lang_select.center
@@ -60,7 +60,7 @@ class LanguageSelectForm(Form):
                                                              self.lang_select.height * ((pos - self.__lang_counter) + 1))),
                                    self.lang_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
-                                        int(self.lang_select.height * 0.85))
+                                        int(self.lang_select.height * 0.6))
                     txt = font.render(StringUtils.LANGUAGES[pos][1], True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
                     rect_txt.center = rect.center

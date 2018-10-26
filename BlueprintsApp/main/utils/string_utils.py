@@ -44,7 +44,8 @@ class StringUtils(Utils):
         "ID_BUILD": "Build",
         "ID_SETTINGS": "Settings",
         "ID_SAVE": "Save",
-        "ID_CONTROL_PANEL": "Control Panel"
+        "ID_CONTROL_PANEL": "Control Panel",
+        "ID_EDIT": "Edit"
     }
 
     RUSSIAN_DICT = {
