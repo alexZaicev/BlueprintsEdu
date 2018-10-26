@@ -104,7 +104,7 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_file.get_rect()
         exit = ExitButton(0)
         exit.set_custom_size(DevelopmentScene.BTN_SIZE)
-        exit.set_topleft((int(r.left * 1.65), r.bottom))
+        exit.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), r.bottom))
         exit.color = Themes.DEFAULT_THEME.get("menu_background")
         result.append(exit)
         return result
@@ -114,14 +114,14 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_edit.get_rect()
         add_attr = DevAddAttrButton(0)
         add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_attr.set_topleft((int(r.left * 1.06), r.bottom))
+        add_attr.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
         result.append(add_attr)
         return result
 
     def __draw_file_menu(self):
         r = pg.Rect((self.btn_file.get_rect().left, self.btn_file.get_rect().bottom),
-                    (int(app_utils.BOARD_WIDTH * .3), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+                    (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
         for btn in self.__file_menu_content:
             pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
@@ -129,7 +129,7 @@ class DevelopmentScene(SceneBuilder):
 
     def __draw_edit_menu(self):
         r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
-                    (int(app_utils.BOARD_WIDTH * .3), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+                    (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
         for btn in self.__edit_menu_content:
             pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)

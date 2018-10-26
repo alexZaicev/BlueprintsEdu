@@ -63,8 +63,11 @@ class Button(ABC):
         return (x, y)
 
     def set_topleft(self, coords):
-        self.__x = int(coords[0] + self.__width * .5)
-        self.__y = int(coords[1] + self.__height * .5)
+        if len(coords) == 2:
+            self.__x = int(coords[0] + self.__width * .5)
+            self.__y = int(coords[1] + self.__height * .5)
+        else:
+            self.__x = int(coords[0] + self.__width * .5)
 
     def is_hovered(self, coords):
         r = self.get_rect()
