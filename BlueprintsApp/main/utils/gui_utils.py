@@ -47,7 +47,8 @@ class Themes(Utils):
         "selection_font": Colors.BLACK,
         "front_screen": Colors.DIM_GREY,
         "text_area_background": Colors.WHITE,
-        "text_area_text": Colors.BLACK
+        "text_area_text": Colors.BLACK,
+        "menu_background": Colors.DARK_GREY
     }
     DAY_LIGHT_DICT = {
         "font": Colors.BLACK,
@@ -68,7 +69,8 @@ class Themes(Utils):
         "selection_font": Colors.BLACK,
         "front_screen": Colors.SNOW,
         "text_area_background": Colors.PALE_TURQUOISE,
-        "text_area_text": Colors.BLACK
+        "text_area_text": Colors.BLACK,
+        "menu_background": Colors.POWDER_BLUE
     }
     PRINCESS_DICT = {
         "font": Colors.WHITE,
@@ -89,7 +91,8 @@ class Themes(Utils):
         "selection_font": Colors.MEDIUM_ORCHID,
         "front_screen": Colors.DEEP_PINK,
         "text_area_background": Colors.PINK,
-        "text_area_text": Colors.WHITE
+        "text_area_text": Colors.WHITE,
+        "menu_background": Colors.PURPLE
     }
 
     DEFAULT_THEME = DARK_KNIGHT_DICT

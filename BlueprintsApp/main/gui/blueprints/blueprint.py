@@ -5,12 +5,13 @@ import pygame as pg
 
 class Blueprint(object):
 
-    def __init__(self, panel, text):
+    def __init__(self, panel, text, blueprint):
         self.__panel = panel
         self.__text_str = text
-        self.__x = 0    #TODO improve random blueprint coordinates
-        self.__y = 0
-        self.__width = self.__panel.width *  .25
+        self.__blueprint = blueprint    # Blueprint game data type
+        self.__x = panel.topleft[0]  # TODO improve random blueprint coordinates
+        self.__y = panel.topleft[1]
+        self.__width = self.__panel.width * .25
         self.__height = self.__panel.height * .2
         font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
         self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))

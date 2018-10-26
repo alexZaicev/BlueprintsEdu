@@ -58,6 +58,7 @@ class ConfigManager(object):
 
     @classmethod
     def save_configurations(cls):
+        # TODO implement data crypto for security reasons
         cfg_dict = dict()
         cfg_dict["CUSTOM"] = {
             "SIZE": {

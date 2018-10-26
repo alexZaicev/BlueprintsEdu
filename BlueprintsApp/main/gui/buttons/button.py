@@ -4,6 +4,7 @@ from utils import gui_utils
 from utils import app_utils
 import os
 from utils.gui_utils import Themes
+from utils import logger_utils
 
 
 class Button(ABC):
@@ -11,6 +12,7 @@ class Button(ABC):
     def __init__(self, text, pos):
         # TODO set button size according to the text object size
         font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .045))
+        self.logger = logger_utils.get_logger(__name__)
         self.__text_str = text
         self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
         self.__height = int(font.size(self.__text_str)[1] * 1.1)
@@ -59,6 +61,10 @@ class Button(ABC):
         x = self.__x - int(self.__width * .5)
         y = self.__y - int(self.__height * .5)
         return (x, y)
+
+    def set_topleft(self, coords):
+        self.__x = int(coords[0] + self.__width * .5)
+        self.__y = int(coords[1] + self.__height * .5)
 
     def is_hovered(self, coords):
         r = self.get_rect()
