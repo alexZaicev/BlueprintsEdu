@@ -49,6 +49,8 @@ class StringUtils(Utils):
     }
 
     RUSSIAN_DICT = {
+        "ID_ENGLISH": "Английский",
+        "ID_RUSSIAN": "Русский",
         "ID_NEW_PROJECT": "Новый проект",
         "ID_LOAD_PROJECT": "Загрузить проект",
         "ID_CONFIGURATION": "Конфигурация",
@@ -69,7 +71,14 @@ class StringUtils(Utils):
         "ID_CAR_SIMULATOR": "Симулятор автомобиля",
         "ID_DARK_KNIGHT": "Темный рыцарь",
         "ID_DAY_LIGHT": "Дневной свет",
-        "ID_PRINCESS": "Принцесса"
+        "ID_PRINCESS": "Принцесса",
+        "ID_FILE": "Файл",
+        "ID_RUN": "Запустить",
+        "ID_BUILD": "Build",
+        "ID_SETTINGS": "Настройки",
+        "ID_SAVE": "Сохранить",
+        "ID_CONTROL_PANEL": "Панель управления",
+        "ID_EDIT": "Изменить"
     }
 
     @classmethod

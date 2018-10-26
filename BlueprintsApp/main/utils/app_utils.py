@@ -4,13 +4,25 @@ from utils.string_utils import StringUtils
 CAPTION = "BlueprintEdu V1.0"
 
 # WINDOW SIZING
-BOARD_WIDTH = 800#1280
-BOARD_HEGHT = 600#800
+BOARD_WIDTH = 800  # 1280
+BOARD_HEGHT = 600  # 800
 
 # FRAMES PER SECOND
 FPS = 90
 
-# COLORS
+
+class DisplaySettings(Utils):
+
+    DEFAULT_SCREEN_SIZE = [1024, 720]
+
+    SCREEN_SIZES = {
+        "800x600": [800, 600],
+        "1024x720": [1024, 720]
+    }
+
+    @classmethod
+    def get_size(cls, size_id):
+        return DisplaySettings.SCREEN_SIZES.get(size_id)
 
 
 class Colors(Utils):

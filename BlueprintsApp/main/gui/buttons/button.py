@@ -15,7 +15,7 @@ class Button(ABC):
         self.__text = font.render(text, True, Themes.DEFAULT_THEME.get("font"))
         self.__height = int(font.size(self.__text_str)[1] * 1.1)
         self.__width = int(font.size(self.__text_str)[0] * 1.1)
-        self.color = Themes.DEFAULT_THEME.get("button") # Default color but overrides in scene drawings
+        self.color = Themes.DEFAULT_THEME.get("button")  # Default color but overrides in scene drawings
         self.set_coordinates(pos)
 
     @abstractmethod
@@ -23,7 +23,9 @@ class Button(ABC):
         self.__text_str = text
         if not self.is_hovered(pg.mouse.get_pos()):
             self.color = color
-            font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .05))
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(app_utils.BOARD_HEGHT * .045))
+            self.__height = int(font.size(self.__text_str)[1] * 1.1)
+            self.__width = int(font.size(self.__text_str)[0] * 1.1)
             self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
@@ -38,11 +40,6 @@ class Button(ABC):
 
     def set_coordinates(self, pos):
         self.__x = int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_WIDTH + self.__width * .5)
-        # start = int(app_utils.BOARD_HEGHT * .8)
-        # if pos > 0:
-        #     self.__y = int(start + (self.__height + int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_HEGHT)) * pos)
-        # else:
-        #     self.__y = start
         start = int(app_utils.BOARD_HEGHT - (app_utils.BOARD_HEGHT * 0.05 + self.__height * .5))
         if pos > 0:
             self.__y = int(start - (self.__height + int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_HEGHT)) * pos)

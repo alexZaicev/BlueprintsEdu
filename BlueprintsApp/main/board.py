@@ -6,6 +6,7 @@ from utils.enums import status
 from utils import scene_utils
 from utils import gui_utils
 from utils.gui_utils import Themes
+from config_manager import ConfigManager
 
 
 class Board(object):
@@ -25,6 +26,7 @@ class Board(object):
         pg.display.set_caption(app_utils.CAPTION)
 
     def close(self):
+        ConfigManager.save_configurations()
         self.app_status = status.EXIT
 
     def run(self):
