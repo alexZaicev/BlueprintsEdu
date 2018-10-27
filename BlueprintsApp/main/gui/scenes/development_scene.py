@@ -43,11 +43,12 @@ class DevelopmentScene(SceneBuilder):
         self.__cont_panel = ControlPanelForm(self.display,
                                              (int(app_utils.BOARD_WIDTH * .005), int(self.btn_file.get_rect().bottom * 1.005)),
                                              (int(app_utils.BOARD_WIDTH * .265), int(app_utils.BOARD_HEGHT * .945)))
-        self.__bp_panel = BlueprintControlForm(self.display,
+        self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display,
                                                (int(self.__cont_panel.get_rect().right + app_utils.BOARD_WIDTH * .005),
                                                 int(self.btn_file.get_rect().bottom * 1.05)),
                                                (int(app_utils.BOARD_WIDTH * .723),
                                                 int(app_utils.BOARD_HEGHT * .945)))
+# ----------------INITIALIZATIONS----------------
 
     def __init_btn_coords(self):
         self.btn_file.set_custom_coordinates(
@@ -72,33 +73,6 @@ class DevelopmentScene(SceneBuilder):
         self.btn_settings.set_custom_size(DevelopmentScene.BTN_SIZE)
         self.__init_btn_coords()
 
-    def draw_menu_buttons(self):
-        """Description: function draws development menu navigation barself.
-            Button <<FILE>>: Opens project/file manipulation to the user
-            Button <<RUN>>: Opens run/build project manipulation to the user
-            Button <<SETTINGS>>: Opens blueprints/blueprint development window manipulation to the user
-        """
-        self.check_button_hover()
-        pg.draw.rect(self.display, self.btn_settings.color, self.btn_settings.get_rect(), 0)
-        self.display.blit(self.btn_settings.get_text(), self.btn_settings.get_text_rect())
-        pg.draw.rect(self.display, self.btn_run.color, self.btn_run.get_rect(), 0)
-        self.display.blit(self.btn_run.get_text(), self.btn_run.get_text_rect())
-        pg.draw.rect(self.display, self.btn_file.color, self.btn_file.get_rect(), 0)
-        self.display.blit(self.btn_file.get_text(), self.btn_file.get_text_rect())
-        pg.draw.rect(self.display, self.btn_edit.color, self.btn_edit.get_rect(), 0)
-        self.display.blit(self.btn_edit.get_text(), self.btn_edit.get_text_rect())
-
-    def draw_drop_down(self):
-        # TODO implement method
-        if self.__btn_file_pressed:
-            self.__draw_file_menu()
-        elif self.__btn_edit_pressed:
-            self.__draw_edit_menu()
-        elif self.__btn_run_pressed:
-            pass
-        elif self.__btn_settings_pressed:
-            pass
-
     def __init_file_menu(self):
         result = []
         r = self.btn_file.get_rect()
@@ -119,23 +93,59 @@ class DevelopmentScene(SceneBuilder):
         result.append(add_attr)
         return result
 
-    def __draw_file_menu(self):
-        r = pg.Rect((self.btn_file.get_rect().left, self.btn_file.get_rect().bottom),
-                    (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
-        for btn in self.__file_menu_content:
-            pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
-            self.display.blit(btn.get_text(), btn.get_text_rect())
+# ----------------END----------------
 
-    def __draw_edit_menu(self):
-        r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
-                    (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
-        for btn in self.__edit_menu_content:
-            pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
-            self.display.blit(btn.get_text(), btn.get_text_rect())
+    def draw_menu_buttons(self):
+        """Description: function draws development menu navigation barself.
+            Button <<FILE>>: Opens project/file manipulation to the user
+            Button <<RUN>>: Opens run/build project manipulation to the user
+            Button <<SETTINGS>>: Opens blueprints/blueprint development window manipulation to the user
+        """
+        self.check_button_hover()
+        pg.draw.rect(self.display, self.btn_settings.color, self.btn_settings.get_rect(), 0)
+        self.display.blit(self.btn_settings.get_text(), self.btn_settings.get_text_rect())
+        pg.draw.rect(self.display, self.btn_run.color, self.btn_run.get_rect(), 0)
+        self.display.blit(self.btn_run.get_text(), self.btn_run.get_text_rect())
+        pg.draw.rect(self.display, self.btn_file.color, self.btn_file.get_rect(), 0)
+        self.display.blit(self.btn_file.get_text(), self.btn_file.get_text_rect())
+        pg.draw.rect(self.display, self.btn_edit.color, self.btn_edit.get_rect(), 0)
+        self.display.blit(self.btn_edit.get_text(), self.btn_edit.get_text_rect())
+
+    def draw_drop_down(self):
+        def __draw_file_menu():
+            r = pg.Rect((self.btn_file.get_rect().left, self.btn_file.get_rect().bottom),
+                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
+            for btn in self.__file_menu_content:
+                pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
+                self.display.blit(btn.get_text(), btn.get_text_rect())
+
+        def __draw_edit_menu():
+            r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
+                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
+            for btn in self.__edit_menu_content:
+                pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
+                self.display.blit(btn.get_text(), btn.get_text_rect())
+
+        def __draw_run_menu():
+            pass
+
+        def __draw_settings_menu():
+            pass
+
+        if self.__btn_file_pressed:
+            __draw_file_menu()
+        elif self.__btn_edit_pressed:
+            __draw_edit_menu()
+        elif self.__btn_run_pressed:
+            pass
+        elif self.__btn_settings_pressed:
+            pass
 
     def draw_scene(self):
+        """Description: main scene drawing function, orchestrating component drawings on display
+        """
         self.display.fill(Themes.DEFAULT_THEME.get("background"))
         self.draw_menu_buttons()
         self.__cont_panel.draw_form()
@@ -173,39 +183,44 @@ class DevelopmentScene(SceneBuilder):
         else:
             self.btn_edit.color = Themes.DEFAULT_THEME.get("selection_background")
 
-    def __reset_btn_menu(self):
-        self.__btn_file_pressed = False
-        self.__btn_edit_pressed = False
-        self.__btn_run_pressed = False
-        self.__btn_settings_pressed = False
-
     def check_events(self, event, board):
         super().check_events(event, board)
+
+        def __reset_btn_menu():
+            self.__btn_file_pressed = False
+            self.__btn_edit_pressed = False
+            self.__btn_run_pressed = False
+            self.__btn_settings_pressed = False
+
+        def __check_file_menu_press(pos, board):
+            if self.__btn_file_pressed:
+                for btn in self.__file_menu_content:
+                    if btn.get_rect().collidepoint(pos):
+                        btn.on_click(board)
+
+        def __check_edit_menu_press(pos, board):
+            if self.__btn_edit_pressed:
+                for btn in self.__edit_menu_content:
+                    if btn.get_rect().collidepoint(pos):
+                        btn.on_click(board, self.__bp_panel)
+
         if event.type == MOUSEBUTTONDOWN:
             pos = pg.mouse.get_pos()
             if self.btn_file.get_rect().collidepoint(pos):
                 if self.__btn_file_pressed:
-                    self.__reset_btn_menu()
+                    __reset_btn_menu()
                 else:
-                    self.__reset_btn_menu()
+                    __reset_btn_menu()
                     self.__btn_file_pressed = True
             elif self.btn_edit.get_rect().collidepoint(pos):
                 if self.__btn_edit_pressed:
-                    self.__reset_btn_menu()
+                    __reset_btn_menu()
                 else:
-                    self.__reset_btn_menu()
+                    __reset_btn_menu()
                     self.__btn_edit_pressed = True
-            self.__check_file_menu_press(pos, board)
-            self.__check_edit_menu_press(pos, board)
-
-    def __check_file_menu_press(self, pos, board):
-        if self.__btn_file_pressed:
-            for btn in self.__file_menu_content:
-                if btn.get_rect().collidepoint(pos):
-                    btn.on_click(board)
-
-    def __check_edit_menu_press(self, pos, board):
-        if self.__btn_edit_pressed:
-            for btn in self.__edit_menu_content:
-                if btn.get_rect().collidepoint(pos):
-                    btn.on_click(board, self.__bp_panel)
+            else:
+                __check_file_menu_press(pos, board)
+                __check_edit_menu_press(pos, board)
+                __reset_btn_menu()
+        self.__cont_panel.check_form_events(event)
+        self.__bp_panel.check_form_events(event)

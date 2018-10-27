@@ -46,7 +46,13 @@ class StringUtils(Utils):
         "ID_SAVE": "Save",
         "ID_CONTROL_PANEL": "Control Panel",
         "ID_EDIT": "Edit",
-        "ID_ADD_ATTRIBUTE": "Add Attribute"
+        "ID_ADD_ATTRIBUTE": "Add Attribute",
+        "ID_NAME": "Name",
+        "ID_TYPE": "Type",
+        "ID_ATTRIBUTE": "Attribute",
+        "ID_CHARACTER": "Character",
+        "ID_SPRITE": "Sprite",
+        "ID_FUNCTION": "Function"
     }
 
     RUSSIAN_DICT = {

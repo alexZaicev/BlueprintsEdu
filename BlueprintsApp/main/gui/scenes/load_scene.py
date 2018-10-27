@@ -93,7 +93,7 @@ class LoadScene(SceneBuilder):
         for f in self.files:
             if f.pressed:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get(
-                    "selection_background"), f.get_rect(), 10)
+                    "selection_background"), f.get_rect(), 3)
 
     def check_button_press(self, pos, board):
         if self.btn_select.get_rect().collidepoint(pos) == 1:

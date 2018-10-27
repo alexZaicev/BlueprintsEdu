@@ -33,6 +33,7 @@ class Colors(Utils):
     GREY = (128, 128, 128)
     DARK_GREY = (169, 169, 169)
     SILVER = (192, 192, 192)
+    VAMPIRE_GREY = (64, 64, 64)
     NIGHT_GREY = (28, 28, 28)
     LIGHT_GREY = (211, 211, 211)
     GAINSBORO = (220, 220, 220)

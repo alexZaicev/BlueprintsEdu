@@ -30,7 +30,7 @@ class Themes(Utils):
     DARK_KNIGHT_DICT = {
         "font": Colors.WHITE,
         "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.ARCHISTICO_BOLD,
+        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
         "text_font_style": Fonts.SANSATION_REGULAR,
         "font_error": Colors.RANGE_RED,
         "background": Colors.BLACK,
@@ -48,12 +48,15 @@ class Themes(Utils):
         "front_screen": Colors.DIM_GREY,
         "text_area_background": Colors.WHITE,
         "text_area_text": Colors.BLACK,
-        "menu_background": Colors.DARK_GREY
+        "menu_background": Colors.DARK_GREY,
+        "idle_blueprint": Colors.VAMPIRE_GREY,
+        "enabled_blueprint": Colors.SLATE_GREY,
+        "connection_line": Colors.RED
     }
     DAY_LIGHT_DICT = {
         "font": Colors.BLACK,
         "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.ARCHISTICO_BOLD,
+        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
         "text_font_style": Fonts.SANSATION_REGULAR,
         "font_error": Colors.RANGE_RED,
         "background": Colors.WHITE,
@@ -75,7 +78,7 @@ class Themes(Utils):
     PRINCESS_DICT = {
         "font": Colors.WHITE,
         "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.ARCHISTICO_BOLD,
+        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
         "text_font_style": Fonts.SANSATION_REGULAR,
         "font_error": Colors.RANGE_RED,
         "background": Colors.PINK,
