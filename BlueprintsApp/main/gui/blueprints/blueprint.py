@@ -40,10 +40,13 @@ class Blueprint(ABC):
         font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
         self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
 
+    def change_font(self, font):
+        self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
+
     def get_text_rect(self):
         rect_txt = self.__text.get_rect()
         rect_txt.centerx = self.get_rect().centerx
-        rect_txt.top = int(self.get_rect().top + self.get_rect().height * .1)
+        rect_txt.top = int(self.get_rect().top + rect_txt.height * .5)
         return rect_txt
 
     def get_text(self):

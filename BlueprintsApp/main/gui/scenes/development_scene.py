@@ -13,6 +13,9 @@ from gui.forms.blueprint_control_form import BlueprintControlForm
 from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
 from gui.buttons.dev_add_attr_button import DevAddAttrButton
+from gui.buttons.dev_add_character_button import DevAddCharacterButton
+from gui.buttons.dev_add_function_button import DevAddFunctionButton
+from gui.buttons.dev_add_sprite_button import DevAddSpriteButton
 
 
 class DevelopmentScene(SceneBuilder):
@@ -90,7 +93,26 @@ class DevelopmentScene(SceneBuilder):
         add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_attr.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        add_char = DevAddCharacterButton(0)
+        add_char.set_custom_size(DevelopmentScene.BTN_SIZE)
+        add_char.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_attr.get_rect().bottom))
+        add_char.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        add_func = DevAddFunctionButton(0)
+        add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
+        add_func.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_char.get_rect().bottom))
+        add_func.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        add_sprite = DevAddSpriteButton(0)
+        add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
+        add_sprite.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_func.get_rect().bottom))
+        add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
+
         result.append(add_attr)
+        result.append(add_char)
+        result.append(add_func)
+        result.append(add_sprite)
         return result
 
 # ----------------END----------------
@@ -122,7 +144,7 @@ class DevelopmentScene(SceneBuilder):
 
         def __draw_edit_menu():
             r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__edit_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__edit_menu_content:
                 pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)

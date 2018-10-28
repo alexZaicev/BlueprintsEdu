@@ -52,7 +52,10 @@ class StringUtils(Utils):
         "ID_ATTRIBUTE": "Attribute",
         "ID_CHARACTER": "Character",
         "ID_SPRITE": "Sprite",
-        "ID_FUNCTION": "Function"
+        "ID_FUNCTION": "Function",
+        "ID_ADD_CHARACTER": "Add Character",
+        "ID_ADD_FUNCTION": "Add Function",
+        "ID_ADD_SPRITE": "Add Sprite"
     }
 
     RUSSIAN_DICT = {

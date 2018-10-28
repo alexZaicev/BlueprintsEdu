@@ -7,7 +7,7 @@ class AttributeBlueprint(Blueprint):
     SIZE = [.2, .1]
 
     def __init__(self, panel, blueprint):
-        Blueprint.__init__(self, panel, "Attribute_1", blueprint)
+        Blueprint.__init__(self, panel, "{}_1".format(StringUtils.get_string("ID_ATTRIBUTE")), blueprint)
         # TODO improve random blueprint name generation
         self.set_custom_size(AttributeBlueprint.SIZE)
 

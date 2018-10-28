@@ -5,6 +5,9 @@ import pygame as pg
 from pygame.locals import *
 from utils.string_utils import StringUtils
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
+from gui.blueprints.character_blueprint import CharacterBlueprint
+from gui.blueprints.function_blueprint import FunctionBlueprint
+from gui.blueprints.sprite_blueprint import SpriteBlueprint
 
 
 class BlueprintControlForm(Form):
@@ -107,4 +110,16 @@ class BlueprintControlForm(Form):
 
     def add_attribute(self):
         t = AttributeBlueprint(self.get_rect(), None)
+        self.__bps.append(t)
+
+    def add_character(self):
+        t = CharacterBlueprint(self.get_rect(), None)
+        self.__bps.append(t)
+
+    def add_function(self):
+        t = FunctionBlueprint(self.get_rect(), None)
+        self.__bps.append(t)
+
+    def add_sprite(self):
+        t = SpriteBlueprint(self.get_rect(), None)
         self.__bps.append(t)
