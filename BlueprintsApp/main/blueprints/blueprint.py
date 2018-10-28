@@ -27,5 +27,5 @@ class Blueprint(ABC):
     def __init__(self, type):
         self.__type = type
 
-    def get_type():
+    def get_type(self):
         return self.__type

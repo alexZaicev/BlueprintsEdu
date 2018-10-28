@@ -8,6 +8,7 @@ from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
+from blueprints.blueprint import Blueprint
 
 
 class BlueprintControlForm(Form):
@@ -66,10 +67,9 @@ class BlueprintControlForm(Form):
                 if len(self.__bps) > 0:
                     for bp in self.__bps:
                         if bp.get_rect().collidepoint(pos) == 1:
-                            if not bp.connected:
-                                for bp_1 in self.__bps:
-                                    if bp != bp_1 and bp_1.focused and not bp_1.connected:
-                                        self.connect_blueprints(bp, bp_1)
+                            for bp_1 in self.__bps:
+                                if bp != bp_1 and bp_1.focused:
+                                    self.connect_blueprints(bp_1, bp)
 
         elif event.type == MOUSEBUTTONUP:
             if event.button == 1:   # LEFT MOUSE BUTTON
@@ -119,11 +119,24 @@ class BlueprintControlForm(Form):
 
     def connect_blueprints(self, bp_1, bp_2):
         valid = True
-        # TODO check valid attribute connection
-        # TODO check valid character connection
-        # TODO check valid function connection
-        # TODO check valid sprite connection
-        # TODO check connection not exist
-
+        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE")) or \
+                    (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")):
+                valid = False
+        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER")):
+                valid = False
+        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")) or \
+                    (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE")):
+                valid = False
+        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE")):
+                valid = False
+        for con in self.__bps_connections:
+            if ((con[0] == bp_1) and (con[1] == bp_2)) or \
+                    ((con[0] == bp_2) and (con[1] == bp_1)):
+                valid = False
         if valid:
             self.__bps_connections.append([bp_1, bp_2])
+            self.__logger.debug("Blueprints connected")

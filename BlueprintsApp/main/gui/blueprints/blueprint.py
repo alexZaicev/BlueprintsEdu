@@ -23,6 +23,9 @@ class Blueprint(ABC):
     def get_rect(self):
         return pg.Rect((self.__x, self.__y), (self.__width, self.__height))
 
+    def get_blueprint(self):
+        return self.__blueprint
+
     def set_topleft(self, coords):
         self.__x = coords[0]
         self.__y = coords[1]
