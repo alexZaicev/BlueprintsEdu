@@ -1,7 +1,7 @@
 """Description: BLueprints module contains blueprint base class with sharing attributes and methodsself.
 To clarify we will refer to character/sprite blueprint as game object, function as game object behaviour
 and attribute as special game object data.
- 
+
 In the app there can be various types of blueprints:
     >> FUNCTION : is a method that user can edit/create from scratch in the development process. It contains
             some special logic for any game object
@@ -12,9 +12,10 @@ In the app there can be various types of blueprints:
     >> ATTRIBUTE : is a special game object data type that may contain any data inside and it can be used by
             the user to create behaviour
 """
+from abc import ABC, abstractmethod
 
 
-class Blueprint(object):
+class Blueprint(ABC):
 
     TYPES = {
         "FUNCTION": "BT_0",
@@ -24,5 +25,7 @@ class Blueprint(object):
     }
 
     def __init__(self, type):
-        object().__init__(self)
         self.__type = type
+
+    def get_type():
+        return self.__type

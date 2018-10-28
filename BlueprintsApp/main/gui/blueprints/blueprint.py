@@ -12,7 +12,6 @@ class Blueprint(ABC):
         self.__blueprint = blueprint    # Blueprint game data type
         self.focused = False
         self.pressed = False
-        self.connected = False
         self.offset = (0, 0)
         self.__x = int(panel.topleft[0] * 1.05)  # TODO improve random blueprint coordinates
         self.__y = int(panel.topleft[1] * 1.05)

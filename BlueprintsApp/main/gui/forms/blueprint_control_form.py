@@ -56,7 +56,6 @@ class BlueprintControlForm(Form):
                     for bp in self.__bps:
                         if bp.get_rect().collidepoint(pos) == 1:
                             bp.pressed = True
-                            self.__logger.debug("Pressed true")
                             bp.set_offset(pos)
                             if not bp.focused:
                                 bp.focused = True
@@ -70,19 +69,14 @@ class BlueprintControlForm(Form):
                             if not bp.connected:
                                 for bp_1 in self.__bps:
                                     if bp != bp_1 and bp_1.focused and not bp_1.connected:
-                                        # TODO check for valid blueprint type connection
-                                        bp.connected = True
-                                        bp_1.connected = True
-                                        self.__bps_connections.append([bp, bp_1])
+                                        self.connect_blueprints(bp, bp_1)
 
         elif event.type == MOUSEBUTTONUP:
             if event.button == 1:   # LEFT MOUSE BUTTON
-                self.__logger.debug("MOUSEBUTTONUP")
                 pos = pg.mouse.get_pos()
                 if len(self.__bps) > 0:
                     for bp in self.__bps:
                         if bp.get_rect().collidepoint(pos) == 1:
-                            self.__logger.debug("Pressed false")
                             bp.pressed = False
                             break
         elif event.type == MOUSEMOTION:
@@ -92,7 +86,6 @@ class BlueprintControlForm(Form):
                         mx, my = event.pos
                         bp.set_topleft((mx + bp.offset[0], my + bp.offset[1]))
                         self.__check_blueprint_inbound(bp)
-                        self.__logger.debug(bp.get_rect().topleft)
 
     def __check_blueprint_inbound(self, blueprint):
         r = self.get_rect()
@@ -109,17 +102,28 @@ class BlueprintControlForm(Form):
         blueprint.set_topleft((left, top))
 
     def add_attribute(self):
-        t = AttributeBlueprint(self.get_rect(), None)
+        t = AttributeBlueprint(self.get_rect())
         self.__bps.append(t)
 
     def add_character(self):
-        t = CharacterBlueprint(self.get_rect(), None)
+        t = CharacterBlueprint(self.get_rect())
         self.__bps.append(t)
 
     def add_function(self):
-        t = FunctionBlueprint(self.get_rect(), None)
+        t = FunctionBlueprint(self.get_rect())
         self.__bps.append(t)
 
     def add_sprite(self):
-        t = SpriteBlueprint(self.get_rect(), None)
+        t = SpriteBlueprint(self.get_rect())
         self.__bps.append(t)
+
+    def connect_blueprints(self, bp_1, bp_2):
+        valid = True
+        # TODO check valid attribute connection
+        # TODO check valid character connection
+        # TODO check valid function connection
+        # TODO check valid sprite connection
+        # TODO check connection not exist
+
+        if valid:
+            self.__bps_connections.append([bp_1, bp_2])
