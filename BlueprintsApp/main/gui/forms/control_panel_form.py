@@ -6,6 +6,7 @@ from utils.string_utils import StringUtils
 from blueprints.blueprint import Blueprint
 from pygame.locals import *
 from utils.app_utils import Events
+from gui.blueprints.attribute_blueprint import AttributeBlueprint
 
 
 class ControlPanelForm(Form):
@@ -71,9 +72,9 @@ class ControlPanelForm(Form):
                 # ATTRIBUTE RELATED INFORMATION
                 # TODO implement drop down for data type selection
                 __blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), dt.get(2),
-                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 2*(margin + font.size(dt.get(2))[1]))))
+                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 2*(margin + font.size(dt.get(1))[1]))))
                 __blit(font, "{}:".format(StringUtils.get_string("ID_VALUE")), dt.get(3),
-                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 3*(margin + font.size(str(dt.get(3)))[1]))))
+                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 3*(margin + font.size(str(dt.get(1)))[1]))))
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
                 # FUNCTION RELATED INFORMATION
                 pass
@@ -86,17 +87,27 @@ class ControlPanelForm(Form):
             self.ta_populated = True
             if self.boarder_rect is not None:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
+            if self.__bp.data_type_pressed[0]:
+                self.draw_data_type_selection()
 
     def check_form_events(self, event):
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
+                self.check_data_type_selection(event.pos)
                 found = False
                 for ta in self.__tas:
                     if ta.collidepoint(event.pos) == 1:
                         self.boarder_rect = ta
                         found = True
-                        self.__logger.debug("{}: {}".format(found, event.pos))
+                        if self.__tas.index(ta) == 2:
+                            # DATA TYPE SELECTION
+                            if not self.__bp.data_type_pressed[0]:
+                                self.__bp.data_type_pressed = True, ta
+                        break
+                else:  # if break then not reachable
+                    if self.__bp is not None:
+                        self.__bp.data_type_pressed = False, None
                 if not found:
                     self.boarder_rect = None
         elif event.type == KEYDOWN:
@@ -112,8 +123,43 @@ class ControlPanelForm(Form):
                     if len(dt) > 0:
                         dt = dt[:-1]
                         self.__bp.set_data(index, dt)
+                elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
+                    # ALL UNREGISTERED KEYS ARE SKIPPED
+                    pass
                 else:
-                    dt = self.__bp.get_data().get(index)
-                    if len(dt) < 20:
-                        dt += c
-                        self.__bp.set_data(index, dt)
+                    self.__set_str(index, c)
+
+    def draw_data_type_selection(self):
+        self.__bp.data_type_selection.clear()
+        pos = 1
+        for t in AttributeBlueprint.DATA_TYPE:
+            r = pg.Rect((self.__bp.data_type_pressed[1].left, int(
+                self.__bp.data_type_pressed[1].top + self.__bp.data_type_pressed[1].height*pos)),
+                self.__bp.data_type_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(AttributeBlueprint.DATA_TYPE.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.data_type_selection.append([r, txt, rt, t])
+        for s in self.__bp.data_type_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
+    def check_data_type_selection(self, pos):
+        if self.__bp is not None and self.__bp.data_type_pressed[0]:
+            for ls in self.__bp.data_type_selection:
+                if ls[0].collidepoint(pos) == 1:
+                    self.__bp.set_data(2, ls[3])
+                    self.__logger.debug(ls[3])
+
+    def __set_str(self, index, c):
+        dt = self.__bp.get_data().get(index)
+        # TODO implement value validation for valid int/float/char
+        if dt is None:
+            dt = ""
+        if len(dt) < 15:
+            dt += c
+            self.__bp.set_data(index, dt)

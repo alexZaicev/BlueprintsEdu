@@ -7,7 +7,7 @@ from random import randint
 
 class Blueprint(ABC):
 
-    def __init__(self, panel, text, blueprint):
+    def __init__(self, panel, blueprint):
         self.__panel = panel
         self.__blueprint = blueprint    # Blueprint game data type
         self.focused = False

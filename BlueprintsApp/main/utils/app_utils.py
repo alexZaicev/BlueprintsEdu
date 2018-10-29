@@ -16,7 +16,9 @@ class Events(Utils):
 
     SPECIAL_KEYS = {
         "DELETE": "DEL",
-        "BACKSPACE": "BACK"
+        "BACKSPACE": "BACK",
+        "UNREGISTERED": "UNKNOWN",
+        "SPACE": " "
     }
 
     @classmethod
@@ -97,6 +99,10 @@ class Events(Utils):
             return Events.SPECIAL_KEYS.get("DELETE")
         elif key == K_BACKSPACE:
             return Events.SPECIAL_KEYS.get("BACKSPACE")
+        elif key == K_SPACE:
+            return Events.SPECIAL_KEYS.get("SPACE")
+        else:
+            return Events.SPECIAL_KEYS.get("UNREGISTERED")
 
 
 class DisplaySettings(Utils):
