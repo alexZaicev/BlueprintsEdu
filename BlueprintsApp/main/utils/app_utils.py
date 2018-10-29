@@ -1,5 +1,6 @@
 from utils.utils import Utils
 from utils.string_utils import StringUtils
+from pygame.locals import *
 
 CAPTION = "BlueprintEdu V1.0"
 
@@ -9,6 +10,93 @@ BOARD_HEGHT = 600  # 800
 
 # FRAMES PER SECOND
 FPS = 90
+
+
+class Events(Utils):
+
+    SPECIAL_KEYS = {
+        "DELETE": "DEL",
+        "BACKSPACE": "BACK"
+    }
+
+    @classmethod
+    def get_char(cls, key):
+        if key == K_a:
+            return "a"
+        elif key == K_b:
+            return "b"
+        elif key == K_c:
+            return "c"
+        elif key == K_d:
+            return "d"
+        elif key == K_e:
+            return "e"
+        elif key == K_f:
+            return "f"
+        elif key == K_g:
+            return "g"
+        elif key == K_h:
+            return "h"
+        elif key == K_i:
+            return "i"
+        elif key == K_j:
+            return "j"
+        elif key == K_k:
+            return "k"
+        elif key == K_l:
+            return "l"
+        elif key == K_m:
+            return "m"
+        elif key == K_n:
+            return "n"
+        elif key == K_o:
+            return "o"
+        elif key == K_p:
+            return "p"
+        elif key == K_q:
+            return "q"
+        elif key == K_r:
+            return "r"
+        elif key == K_s:
+            return "s"
+        elif key == K_t:
+            return "t"
+        elif key == K_u:
+            return "u"
+        elif key == K_v:
+            return "v"
+        elif key == K_w:
+            return "w"
+        elif key == K_x:
+            return "x"
+        elif key == K_y:
+            return "y"
+        elif key == K_z:
+            return "z"
+        elif (key == K_0 or key == K_KP0):
+            return "0"
+        elif (key == K_1 or key == K_KP1):
+            return "1"
+        elif (key == K_2 or key == K_KP2):
+            return "2"
+        elif (key == K_3 or key == K_KP3):
+            return "3"
+        elif (key == K_4 or key == K_KP4):
+            return "4"
+        elif (key == K_5 or key == K_KP5):
+            return "5"
+        elif (key == K_6 or key == K_KP6):
+            return "6"
+        elif (key == K_7 or key == K_KP7):
+            return "7"
+        elif (key == K_8 or key == K_KP8):
+            return "8"
+        elif (key == K_9 or key == K_KP9):
+            return "9"
+        elif key == K_DELETE:
+            return Events.SPECIAL_KEYS.get("DELETE")
+        elif key == K_BACKSPACE:
+            return Events.SPECIAL_KEYS.get("BACKSPACE")
 
 
 class DisplaySettings(Utils):

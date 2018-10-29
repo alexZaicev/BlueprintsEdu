@@ -55,7 +55,14 @@ class StringUtils(Utils):
         "ID_FUNCTION": "Function",
         "ID_ADD_CHARACTER": "Add Character",
         "ID_ADD_FUNCTION": "Add Function",
-        "ID_ADD_SPRITE": "Add Sprite"
+        "ID_ADD_SPRITE": "Add Sprite",
+        "ID_NONE": "None",
+        "ID_INTEGER": "Integer",
+        "ID_STRING": "String",
+        "ID_FLOAT": "Float",
+        "ID_DATA_TYPE": "Data Type",
+        "ID_VALUE": "Value",
+        "ID_UNKNOWN": "Unknown"
     }
 
     RUSSIAN_DICT = {

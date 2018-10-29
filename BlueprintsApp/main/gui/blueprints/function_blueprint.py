@@ -19,3 +19,6 @@ class FunctionBlueprint(Blueprint):
         data = super().get_data()
         data["type"] = StringUtils.get_string("ID_FUNCTION")
         return data
+
+    def set_data(self, index, data):
+        super().set_data(index, data)

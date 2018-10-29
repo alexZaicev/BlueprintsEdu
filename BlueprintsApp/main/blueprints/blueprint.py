@@ -13,6 +13,7 @@ In the app there can be various types of blueprints:
             the user to create behaviour
 """
 from abc import ABC, abstractmethod
+from utils.string_utils import StringUtils
 
 
 class Blueprint(ABC):
@@ -24,8 +25,15 @@ class Blueprint(ABC):
         "ATTRIBUTE": "BT_3"
     }
 
-    def __init__(self, type):
+    NAME_COUNT = 1
+
+    def __init__(self, type, name=StringUtils.get_string("ID_UNKNOWN")):
         self.__type = type
+        if name == StringUtils.get_string("ID_UNKNOWN"):
+            self.name = "{}_{}".format(name, Blueprint.NAME_COUNT)
+            Blueprint.NAME_COUNT += 1
+        else:
+            self.name = name
 
     def get_type(self):
         return self.__type

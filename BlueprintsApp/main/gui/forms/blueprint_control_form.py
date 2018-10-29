@@ -51,7 +51,6 @@ class BlueprintControlForm(Form):
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:   # LEFT MOUSE BUTTON
-                self.unfocuse_blueprints()
                 pos = pg.mouse.get_pos()
                 if len(self.__bps) > 0:
                     for bp in self.__bps:
@@ -59,8 +58,11 @@ class BlueprintControlForm(Form):
                             bp.pressed = True
                             bp.set_offset(pos)
                             if not bp.focused:
+                                self.unfocuse_blueprints()
                                 bp.focused = True
                                 self.__cont_panel.set_blueprint(bp)
+                            elif bp.focused:
+                                self.unfocuse_blueprints()
                             break
             elif event.button == 3:  # RIGHT MOUSE BUTTON
                 pos = pg.mouse.get_pos()
