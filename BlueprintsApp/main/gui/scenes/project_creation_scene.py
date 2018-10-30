@@ -41,6 +41,9 @@ class ProjectCreationScene(SceneBuilder):
 
     def draw_scene(self):
         # PREPARE DATA
+        if self.__api == GameApi.DEFAULT_API:
+            self.__api = " --- {} ---".format(StringUtils.get_string("ID_SELECT"))
+
         font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
                             int(app_utils.BOARD_WIDTH * .05))
         txt_title = font.render(StringUtils.get_string(

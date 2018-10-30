@@ -101,9 +101,9 @@ class Themes(Utils):
     DEFAULT_THEME = DARK_KNIGHT_DICT
 
     THEMES = [
-        [DARK_KNIGHT, StringUtils.get_string("ID_DARK_KNIGHT")],
-        [DAY_LIGHT, StringUtils.get_string("ID_DAY_LIGHT")],
-        [PRINCESS, StringUtils.get_string("ID_PRINCESS")]
+        [DARK_KNIGHT, "ID_DARK_KNIGHT"],
+        [DAY_LIGHT, "ID_DAY_LIGHT"],
+        [PRINCESS, "ID_PRINCESS"]
     ]
 
     @classmethod

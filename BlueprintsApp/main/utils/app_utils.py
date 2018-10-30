@@ -178,7 +178,7 @@ class GameApi(Utils):
     APIS = [
         ["CAR_SIMULATOR_API", StringUtils.get_string("ID_CAR_SIMULATOR")]
     ]
-    DEFAULT_API = " --- {} ---".format(StringUtils.get_string("ID_SELECT"))
+    DEFAULT_API = None
 
     @staticmethod
     def get_api(id):

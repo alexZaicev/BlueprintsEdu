@@ -61,7 +61,7 @@ class ThemeSelectionForm(Form):
                                    self.theme_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.theme_select.height * 0.6))
-                    txt = font.render(Themes.THEMES[pos][1], True, Themes.DEFAULT_THEME.get("text_area_text"))
+                    txt = font.render(StringUtils.get_string(Themes.THEMES[pos][1]), True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
                     rect_txt.center = rect.center
                     self.__theme_content.append([rect, txt, rect_txt])
@@ -76,7 +76,7 @@ class ThemeSelectionForm(Form):
         if self.__is_drop_down_pressed:
             for i in range(0, len(self.__theme_content), 1):
                 if self.__theme_content[i][0].collidepoint(pos) == 1:
-                    self.__theme = Themes.THEMES[i + self.__theme_counter][1]
+                    self.__theme = StringUtils.get_string(Themes.THEMES[i + self.__theme_counter][1])
                     self.__is_drop_down_pressed = False
                     self.__selected = True
 
