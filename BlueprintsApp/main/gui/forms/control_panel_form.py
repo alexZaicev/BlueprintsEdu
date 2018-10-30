@@ -93,23 +93,29 @@ class ControlPanelForm(Form):
     def check_form_events(self, event):
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
-            if event.button == 1:
-                self.check_data_type_selection(event.pos)
-                found = False
-                for ta in self.__tas:
-                    if ta.collidepoint(event.pos) == 1:
-                        self.boarder_rect = ta
-                        found = True
-                        if self.__tas.index(ta) == 2:
-                            # DATA TYPE SELECTION
-                            if not self.__bp.data_type_pressed[0]:
-                                self.__bp.data_type_pressed = True, ta
-                        break
-                else:  # if break then not reachable
-                    if self.__bp is not None:
+            if event.button == 1 and self.__bp is not None:
+                #self.check_data_type_selection(event.pos)
+                for ls in self.__bp.data_type_selection:
+                    if ls[0].collidepoint(event.pos) == 1:
+                        self.__bp.set_data(2, ls[3])
+                        self.__bp.data_type_selection.clear()
                         self.__bp.data_type_pressed = False, None
-                if not found:
-                    self.boarder_rect = None
+                        break
+                else: # if not found
+                    found = False
+                    for ta in self.__tas:
+                        if ta.collidepoint(event.pos) == 1:
+                            self.boarder_rect = ta
+                            found = True
+                            if self.__tas.index(ta) == 2:
+                                # DATA TYPE SELECTION
+                                if not self.__bp.data_type_pressed[0]:
+                                    self.__bp.data_type_pressed = True, ta
+                            break
+                    else:  # if break then not reachable
+                        self.__bp.data_type_pressed = False, None
+                    if not found:
+                        self.boarder_rect = None
         elif event.type == KEYDOWN:
             if self.__bp is not None:
                 c = Events.get_char(event.key)
@@ -152,8 +158,9 @@ class ControlPanelForm(Form):
         if self.__bp is not None and self.__bp.data_type_pressed[0]:
             for ls in self.__bp.data_type_selection:
                 if ls[0].collidepoint(pos) == 1:
+                    self.__logger.debug("DATA TYPE {} ".format(ls[3]))
                     self.__bp.set_data(2, ls[3])
-                    self.__logger.debug(ls[3])
+                    break
 
     def __set_str(self, index, c):
         dt = self.__bp.get_data().get(index)

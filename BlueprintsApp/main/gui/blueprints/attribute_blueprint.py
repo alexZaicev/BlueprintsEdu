@@ -25,7 +25,7 @@ class AttributeBlueprint(Blueprint):
     def get_data(self):
         data = super().get_data()
         data[1] = StringUtils.get_string("ID_ATTRIBUTE")
-        data[2] = StringUtils.get_string(self.get_blueprint().get_data_type())
+        data[2] = StringUtils.get_string(AttributeBlueprint.DATA_TYPE.get(self.get_blueprint().get_data_type()))
         data[3] = self.get_blueprint().get_value()
         return data
 
@@ -33,8 +33,7 @@ class AttributeBlueprint(Blueprint):
         if index == 2:
             for key, value in AttributeBlueprint.DATA_TYPE.items():
                 if data == StringUtils.get_string(value):
-                    self.get_blueprint().set_data_type(key)
-                    self.__logger.debug(StringUtils.get_string(value))
+                    self.blueprint.set_data_type(key)
         elif index == 3:
-            self.get_blueprint().set_value(value)
+            self.blueprint.set_value(data)
         super().set_data(index, data)
