@@ -9,7 +9,7 @@ class Blueprint(ABC):
 
     def __init__(self, panel, blueprint):
         self.__panel = panel
-        self.blueprint = blueprint    # Blueprint game data type
+        self.__blueprint = blueprint    # Blueprint game data type
         self.focused = False
         self.pressed = False
         self.offset = (0, 0)
@@ -18,13 +18,13 @@ class Blueprint(ABC):
         self.__x = randint(int(panel.topleft[0] * 1.05), int(panel.topleft[0] + panel.width * .9 - self.__width))
         self.__y = randint(int(panel.topleft[1] * 1.05), int(panel.topleft[1] + panel.height * .9 - self.__height))
         self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
-        self.__text = self.font.render(self.blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def get_rect(self):
         return pg.Rect((self.__x, self.__y), (self.__width, self.__height))
 
     def get_blueprint(self):
-        return self.blueprint
+        return self.__blueprint
 
     def set_topleft(self, coords):
         self.__x = coords[0]
@@ -40,15 +40,15 @@ class Blueprint(ABC):
         self.__height = int(self.__panel.height * size[1])
         # UPDATE TEXT ACCORDING TO NEW SIZE
         self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
-        self.__text = self.font.render(self.blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def change_font(self, font):
         self.font = font
-        self.__text = self.font.render(self.blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def update_displayed_data(self):
         # TODO make abstract
-        self.__text = self.font.render(self.blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def get_text_rect(self):
         rect_txt = self.__text.get_rect()
@@ -65,11 +65,11 @@ class Blueprint(ABC):
     @abstractmethod
     def get_data(self):
         return {
-            0: self.blueprint.name
+            0: self.__blueprint.name
         }
 
     @abstractmethod
     def set_data(self, index, data):
         if index == 0:
-            self.blueprint.name = data
+            self.__blueprint.name = data
         self.update_displayed_data()

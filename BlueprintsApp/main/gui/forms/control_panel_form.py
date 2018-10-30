@@ -7,6 +7,7 @@ from blueprints.blueprint import Blueprint
 from pygame.locals import *
 from utils.app_utils import Events
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
+from blueprints import attribute_blueprint
 
 
 class ControlPanelForm(Form):
@@ -91,18 +92,22 @@ class ControlPanelForm(Form):
                 self.draw_data_type_selection()
 
     def check_form_events(self, event):
+        def __reset_data_type_section():
+            self.__bp.data_type_pressed = False, None
+            self.__bp.data_type_selection.clear()
+
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1 and self.__bp is not None:
-                #self.check_data_type_selection(event.pos)
+                # self.check_data_type_selection(event.pos)
                 for ls in self.__bp.data_type_selection:
                     if ls[0].collidepoint(event.pos) == 1:
                         self.__bp.set_data(2, ls[3])
-                        self.__bp.data_type_selection.clear()
-                        self.__bp.data_type_pressed = False, None
+                        __reset_data_type_section()
                         break
-                else: # if not found
+                else:  # if not found
                     found = False
+                    __reset_data_type_section()
                     for ta in self.__tas:
                         if ta.collidepoint(event.pos) == 1:
                             self.boarder_rect = ta
@@ -113,11 +118,11 @@ class ControlPanelForm(Form):
                                     self.__bp.data_type_pressed = True, ta
                             break
                     else:  # if break then not reachable
-                        self.__bp.data_type_pressed = False, None
+                        __reset_data_type_section()
                     if not found:
                         self.boarder_rect = None
         elif event.type == KEYDOWN:
-            if self.__bp is not None:
+            if self.__bp is not None and self.boarder_rect is not None:
                 c = Events.get_char(event.key)
                 index = [
                     i for i in range(0, len(self.__tas), 1) if self.__tas[i].topleft == self.boarder_rect.topleft
@@ -162,11 +167,46 @@ class ControlPanelForm(Form):
                     self.__bp.set_data(2, ls[3])
                     break
 
+    def int_try_parse(cls, num):
+        try:
+            return True, int(num)
+        except ValueError as ex:
+            return False, num
+
+    def float_try_parse(cls, num):
+        try:
+            return True, float(num)
+        except ValueError as ex:
+            return False, num
+
     def __set_str(self, index, c):
+        def __write_str(index, data, c):
+            if len(data) < 15:
+                data += c
+                self.__bp.set_data(index, data)
+
         dt = self.__bp.get_data().get(index)
-        # TODO implement value validation for valid int/float/char
         if dt is None:
             dt = ""
-        if len(dt) < 15:
-            dt += c
-            self.__bp.set_data(index, dt)
+        # TODO implement value validation for valid int/float/char
+        if index == 3:  # value index
+            if self.__bp.get_blueprint().get_data_type() == attribute_blueprint.NONE:
+                self.__bp.set_data(index, StringUtils.get_string("ID_NONE"))
+            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.INT:
+                dt += c
+                if self.int_try_parse(dt)[0]:
+                    self.__bp.set_data(index, dt)
+                else:
+                    self.__bp.set_data(index, "")
+            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.FLOAT:
+                dt += c
+                if self.float_try_parse(dt)[0]:
+                    self.__bp.set_data(index, dt)
+                else:
+                    self.__bp.set_data(index, "")
+            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.STRING:
+                __write_str(index, dt, c)
+            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.CHAR:
+                self.__bp.set_data(index, c)
+        else:
+            __write_str(index, dt, c)

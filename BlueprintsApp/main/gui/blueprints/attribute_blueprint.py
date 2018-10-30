@@ -33,7 +33,7 @@ class AttributeBlueprint(Blueprint):
         if index == 2:
             for key, value in AttributeBlueprint.DATA_TYPE.items():
                 if data == StringUtils.get_string(value):
-                    self.blueprint.set_data_type(key)
+                    self.get_blueprint().set_data_type(key)
         elif index == 3:
-            self.blueprint.set_value(data)
+            self.get_blueprint().set_value(data)
         super().set_data(index, data)
