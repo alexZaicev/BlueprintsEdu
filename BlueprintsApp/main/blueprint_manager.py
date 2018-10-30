@@ -12,4 +12,13 @@ class BlueprintManager(object):
 
     @classmethod
     def parse_blueprints(cls, bp_conns):
+        """Description: Function analyses and creates XML-format .bp files from
+        blueprint connections.
+        """
         return cfg = ""
+
+    def reverse_blueprints(cls, contents):
+        """Descripion: Function parses XML-format .bp file contents into relevent
+        blueprint object
+        """
+        return list(list())

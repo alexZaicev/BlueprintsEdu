@@ -5,6 +5,9 @@ import datetime
 import shutil
 from project import Project
 from utils.gui_utils import Themes
+import json
+import xmltodict
+import dicttoxml
 
 
 class ProjectManager(object):
@@ -12,6 +15,7 @@ class ProjectManager(object):
     LOGGER = logger_utils.get_logger(__name__)
     PATH = logger_utils.ROOT_PATH + "BlueprintsApp\projects\\"
     PROJECT_FILE_EXTENSION = ".blue"
+    BLUEPRINT_FILE_EXTENSION = ".bp"
 
     def __init__(self):
         object.__init__(self)
@@ -54,6 +58,8 @@ class ProjectManager(object):
                     api = line[12:-1]
                     ProjectManager.LOGGER.debug(api)
             file.close
+            bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
+            ProjectManager.LOGGER.debug(bps)
         except OSError as ex:
             ProjectManager.LOGGER.error("Failed to get project files [{}]".format(project_name))
         return (project_name, api)
@@ -89,7 +95,26 @@ class ProjectManager(object):
 
     @classmethod
     def get_project_files(cls, directory):
-        pass
+        # TODO implement security decoding
+        fs = list()
+        for root, dirs, files in os.walk(directory):
+            for f in files:
+                if f.endswith(ProjectManager.BLUEPRINT_FILE_EXTENSION):
+                    fs.append("{}\{}".format(directory, f))
+        content = list()
+        for f in fs:
+            with open(f, "r") as c:
+                content.append(json.load(c))
+        return content
+
+    @classmethod
+    def save_project_files(cls, project_name, content):
+        # TODO implement security encoding
+        for key, value in content.items():
+            fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, key,
+                                       ProjectManager.BLUEPRINT_FILE_EXTENSION)
+            with open(fname, "w+") as file:
+                json.dump(value, file)
 
     @classmethod
     def delete_project(cls, directory):
