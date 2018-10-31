@@ -1,10 +1,6 @@
 from gui.scenes.scene_builder import SceneBuilder
 from utils import logger_utils
 from utils.gui_utils import Themes
-from gui.buttons.dev_file_button import DevFileButton
-from gui.buttons.dev_run_button import DevRunButton
-from gui.buttons.dev_settings_button import DevSettingsButton
-from gui.buttons.dev_edit_button import DevEditButton
 import pygame as pg
 from utils import app_utils, gui_utils
 from utils.string_utils import StringUtils
@@ -12,10 +8,7 @@ from gui.forms.control_panel_form import ControlPanelForm
 from gui.forms.blueprint_control_form import BlueprintControlForm
 from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
-from gui.buttons.dev_add_attr_button import DevAddAttrButton
-from gui.buttons.dev_add_character_button import DevAddCharacterButton
-from gui.buttons.dev_add_function_button import DevAddFunctionButton
-from gui.buttons.dev_add_sprite_button import DevAddSpriteButton
+from gui.buttons.develop_menu_buttons import *
 
 
 class DevelopmentScene(SceneBuilder):

@@ -2,9 +2,8 @@ from gui.scenes.scene_builder import SceneBuilder
 from utils import logger_utils, app_utils
 import pygame as pg
 from utils.string_utils import StringUtils
-from gui.buttons.config_theme_button import ConfigThemeButton
+from gui.buttons.config_menu_buttons import *
 from utils.gui_utils import Themes
-from gui.buttons.config_language_button import ConfigLanguageButton
 from utils import gui_utils
 from gui.forms.theme_selection_form import ThemeSelectionForm
 from pygame.locals import *

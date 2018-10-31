@@ -8,6 +8,7 @@ from utils.gui_utils import Themes
 import json
 import xmltodict
 import dicttoxml
+from blueprint_manager import BlueprintManager
 
 
 class ProjectManager(object):
