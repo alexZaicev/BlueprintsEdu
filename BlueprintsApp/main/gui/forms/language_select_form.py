@@ -57,7 +57,7 @@ class LanguageSelectForm(Form):
             for pos in range(self.__lang_counter, len(StringUtils.LANGUAGES), 1):
                 if (pos - self.__lang_counter) < 3:
                     rect = pg.Rect((self.lang_select.x, int(self.lang_select.y +
-                                                             self.lang_select.height * ((pos - self.__lang_counter) + 1))),
+                                                            self.lang_select.height * ((pos - self.__lang_counter) + 1))),
                                    self.lang_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.lang_select.height * 0.6))
@@ -85,6 +85,7 @@ class LanguageSelectForm(Form):
         if event.type == MOUSEBUTTONUP:
             if event.button != 4 and event.button != 5:
                 pos = pg.mouse.get_pos()
+                self.check_menu_pressed(pos)
                 if self.btn_drop_down.collidepoint(pos) == 1:
                     self.__logger.debug("DROP DOWN PRESSED")
                     if self.__is_drop_down_pressed:
@@ -96,7 +97,8 @@ class LanguageSelectForm(Form):
                     for i in range(0, len(StringUtils.LANGUAGES), 1):
                         if self.__lang == StringUtils.LANGUAGES[i][1]:
                             StringUtils.set_language(StringUtils.LANGUAGES[i][0])
-                self.check_menu_pressed(pos)
+                else:
+                    self.__is_drop_down_pressed = False
         elif event.type == MOUSEBUTTONDOWN:
             if self.__is_drop_down_pressed:
                 if event.button == 4:

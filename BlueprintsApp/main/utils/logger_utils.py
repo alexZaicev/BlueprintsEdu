@@ -1,5 +1,6 @@
 import logging
-import os, sys
+import os
+import sys
 import re
 
 ROOT_PATH = re.search('(.*)BlueprintsApp', os.path.dirname(os.path.abspath(__file__))).group(1)
@@ -13,7 +14,11 @@ if not os.path.exists(PATH):
     except OSError as ex:
         raise Exception("Failed to create log directory")
 
-logging.basicConfig(filename=(PATH+LOG_FILENAME), format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(filename=(PATH+LOG_FILENAME),
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p',
+                    level=logging.DEBUG)
+
 
 def get_logger(module_name):
     logger = logging.getLogger(module_name)

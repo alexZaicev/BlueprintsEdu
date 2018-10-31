@@ -61,7 +61,8 @@ class ThemeSelectionForm(Form):
                                    self.theme_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.theme_select.height * 0.6))
-                    txt = font.render(StringUtils.get_string(Themes.THEMES[pos][1]), True, Themes.DEFAULT_THEME.get("text_area_text"))
+                    txt = font.render(StringUtils.get_string(
+                        Themes.THEMES[pos][1]), True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
                     rect_txt.center = rect.center
                     self.__theme_content.append([rect, txt, rect_txt])
@@ -85,6 +86,7 @@ class ThemeSelectionForm(Form):
         if event.type == MOUSEBUTTONUP:
             if event.button != 4 and event.button != 5:
                 pos = pg.mouse.get_pos()
+                self.check_menu_pressed(pos)
                 if self.btn_drop_down.collidepoint(pos) == 1:
                     if self.__is_drop_down_pressed:
                         self.__is_drop_down_pressed = False
@@ -93,9 +95,10 @@ class ThemeSelectionForm(Form):
                         self.__theme_counter = 0
                 elif self.btn_apply.get_rect().collidepoint(pos) == 1:
                     for i in range(0, len(Themes.THEMES), 1):
-                        if self.__theme == Themes.THEMES[i][1]:
+                        if self.__theme == StringUtils.get_string(Themes.THEMES[i][1]):
                             Themes.set_theme(Themes.THEMES[i][0])
-                self.check_menu_pressed(pos)
+                else:
+                    self.__is_drop_down_pressed = False
         elif event.type == MOUSEBUTTONDOWN:
             if self.__is_drop_down_pressed:
                 if event.button == 4:

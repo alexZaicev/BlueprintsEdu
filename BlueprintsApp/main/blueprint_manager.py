@@ -17,8 +17,32 @@ class BlueprintManager(object):
         """
         return cfg = ""
 
-    def reverse_blueprints(cls, contents):
+    def reverse_parse_blueprints(cls, contents):
         """Descripion: Function parses XML-format .bp file contents into relevent
         blueprint object
         """
         return list(list())
+
+    def __parse_attribute(self, data):
+        pass
+
+    def __parse_function(self, data):
+        pass
+
+    def __parse_sprite(self, data):
+        pass
+
+    def __parse_character(self, data):
+        pass
+
+    def __reverse_parse_attribute(self, data):
+        pass
+
+    def __reverse_parse_function(self, data):
+        pass
+
+    def __reverse_parse_sprite(self, data):
+        pass
+
+    def __reverse_parse_character(self, data):
+        pass
