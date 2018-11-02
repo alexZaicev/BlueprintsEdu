@@ -9,12 +9,14 @@ from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.blueprint import Blueprint
+from project_manager import ProjectManager
 
 
 class BlueprintControlForm(Form):
 
-    def __init__(self, control_panel, display, coords=None, size=None):
+    def __init__(self, control_panel, display, project_info, coords=None, size=None):
         Form.__init__(self, display, coords, size)
+        self.__project_info = project_info
         self.__cont_panel = control_panel
         self.__logger = logger_utils.get_logger(__name__)
         self.__bps = list()
@@ -118,6 +120,21 @@ class BlueprintControlForm(Form):
     def add_sprite(self):
         t = SpriteBlueprint(self.get_rect())
         self.__bps.append(t)
+
+    def save_project(self):
+        """Description: function prepares blueprints in the current development
+        panel for further processing
+        """
+        data = list()
+        for bp in self.__bps:
+            d = list()
+
+            d.append(bp.get_blueprint())
+            r = bp.get_rect()
+            d.append([r.topleft, r.size])
+
+            data.append(d)
+        ProjectManager.save_project(self.__project_info, data, self.__bps_connections)
 
     def connect_blueprints(self, bp_1, bp_2):
         valid = True

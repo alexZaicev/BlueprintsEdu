@@ -11,6 +11,8 @@ from config_manager import ConfigManager
 
 class Board(object):
 
+    APP_STATUS = status.STARTED
+
     def __init__(self):
         logger = logger_utils.get_logger(__name__)
         logger.info("Board initialized")

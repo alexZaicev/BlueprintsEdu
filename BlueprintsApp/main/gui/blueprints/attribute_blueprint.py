@@ -22,6 +22,15 @@ class AttributeBlueprint(Blueprint):
         self.data_type_pressed = [False, None]  # IS PRESSED; TEXT BOX
         self.data_type_selection = list()
 
+    def reset_selection(self):
+        super().reset_selection()
+        self.data_type_pressed = [False, None]
+        self.data_type_selection = list()
+
+    def initialize(self, coords, size, blueprint, panel):
+        super().initialize(coords, size, blueprint, panel)
+        # TODO add additional data
+
     def get_data(self):
         data = super().get_data()
         data[1] = StringUtils.get_string("ID_ATTRIBUTE")

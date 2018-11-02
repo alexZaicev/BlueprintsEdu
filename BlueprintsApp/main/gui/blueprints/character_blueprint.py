@@ -17,8 +17,15 @@ class CharacterBlueprint(Blueprint):
 
     def get_data(self):
         data = super().get_data()
-        data["type"] = StringUtils.get_string("ID_CHARACTER")
+        data[1] = StringUtils.get_string("ID_CHARACTER")
         return data
 
     def set_data(self, index, data):
         super().set_data(index, data)
+
+    def initialize(self, coords, size, blueprint, panel):
+        super().initialize(coords, size, blueprint, panel)
+        # TODO add additional data
+
+    def reset_selection(self):
+        super().reset_selection()

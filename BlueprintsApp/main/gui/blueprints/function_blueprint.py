@@ -22,3 +22,7 @@ class FunctionBlueprint(Blueprint):
 
     def set_data(self, index, data):
         super().set_data(index, data)
+
+    def initialize(self, coords, size, blueprint, panel):
+        super().initialize(coords, size, blueprint, panel)
+        # TODO add additional data

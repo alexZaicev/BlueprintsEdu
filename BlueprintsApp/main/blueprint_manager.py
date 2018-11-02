@@ -17,80 +17,97 @@ class BlueprintManager(object):
         raise TypeError("Cannot instantiate static managers")
 
     @classmethod
-    def parse_blueprints(cls, bp_conns):
+    def parse_blueprints(cls, bps, bp_conns):
         """Description: Function analyses and creates JSON-format .bp files from
         blueprint connections.
         """
-        json_strs = list()
-        for bp_1, bp_2 in bp_conns:
-            dict_bp1 = self.__call_parser(bp_1)
-            dict_bp2 = self.__call_parser(bp_1)
+        data = list()
+        conns = list()
+        for bp, bp_rect in bps:
+            d = dict()
+            d["BLUEPRINT"] = BlueprintManager.call_parser(bp)
+            d["RECTANGLE"] = {"COORDS": {"X": bp_rect[0][0], "Y": bp_rect[0][1]},
+                              "SIZE": {"WIDTH": bp_rect[1][0], "HEIGHT": bp_rect[1][0]}}
+            data.append(json.dumps(d))
+        for i in range(0, len(bp_conns), 1):
+            bp1, bp2 = bp_conns[i]
+            d = dict()
+            d[i] = {"ROOT": {"NAME": bp1.get_blueprint().name,
+                             "TYPE": bp1.get_blueprint().get_type()},
+                    "SLAVE": {"NAME": bp2.get_blueprint().name,
+                              "TYPE": bp2.get_blueprint().get_type()}}
+            conns.append(json.dumps(d))
+        return data, conns
 
-            json_strs.append(json.dump(dict_bp1))
-            json_strs.append(json.dump(dict_bp2))
-
-        return json_strs
-
+    @classmethod
     def reverse_parse_blueprints(cls, contents):
         """Descripion: Function parses JSON-format .bp file contents into relevent
         blueprint object
         """
         return list(list())
 
-    def __call_parser(self, bp):
+    @classmethod
+    def call_parser(cls, bp):
         func_calls = {
-            Blueprint.TYPES.get("FUNCTION"): self.__parse_function,
-            Blueprint.TYPES.get("SPRITE"): self.__parse_sprite,
-            Blueprint.TYPES.get("CHARACTER"): self.__parse_character,
-            Blueprint.TYPES.get("ATTRIBUTE"): self.__parse_attribute,
+            Blueprint.TYPES.get("FUNCTION"): BlueprintManager.parse_function,
+            Blueprint.TYPES.get("SPRITE"): BlueprintManager.parse_sprite,
+            Blueprint.TYPES.get("CHARACTER"): BlueprintManager.parse_character,
+            Blueprint.TYPES.get("ATTRIBUTE"): BlueprintManager.parse_attribute,
         }
         try:
-            func_calls[bp.get_type()](bp)
+            return func_calls[bp.get_type()](bp)
         except KeyError as ex:
             BlueprintManager.__LOGGER.error("Unknown blueprint type {}".format(bp.get_type()))
 
-    def __call_reverse_parser(self, bp):
+    @classmethod
+    def call_reverse_parser(self, bp):
         func_calls = {
-            Blueprint.TYPES.get("FUNCTION"): self.__reverse_parse_function,
-            Blueprint.TYPES.get("SPRITE"): self.__reverse_parse_sprite,
-            Blueprint.TYPES.get("CHARACTER"): self.__reverse_parse_character,
-            Blueprint.TYPES.get("ATTRIBUTE"): self.__reverse_parse_attribute,
+            Blueprint.TYPES.get("FUNCTION"): BlueprintManager.reverse_parse_function,
+            Blueprint.TYPES.get("SPRITE"): BlueprintManager.reverse_parse_sprite,
+            Blueprint.TYPES.get("CHARACTER"): BlueprintManager.reverse_parse_character,
+            Blueprint.TYPES.get("ATTRIBUTE"): BlueprintManager.reverse_parse_attribute,
         }
         try:
-            func_calls[bp.get_type()](bp)
+            return func_calls[bp.get_type()](bp)
         except KeyError as ex:
             BlueprintManager.__LOGGER.error("Unknown blueprint type {}".format(bp.get_type()))
 
-    def __parse_attribute(self, data):
+    @classmethod
+    def parse_attribute(self, data):
         bp = {
-            "blueprint": {
-                "name": data.name,
-                "type": data.get_type(),
-                "data": {
-                    "type": data.get_data_type(),
-                    "value": data.get_value()
-                }
+            "name": data.name,
+            "type": data.get_type(),
+            "data": {
+                "type": data.get_data_type(),
+                "value": data.get_value()
             }
         }
         return bp
 
-    def __parse_function(self, data):
+    @classmethod
+    def parse_function(self, data):
         pass
 
-    def __parse_sprite(self, data):
+    @classmethod
+    def parse_sprite(self, data):
         pass
 
-    def __parse_character(self, data):
+    @classmethod
+    def parse_character(self, data):
         pass
 
-    def __reverse_parse_attribute(self, data):
+    @classmethod
+    def reverse_parse_attribute(self, data):
         pass
 
-    def __reverse_parse_function(self, data):
+    @classmethod
+    def reverse_parse_function(self, data):
         pass
 
-    def __reverse_parse_sprite(self, data):
+    @classmethod
+    def reverse_parse_sprite(self, data):
         pass
 
-    def __reverse_parse_character(self, data):
+    @classmethod
+    def reverse_parse_character(self, data):
         pass

@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from utils import app_utils
 import pygame as pg
 from random import randint
+import json
 
 
 class Blueprint(ABC):
@@ -20,8 +21,26 @@ class Blueprint(ABC):
         self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
         self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
+    @abstractmethod
+    def initialize(self, coords, size, blueprint, panel):
+        """Description: function sets all required object attributes
+
+        :param coords List of to integer values x and y coordinates
+        :param size List of to integer value width and height
+        :param blueprint Blueprint data type
+        :param panel Development panel rect object
+        """
+        self.__panel = panel
+        self.__blueprint = blueprint
+        self.__x, self.y = coords
+        self.__width, self.__height = size
+
     def get_rect(self):
         return pg.Rect((self.__x, self.__y), (self.__width, self.__height))
+
+    @abstractmethod
+    def reset_selection(self):
+        pass
 
     def get_blueprint(self):
         return self.__blueprint

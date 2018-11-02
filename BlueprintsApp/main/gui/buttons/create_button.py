@@ -7,7 +7,7 @@ from utils.gui_utils import Themes
 
 class CreateButton(Button):
 
-    def __init__(self, pos):
+    def __init__(self, pos=0):
         Button.__init__(self, StringUtils.get_string("ID_CREATE"), pos)
 
     def on_click(self, board, project_info):

@@ -23,13 +23,13 @@ class DevelopmentScene(SceneBuilder):
         self.__logger = logger_utils.get_logger(__name__)
         self.__logger.debug("{} --- {}".format(project[0], project[1]))
 
-        self.btn_file = DevFileButton(0)
+        self.btn_file = FileButton()
         self.btn_file.color = Themes.DEFAULT_THEME.get("background")
-        self.btn_run = DevRunButton(0)
+        self.btn_run = RunButton()
         self.btn_run.color = Themes.DEFAULT_THEME.get("background")
-        self.btn_settings = DevSettingsButton(0)
+        self.btn_settings = SettingsButton()
         self.btn_settings.color = Themes.DEFAULT_THEME.get("background")
-        self.btn_edit = DevEditButton(0)
+        self.btn_edit = EditButton()
         self.btn_edit.color = Themes.DEFAULT_THEME.get("background")
         self.__init_btn_size()
         self.__file_menu_content = self.__init_file_menu()
@@ -39,7 +39,7 @@ class DevelopmentScene(SceneBuilder):
         self.__cont_panel = ControlPanelForm(self.display,
                                              (int(app_utils.BOARD_WIDTH * .005), int(self.btn_file.get_rect().bottom * 1.005)),
                                              (int(app_utils.BOARD_WIDTH * .265), int(app_utils.BOARD_HEGHT * .945)))
-        self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display,
+        self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display, self.__project,
                                                (int(self.__cont_panel.get_rect().right + app_utils.BOARD_WIDTH * .005),
                                                 int(self.btn_file.get_rect().bottom * 1.05)),
                                                (int(app_utils.BOARD_WIDTH * .723),
@@ -72,40 +72,50 @@ class DevelopmentScene(SceneBuilder):
     def __init_file_menu(self):
         result = []
         r = self.btn_file.get_rect()
-        exit = ExitButton(0)
+        # TODO investigate why r.left offset is different for each button
+
+        save = SaveButton()
+        save.set_custom_size(DevelopmentScene.BTN_SIZE)
+        save.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .003), r.bottom))
+        save.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        sae = SaveExitButton()
+        sae.set_custom_size(DevelopmentScene.BTN_SIZE)
+        sae.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), save.get_rect().bottom))
+        sae.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        exit = ExitButton()
         exit.set_custom_size(DevelopmentScene.BTN_SIZE)
-        exit.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), r.bottom))
+        exit.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), sae.get_rect().bottom))
         exit.color = Themes.DEFAULT_THEME.get("menu_background")
-        result.append(exit)
+
+        result.extend([save, sae, exit])
         return result
 
     def __init_edit_menu(self):
         result = []
         r = self.btn_edit.get_rect()
-        add_attr = DevAddAttrButton(0)
+        add_attr = AddAttrButton()
         add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_attr.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        add_char = DevAddCharacterButton(0)
+        add_char = AddCharacterButton()
         add_char.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_char.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_attr.get_rect().bottom))
         add_char.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        add_func = DevAddFunctionButton(0)
+        add_func = AddFunctionButton()
         add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_func.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_char.get_rect().bottom))
         add_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        add_sprite = DevAddSpriteButton(0)
+        add_sprite = AddSpriteButton()
         add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_sprite.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.append(add_attr)
-        result.append(add_char)
-        result.append(add_func)
-        result.append(add_sprite)
+        result.extend([add_attr, add_char, add_func, add_sprite])
         return result
 
 # ----------------END----------------
@@ -211,7 +221,10 @@ class DevelopmentScene(SceneBuilder):
             if self.__btn_file_pressed:
                 for btn in self.__file_menu_content:
                     if btn.get_rect().collidepoint(pos):
-                        btn.on_click(board)
+                        if isinstance(btn, SaveButton) or isinstance(btn, SaveExitButton):
+                            btn.on_click(board, self.__bp_panel)
+                        else:
+                            btn.on_click(board)
 
         def __check_edit_menu_press(pos, board):
             if self.__btn_edit_pressed:
@@ -239,3 +252,7 @@ class DevelopmentScene(SceneBuilder):
                 __reset_btn_menu()
         self.__cont_panel.check_form_events(event)
         self.__bp_panel.check_form_events(event)
+
+    @classmethod
+    def get_project_info(cls):
+        return self.__project

@@ -6,7 +6,7 @@ from utils.gui_utils import Themes
 
 class ApplyButton(Button):
 
-    def __init__(self, pos):
+    def __init__(self, pos=0):
         Button.__init__(self, StringUtils.get_string("ID_APPLY"), pos)
 
     def on_click(self, board):

@@ -16,9 +16,9 @@ class ConfigurationScene(SceneBuilder):
     def __init__(self, display):
         SceneBuilder.__init__(self, display)
         self.__logger = logger_utils.get_logger(__name__)
-        self.btn_theme = ConfigThemeButton(0)
+        self.btn_theme = ThemeButton(0)
         self.btn_theme.color = Themes.DEFAULT_THEME.get("front_screen")
-        self.btn_language = ConfigLanguageButton(0)
+        self.btn_language = LanguageButton(0)
         self.btn_language.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_back = BackButton(0)
         self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")

@@ -3,7 +3,7 @@ from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
 
 
-class ConfigLanguageButton(Button):
+class LanguageButton(Button):
 
     def __init__(self, pos):
         Button.__init__(self, StringUtils.get_string("ID_LANGUAGE"), pos)
@@ -15,7 +15,7 @@ class ConfigLanguageButton(Button):
         super().update_button(StringUtils.get_string("ID_LANGUAGE"), color)
 
 
-class ConfigThemeButton(Button):
+class ThemeButton(Button):
 
     def __init__(self, pos):
         Button.__init__(self, StringUtils.get_string("ID_THEME"), pos)

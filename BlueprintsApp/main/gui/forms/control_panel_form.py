@@ -21,6 +21,10 @@ class ControlPanelForm(Form):
         self.boarder_rect = None
 
     def set_blueprint(self, bp):
+        if self.__bp is not None:
+            self.__bp.reset_selection()
+        self.__tas.clear()
+        self.ta_populated = False
         self.__bp = bp
 
     def draw_form(self):
@@ -71,7 +75,6 @@ class ControlPanelForm(Form):
 
             if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
                 # ATTRIBUTE RELATED INFORMATION
-                # TODO implement drop down for data type selection
                 __blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), dt.get(2),
                        (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 2*(margin + font.size(dt.get(1))[1]))))
                 __blit(font, "{}:".format(StringUtils.get_string("ID_VALUE")), dt.get(3),
@@ -88,39 +91,48 @@ class ControlPanelForm(Form):
             self.ta_populated = True
             if self.boarder_rect is not None:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
-            if self.__bp.data_type_pressed[0]:
-                self.draw_data_type_selection()
+            if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+                if self.__bp.data_type_pressed[0]:
+                    self.__logger.debug("data type pressed")
+                    self.draw_data_type_selection()
+                    self.__logger.debug(self.__bp.data_type_selection)
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+                pass
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+                pass
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+                pass
 
     def check_form_events(self, event):
-        def __reset_data_type_section():
-            self.__bp.data_type_pressed = False, None
-            self.__bp.data_type_selection.clear()
-
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1 and self.__bp is not None:
-                # self.check_data_type_selection(event.pos)
-                for ls in self.__bp.data_type_selection:
-                    if ls[0].collidepoint(event.pos) == 1:
-                        self.__bp.set_data(2, ls[3])
-                        __reset_data_type_section()
-                        break
-                else:  # if not found
-                    found = False
-                    __reset_data_type_section()
-                    for ta in self.__tas:
-                        if ta.collidepoint(event.pos) == 1:
-                            self.boarder_rect = ta
-                            found = True
-                            if self.__tas.index(ta) == 2:
-                                # DATA TYPE SELECTION
-                                if not self.__bp.data_type_pressed[0]:
-                                    self.__bp.data_type_pressed = True, ta
+                self.__logger.debug("BP Type: " + self.__bp.get_blueprint().get_type())
+                if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+                    for ls in self.__bp.data_type_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__logger.debug("SetData here")
+                            self.__bp.set_data(2, ls[3])
+                            self.__bp.reset_selection()
                             break
-                    else:  # if break then not reachable
-                        __reset_data_type_section()
-                    if not found:
-                        self.boarder_rect = None
+                    else:  # if not found, non-break code
+                        found = False
+                        self.__bp.reset_selection()
+                        for ta in self.__tas:
+                            self.__logger.debug("TA: [{}] MS: [{}]".format(ta.topleft, event.pos))
+                            if ta.collidepoint(event.pos) == 1:
+                                self.__logger.debug("collided")
+                                self.boarder_rect = ta
+                                found = True
+                                if self.__tas.index(ta) == 2:
+                                    # DATA TYPE SELECTION
+                                    self.__bp.data_type_pressed = True, ta
+                                break
+                        else:  # if break then not reachable
+                            self.__bp.reset_selection()
+                            self.__logger.debug("Nothing here")
+                        if not found:
+                            self.boarder_rect = None
         elif event.type == KEYDOWN:
             if self.__bp is not None and self.boarder_rect is not None:
                 c = Events.get_char(event.key)
@@ -130,7 +142,7 @@ class ControlPanelForm(Form):
                 if c == Events.SPECIAL_KEYS.get("DELETE"):
                     self.__bp.set_data(index, "")
                 elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
-                    dt = self.__bp.get_data().get(index)
+                    dt = str(self.__bp.get_data().get(index))
                     if len(dt) > 0:
                         dt = dt[:-1]
                         self.__bp.set_data(index, dt)
@@ -159,14 +171,6 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
-    def check_data_type_selection(self, pos):
-        if self.__bp is not None and self.__bp.data_type_pressed[0]:
-            for ls in self.__bp.data_type_selection:
-                if ls[0].collidepoint(pos) == 1:
-                    self.__logger.debug("DATA TYPE {} ".format(ls[3]))
-                    self.__bp.set_data(2, ls[3])
-                    break
-
     def int_try_parse(cls, num):
         try:
             return True, int(num)
@@ -180,28 +184,30 @@ class ControlPanelForm(Form):
             return False, num
 
     def __set_str(self, index, c):
+        """Description: Method validates control panel input and sets data to
+        the selected blueprint
+        """
         def __write_str(index, data, c):
             if len(data) < 15:
                 data += c
                 self.__bp.set_data(index, data)
 
-        dt = self.__bp.get_data().get(index)
+        dt = str(self.__bp.get_data().get(index))
         if dt is None:
             dt = ""
-        # TODO implement value validation for valid int/float/char
         if index == 3:  # value index
             if self.__bp.get_blueprint().get_data_type() == attribute_blueprint.NONE:
                 self.__bp.set_data(index, StringUtils.get_string("ID_NONE"))
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.INT:
                 dt += c
                 if self.int_try_parse(dt)[0]:
-                    self.__bp.set_data(index, dt)
+                    self.__bp.set_data(index, int(dt))
                 else:
                     self.__bp.set_data(index, "")
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.FLOAT:
                 dt += c
                 if self.float_try_parse(dt)[0]:
-                    self.__bp.set_data(index, dt)
+                    self.__bp.set_data(index, float(dt))
                 else:
                     self.__bp.set_data(index, "")
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.STRING:

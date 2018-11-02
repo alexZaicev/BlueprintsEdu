@@ -52,15 +52,16 @@ class ProjectManager(object):
         try:
             fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name,
                                        ProjectManager.PROJECT_FILE_EXTENSION)
-            file = open(fname, "r")
-            content = file.readlines()
-            for line in content:
-                if "PROJECT_API=" in line:
-                    api = line[12:-1]
-                    ProjectManager.LOGGER.debug(api)
-            file.close
-            bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
-            ProjectManager.LOGGER.debug(bps)
+            with open(fname, "r") as file:
+                content = json.load(file)
+                if project_name == content.get("project_name"):
+                    api = content.get("project_api")
+                    bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
+                    ProjectManager.LOGGER.debug(bps)
+                else:
+                    ProjectManager.LOGGER.critical(
+                        "Failed to load project. Unknown project name [{}]".format(project_name))
+                    # TODO close application after critical error
         except OSError as ex:
             ProjectManager.LOGGER.error("Failed to get project files [{}]".format(project_name))
         return (project_name, api)
@@ -68,14 +69,26 @@ class ProjectManager(object):
     @classmethod
     def create_project(cls, project):
         # TODO don't allow to create with already existing project name OR override the existing one
+
+        d = dict()
+        d["project_name"] = project[0]
+        d["project_api"] = project[1]
+        d["connections"] = list()
         try:
+            if not os.path.exists(ProjectManager.PATH):
+                ProjectManager.LOGGER.error("Unable to find projects directory...")
+                ProjectManager.LOGGER.error("Creating new projects directory...")
+                os.mkdir(ProjectManager.PATH)
+
             path = "{}{}".format(ProjectManager.PATH, project[0])
-            os.mkdir(path)
-            file = open("{}\{}{}".format(path, project[0], ProjectManager.PROJECT_FILE_EXTENSION), "w", newline="")
-            file.write("PROJECT_NAME={}\r\n".format(project[0]))
-            file.write("PROJECT_API={}\r\n".format(project[1]))
-            # TODO write additional API details
-            file.close()
+            if not os.path.exists(path):
+                os.mkdir(path)
+            else:
+                # TODO don`t allow user to continue
+                ProjectManager.LOGGER.error("Cannot override already existing project [{}]".format(project[0]))
+
+            with open("{}\{}{}".format(path, project[0], ProjectManager.PROJECT_FILE_EXTENSION), "w+") as file:
+                json.dump(d, file)
         except Exception as ex:
             ProjectManager.LOGGER.error("Failed to create project directory [{}]".format(str(ex)))
 
@@ -109,13 +122,18 @@ class ProjectManager(object):
         return content
 
     @classmethod
-    def save_project_files(cls, project_name, content):
+    def save_project(cls, project_name, bp_data, bp_conns):
         # TODO implement security encoding
-        for key, value in content.items():
-            fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, key,
-                                       ProjectManager.BLUEPRINT_FILE_EXTENSION)
-            with open(fname, "w+") as file:
-                json.dump(value, file)
+        bp_content, bp_conns_content = BlueprintManager.parse_blueprints(bp_data, bp_conns)
+        ProjectManager.LOGGER.debug("BP content: {}".format(bp_content))
+        ProjectManager.LOGGER.debug("BPS connections: {}".format(bp_conns_content))
+        # WRITE BLUEPRINT DATA
+        # for key, value in bp_content.items():
+        #     fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, key,
+        #                                ProjectManager.BLUEPRINT_FILE_EXTENSION)
+        #     with open(fname, "w+") as file:
+        #         json.dump(value, file)
+        # WRITE CONNECTIONS FILE DATA
 
     @classmethod
     def delete_project(cls, directory):
