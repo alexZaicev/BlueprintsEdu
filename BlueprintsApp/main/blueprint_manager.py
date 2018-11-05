@@ -75,11 +75,11 @@ class BlueprintManager(object):
     @classmethod
     def parse_attribute(self, data):
         bp = {
-            "name": data.name,
-            "type": data.get_type(),
-            "data": {
-                "type": data.get_data_type(),
-                "value": data.get_value()
+            "NAME": data.name,
+            "TYPE": data.get_type(),
+            "DATA": {
+                "TYPE": data.get_data_type(),
+                "VALUE": data.get_value()
             }
         }
         return bp
@@ -94,7 +94,10 @@ class BlueprintManager(object):
 
     @classmethod
     def parse_character(self, data):
-        pass
+        bp = {
+            "NAME": data.name,
+            "TYPE": data.get_type()
+        }
 
     @classmethod
     def reverse_parse_attribute(self, data):
