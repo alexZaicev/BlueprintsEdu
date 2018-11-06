@@ -148,7 +148,10 @@ class ProjectCreationScene(SceneBuilder):
 
     def check_button_pressed(self, event, board, pos):
         if self.btn_create.get_rect().collidepoint(pos) == 1 and self.valide_project_info():
-            self.btn_create.on_click(board, (self.__project_name, self.__api))
+            self.btn_create.on_click(board, {
+                "PROJECT_NAME": self.__project_name,
+                "PROJECT_API": self.__api
+            })
         elif self.btn_cancel.get_rect().collidepoint(pos) == 1:
             self.btn_cancel.on_click(board)
         elif self.btn_drop_down[1].collidepoint(pos) == 1:
@@ -160,10 +163,10 @@ class ProjectCreationScene(SceneBuilder):
 
     def valide_project_info(self):
         valid = True
-        if (self.__api == GameApi.DEFAULT_API) and (len(self.__project_name) < 5):
+        if (StringUtils.get_string("ID_SELECT") in self.__api) and (len(self.__project_name) < 5):
             valid = False
             self.__popup = Popup(Popup.POP_STATES.get("ERROR"), "Incorrect project details")
-        elif self.__api == GameApi.DEFAULT_API:
+        elif StringUtils.get_string("ID_SELECT") in self.__api:
             valid = False
             self.__popup = Popup(Popup.POP_STATES.get("ERROR"), "API must be selected")
         elif len(self.__project_name) < 5:

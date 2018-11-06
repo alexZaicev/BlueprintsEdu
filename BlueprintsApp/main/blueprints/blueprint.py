@@ -27,10 +27,10 @@ class Blueprint(ABC):
 
     NAME_COUNT = 1
 
-    def __init__(self, type, name=StringUtils.get_string("ID_UNKNOWN")):
+    def __init__(self, type, name):
         self.__type = type
-        if name == StringUtils.get_string("ID_UNKNOWN"):
-            self.name = "{}_{}".format(name, Blueprint.NAME_COUNT)
+        if name is None:
+            self.name = "{}_{}".format(StringUtils.get_string("ID_UNKNOWN"), Blueprint.NAME_COUNT)
             Blueprint.NAME_COUNT += 1
         else:
             self.name = name

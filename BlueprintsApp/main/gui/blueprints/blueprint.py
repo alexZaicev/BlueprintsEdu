@@ -18,8 +18,6 @@ class Blueprint(ABC):
         self.__height = self.__panel.height * .2
         self.__x = randint(int(panel.topleft[0] * 1.05), int(panel.topleft[0] + panel.width * .9 - self.__width))
         self.__y = randint(int(panel.topleft[1] * 1.05), int(panel.topleft[1] + panel.height * .9 - self.__height))
-        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
-        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
     def initialize(self, coords, size, blueprint, panel):
@@ -32,8 +30,10 @@ class Blueprint(ABC):
         """
         self.__panel = panel
         self.__blueprint = blueprint
-        self.__x, self.y = coords
+        self.__x, self.__y = coords
         self.__width, self.__height = size
+        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def get_rect(self):
         return pg.Rect((self.__x, self.__y), (self.__width, self.__height))

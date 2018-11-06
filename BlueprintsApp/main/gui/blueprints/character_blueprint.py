@@ -25,6 +25,7 @@ class CharacterBlueprint(Blueprint):
 
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .1)))
         # TODO add additional data
 
     def reset_selection(self):

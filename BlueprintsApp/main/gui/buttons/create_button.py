@@ -12,7 +12,8 @@ class CreateButton(Button):
 
     def on_click(self, board, project_info):
         ProjectManager.create_project(project_info)
-        board.set_scene(scene_utils.DEVELOP_SCENE, project=project_info)
+        board.set_scene(scene_utils.DEVELOP_SCENE, project=ProjectManager.get_project_info(
+            project_info.get("PROJECT_NAME")))
         super().on_click(board)
 
     def update_button(self, color=Themes.DEFAULT_THEME.get("button")):

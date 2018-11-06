@@ -6,8 +6,6 @@ import shutil
 from project import Project
 from utils.gui_utils import Themes
 import json
-import xmltodict
-import dicttoxml
 from blueprint_manager import BlueprintManager
 
 
@@ -34,13 +32,13 @@ class ProjectManager(object):
             except OSError as ex:
                 ProjectManager.LOGGER.error("Failed to create projects directory")
         if len(os.listdir(ProjectManager.PATH)) > 0:
-            dirs = [dir for dir in os.listdir(ProjectManager.PATH)
-                    if os.path.isdir(os.path.join(ProjectManager.PATH, dir)) and
-                    ProjectManager.is_valid_project(ProjectManager.PATH + dir)
+            dirs = [directory for directory in os.listdir(ProjectManager.PATH)
+                    if os.path.isdir(os.path.join(ProjectManager.PATH, directory)) and
+                    ProjectManager.is_valid_project(ProjectManager.PATH + directory)
                     ]
-            for dir in dirs:
-                t = time.ctime(max(os.path.getmtime(root) for root, _, _ in os.walk(ProjectManager.PATH + dir)))
-                result.append(Project(dir, str(datetime.datetime.strptime(
+            for directory in dirs:
+                t = time.ctime(max(os.path.getmtime(root) for root, _, _ in os.walk(ProjectManager.PATH + directory)))
+                result.append(Project(directory, str(datetime.datetime.strptime(
                     t, "%a %b %d %H:%M:%S %Y"))))
         else:
             ProjectManager.LOGGER.info("No saved projects exists")
@@ -49,14 +47,17 @@ class ProjectManager(object):
     @classmethod
     def get_project_info(cls, project_name):
         api = ""
+        bps, bp_conns = None, None
         try:
             fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name,
                                        ProjectManager.PROJECT_FILE_EXTENSION)
             with open(fname, "r") as file:
                 content = json.load(file)
-                if project_name == content.get("project_name"):
-                    api = content.get("project_api")
+                if project_name == content.get("PROJECT_NAME"):
+                    api = content.get("PROJECT_API")
+                    bp_conns = content.get("CONNECTIONS")
                     bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
+                    ProjectManager.LOGGER.debug(bp_conns)
                     ProjectManager.LOGGER.debug(bps)
                 else:
                     ProjectManager.LOGGER.critical(
@@ -64,30 +65,35 @@ class ProjectManager(object):
                     # TODO close application after critical error
         except OSError as ex:
             ProjectManager.LOGGER.error("Failed to get project files [{}]".format(project_name))
-        return (project_name, api)
+        return {
+            "PROJECT_NAME": project_name,
+            "PROJECT_API": api,
+            "CONNECTIONS": bp_conns,
+            "BLUEPRINTS": bps
+        }
 
     @classmethod
-    def create_project(cls, project):
+    def create_project(cls, data):
         # TODO don't allow to create with already existing project name OR override the existing one
-
         d = dict()
-        d["project_name"] = project[0]
-        d["project_api"] = project[1]
-        d["connections"] = list()
+        d["PROJECT_NAME"] = data.get("PROJECT_NAME")
+        d["PROJECT_API"] = data.get("PROJECT_API")
+        d["CONNECTIONS"] = list()
         try:
             if not os.path.exists(ProjectManager.PATH):
-                ProjectManager.LOGGER.error("Unable to find projects directory...")
-                ProjectManager.LOGGER.error("Creating new projects directory...")
+                ProjectManager.LOGGER.warning("Unable to find projects directory...")
+                ProjectManager.LOGGER.info("Creating new projects directory...")
                 os.mkdir(ProjectManager.PATH)
 
-            path = "{}{}".format(ProjectManager.PATH, project[0])
+            path = "{}{}".format(ProjectManager.PATH, data.get("PROJECT_NAME"))
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
                 # TODO don`t allow user to continue
-                ProjectManager.LOGGER.error("Cannot override already existing project [{}]".format(project[0]))
+                ProjectManager.LOGGER.error(
+                    "Cannot override already existing project [{}]".format(data.get("PROJECT_NAME")))
 
-            with open("{}\{}{}".format(path, project[0], ProjectManager.PROJECT_FILE_EXTENSION), "w+") as file:
+            with open("{}\{}{}".format(path, data.get("PROJECT_NAME"), ProjectManager.PROJECT_FILE_EXTENSION), "w+") as file:
                 json.dump(d, file)
         except Exception as ex:
             ProjectManager.LOGGER.error("Failed to create project directory [{}]".format(str(ex)))
@@ -127,13 +133,21 @@ class ProjectManager(object):
         bp_content, bp_conns_content = BlueprintManager.parse_blueprints(bp_data, bp_conns)
         ProjectManager.LOGGER.debug("BP content: {}".format(bp_content))
         ProjectManager.LOGGER.debug("BPS connections: {}".format(bp_conns_content))
-        # WRITE BLUEPRINT DATA
-        # for key, value in bp_content.items():
-        #     fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, key,
-        #                                ProjectManager.BLUEPRINT_FILE_EXTENSION)
-        #     with open(fname, "w+") as file:
-        #         json.dump(value, file)
-        # WRITE CONNECTIONS FILE DATA
+        # PROJECT FILE
+        r = dict()
+        r["PROJECT_NAME"], r["PROJECT_API"] = project_name
+        r["CONNECTIONS"] = bp_conns_content
+
+        f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],
+                                    project_name[0], ProjectManager.PROJECT_FILE_EXTENSION)
+        with open(f_name, "w+") as f:
+            json.dump(r, f)
+        # BLUEPRINT DATA
+        for k, v in bp_content.items():
+            f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],
+                                        k, ProjectManager.BLUEPRINT_FILE_EXTENSION)
+            with open(f_name, "w+") as f:
+                f.write(v)
 
     @classmethod
     def delete_project(cls, directory):

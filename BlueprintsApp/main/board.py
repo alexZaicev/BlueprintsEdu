@@ -1,11 +1,8 @@
 from utils import logger_utils
 from utils import app_utils
 import pygame as pg
-from pygame.locals import *
 from utils.enums import status
 from utils import scene_utils
-from utils import gui_utils
-from utils.gui_utils import Themes
 from config_manager import ConfigManager
 
 

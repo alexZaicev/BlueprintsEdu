@@ -1,6 +1,5 @@
 from blueprints.blueprint import Blueprint
 from utils import logger_utils
-import json
 
 NONE = "none"
 INT = "int"
@@ -11,11 +10,11 @@ CHAR = "char"
 
 class AttributeBlueprint(Blueprint):
 
-    def __init__(self, data_type=NONE):
-        Blueprint.__init__(self, Blueprint.TYPES.get("ATTRIBUTE"))
+    def __init__(self, data_type=NONE, value=None, name=None):
+        Blueprint.__init__(self, type=Blueprint.TYPES.get("ATTRIBUTE"), name=name)
         self.__logger = logger_utils.get_logger(__name__)
         self.__data_type = data_type
-        self.__value = None
+        self.__value = value
 
     def get_data_type(self):
         return self.__data_type

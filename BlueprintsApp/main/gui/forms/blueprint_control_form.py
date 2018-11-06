@@ -10,6 +10,7 @@ from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.blueprint import Blueprint
 from project_manager import ProjectManager
+from blueprint_manager import BlueprintManager
 
 
 class BlueprintControlForm(Form):
@@ -135,6 +136,11 @@ class BlueprintControlForm(Form):
 
             data.append(d)
         ProjectManager.save_project(self.__project_info, data, self.__bps_connections)
+
+    def load_project(self, bp_conn, bps):
+        self.__bps = BlueprintManager.reverse_parse_blueprints(self.get_rect(), bps)
+        self.__logger.debug(self.__bps)
+        self.__bps_connections = BlueprintManager.generate_connections(bp_conn, self.__bps)
 
     def connect_blueprints(self, bp_1, bp_2):
         valid = True

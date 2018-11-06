@@ -17,11 +17,11 @@ class DevelopmentScene(SceneBuilder):
 
     def __init__(self, display, project):
         SceneBuilder.__init__(self, display)
-        self.__project = project
-        pg.display.set_caption("{} - {}   {}".format(project[0], project[1], app_utils.CAPTION))
+        self.__project = (project.get("PROJECT_NAME"), project.get("PROJECT_API"))
+        pg.display.set_caption("{} - {}   {}".format(self.__project[0], self.__project[1], app_utils.CAPTION))
 
         self.__logger = logger_utils.get_logger(__name__)
-        self.__logger.debug("{} --- {}".format(project[0], project[1]))
+        self.__logger.debug("{} --- {}".format(self.__project[0], self.__project[1]))
 
         self.btn_file = FileButton()
         self.btn_file.color = Themes.DEFAULT_THEME.get("background")
@@ -44,6 +44,9 @@ class DevelopmentScene(SceneBuilder):
                                                 int(self.btn_file.get_rect().bottom * 1.05)),
                                                (int(app_utils.BOARD_WIDTH * .723),
                                                 int(app_utils.BOARD_HEGHT * .945)))
+        if (project.get("CONNECTIONS") is not None and project.get("BLUEPRINTS") is not None):
+            self.__bp_panel.load_project(project.get("CONNECTIONS"), project.get("BLUEPRINTS"))
+
 # ----------------INITIALIZATIONS----------------
 
     def __init_btn_coords(self):

@@ -1,6 +1,5 @@
 from utils import logger_utils
 from board import Board
-import pygame
 import os
 from config_manager import ConfigManager
 
