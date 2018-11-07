@@ -3,7 +3,7 @@ from utils import logger_utils, app_utils
 from utils.string_utils import StringUtils
 import pygame as pg
 from pygame.locals import *
-from utils.app_utils import Images
+from utils.app_utils import Images, Events
 from gui.buttons.cancel_button import CancelButton
 from gui.buttons.create_button import CreateButton
 from utils.app_utils import GameApi
@@ -186,79 +186,17 @@ class ProjectCreationScene(SceneBuilder):
             self.btn_cancel.color = Themes.DEFAULT_THEME.get("front_screen")
 
     def check_key_pressed(self, event):
-        if event.type == KEYDOWN:
-            if event.key == K_a and len(self.__project_name) <= 33:
-                self.__project_name += "a"
-            elif event.key == K_b and len(self.__project_name) <= 33:
-                self.__project_name += "b"
-            elif event.key == K_c and len(self.__project_name) <= 33:
-                self.__project_name += "c"
-            elif event.key == K_d and len(self.__project_name) <= 33:
-                self.__project_name += "d"
-            elif event.key == K_e and len(self.__project_name) <= 33:
-                self.__project_name += "e"
-            elif event.key == K_f and len(self.__project_name) <= 33:
-                self.__project_name += "f"
-            elif event.key == K_g and len(self.__project_name) <= 33:
-                self.__project_name += "g"
-            elif event.key == K_h and len(self.__project_name) <= 33:
-                self.__project_name += "h"
-            elif event.key == K_i and len(self.__project_name) <= 33:
-                self.__project_name += "i"
-            elif event.key == K_j and len(self.__project_name) <= 33:
-                self.__project_name += "j"
-            elif event.key == K_k and len(self.__project_name) <= 33:
-                self.__project_name += "k"
-            elif event.key == K_l and len(self.__project_name) <= 33:
-                self.__project_name += "l"
-            elif event.key == K_m and len(self.__project_name) <= 33:
-                self.__project_name += "m"
-            elif event.key == K_n and len(self.__project_name) <= 33:
-                self.__project_name += "n"
-            elif event.key == K_o and len(self.__project_name) <= 33:
-                self.__project_name += "o"
-            elif event.key == K_p and len(self.__project_name) <= 33:
-                self.__project_name += "p"
-            elif event.key == K_q and len(self.__project_name) <= 33:
-                self.__project_name += "q"
-            elif event.key == K_r and len(self.__project_name) <= 33:
-                self.__project_name += "r"
-            elif event.key == K_s and len(self.__project_name) <= 33:
-                self.__project_name += "s"
-            elif event.key == K_t and len(self.__project_name) <= 33:
-                self.__project_name += "t"
-            elif event.key == K_u and len(self.__project_name) <= 33:
-                self.__project_name += "u"
-            elif event.key == K_v and len(self.__project_name) <= 33:
-                self.__project_name += "v"
-            elif event.key == K_w and len(self.__project_name) <= 33:
-                self.__project_name += "w"
-            elif event.key == K_x and len(self.__project_name) <= 33:
-                self.__project_name += "x"
-            elif event.key == K_y and len(self.__project_name) <= 33:
-                self.__project_name += "y"
-            elif event.key == K_z and len(self.__project_name) <= 33:
-                self.__project_name += "z"
-            elif (event.key == K_0 or event.key == K_KP0) and len(self.__project_name) <= 33:
-                self.__project_name += "0"
-            elif (event.key == K_1 or event.key == K_KP1) and len(self.__project_name) <= 33:
-                self.__project_name += "1"
-            elif (event.key == K_2 or event.key == K_KP2) and len(self.__project_name) <= 33:
-                self.__project_name += "2"
-            elif (event.key == K_3 or event.key == K_KP3) and len(self.__project_name) <= 33:
-                self.__project_name += "3"
-            elif (event.key == K_4 or event.key == K_KP4) and len(self.__project_name) <= 33:
-                self.__project_name += "4"
-            elif (event.key == K_5 or event.key == K_KP5) and len(self.__project_name) <= 33:
-                self.__project_name += "5"
-            elif (event.key == K_6 or event.key == K_KP6) and len(self.__project_name) <= 33:
-                self.__project_name += "6"
-            elif (event.key == K_7 or event.key == K_KP7) and len(self.__project_name) <= 33:
-                self.__project_name += "7"
-            elif (event.key == K_8 or event.key == K_KP8) and len(self.__project_name) <= 33:
-                self.__project_name += "8"
-            elif (event.key == K_9 or event.key == K_KP9) and len(self.__project_name) <= 33:
-                self.__project_name += "9"
-            elif event.key == K_DELETE or event.key == K_BACKSPACE:
-                if len(self.__project_name) != 0:
-                    self.__project_name = self.__project_name[:-1]
+        if event.type == KEYDOWN or event.type == KEYUP:
+            c = Events.get_char(event.key, event.type)
+            if event.type == KEYDOWN:
+                if c == Events.SPECIAL_KEYS.get("BACKSPACE"):
+                    if len(self.__project_name) != 0:
+                        self.__project_name = self.__project_name[:-1]
+                elif c == Events.SPECIAL_KEYS.get("DELETE"):
+                    self.__project_name = ""
+                elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
+                    pass
+                elif isinstance(c, str):
+                    if len(self.__project_name) <= 25:
+                        self.__project_name += c
+

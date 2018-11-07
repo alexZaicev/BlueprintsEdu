@@ -156,24 +156,25 @@ class ControlPanelForm(Form):
                     self.__function_event(event)
 
                 __check_textarea_selection()
-        elif event.type == KEYDOWN:
+        elif event.type == KEYDOWN or event.type == KEYUP:
             if self.__bp is not None and self.boarder_rect is not None:
-                c = Events.get_char(event.key)
-                index = [
-                    i for i in range(0, len(self.__tas), 1) if self.__tas[i].topleft == self.boarder_rect.topleft
-                ][0]
-                if c == Events.SPECIAL_KEYS.get("DELETE"):
-                    self.__bp.set_data(index, "")
-                elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
-                    dt = str(self.__bp.get_data().get(index))
-                    if len(dt) > 0:
-                        dt = dt[:-1]
-                        self.__bp.set_data(index, dt)
-                elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
-                    # ALL UNREGISTERED KEYS ARE SKIPPED
-                    pass
-                else:
-                    self.__set_str(index, c)
+                c = Events.get_char(event.key, event.type)
+                if event.type == KEYDOWN:
+                    index = [
+                        i for i in range(0, len(self.__tas), 1) if self.__tas[i].topleft == self.boarder_rect.topleft
+                    ][0]
+                    if c == Events.SPECIAL_KEYS.get("DELETE"):
+                        self.__bp.set_data(index, "")
+                    elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
+                        dt = str(self.__bp.get_data().get(index))
+                        if len(dt) > 0:
+                            dt = dt[:-1]
+                            self.__bp.set_data(index, dt)
+                    elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
+                        # ALL UNREGISTERED KEYS ARE SKIPPED
+                        pass
+                    elif isinstance(c, str):
+                        self.__set_str(index, c)
 
     def __attribute_events(self, event):
         for ls in self.__bp.data_type_selection:

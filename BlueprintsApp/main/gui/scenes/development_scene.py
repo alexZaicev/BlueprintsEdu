@@ -255,7 +255,3 @@ class DevelopmentScene(SceneBuilder):
                 __reset_btn_menu()
         self.__cont_panel.check_form_events(event)
         self.__bp_panel.check_form_events(event)
-
-    @classmethod
-    def get_project_info(cls):
-        return self.__project

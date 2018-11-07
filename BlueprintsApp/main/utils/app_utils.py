@@ -18,89 +18,174 @@ class Events(Utils):
         "DELETE": "DEL",
         "BACKSPACE": "BACK",
         "UNREGISTERED": "UNKNOWN",
-        "SPACE": " "
     }
 
+    UPPERCASE = False
+
     @classmethod
-    def get_char(cls, key):
+    def get_char(cls, key, event_type=KEYUP):
         if key == K_a:
-            return "a"
+            if Events.UPPERCASE:
+                return "A"
+            else:
+                return "a"
         elif key == K_b:
-            return "b"
+            if Events.UPPERCASE:
+                return "B"
+            else:
+                return "b"
         elif key == K_c:
-            return "c"
+            if Events.UPPERCASE:
+                return "C"
+            else:
+                return "c"
         elif key == K_d:
-            return "d"
+            if Events.UPPERCASE:
+                return "D"
+            else:
+                return "d"
         elif key == K_e:
-            return "e"
+            if Events.UPPERCASE:
+                return "E"
+            else:
+                return "e"
         elif key == K_f:
-            return "f"
+            if Events.UPPERCASE:
+                return "F"
+            else:
+                return "f"
         elif key == K_g:
-            return "g"
+            if Events.UPPERCASE:
+                return "G"
+            else:
+                return "g"
         elif key == K_h:
-            return "h"
+            if Events.UPPERCASE:
+                return "H"
+            else:
+                return "h"
         elif key == K_i:
-            return "i"
+            if Events.UPPERCASE:
+                return "I"
+            else:
+                return "i"
         elif key == K_j:
-            return "j"
+            if Events.UPPERCASE:
+                return "J"
+            else:
+                return "j"
         elif key == K_k:
-            return "k"
+            if Events.UPPERCASE:
+                return "K"
+            else:
+                return "k"
         elif key == K_l:
-            return "l"
+            if Events.UPPERCASE:
+                return "L"
+            else:
+                return "l"
         elif key == K_m:
-            return "m"
+            if Events.UPPERCASE:
+                return "M"
+            else:
+                return "m"
         elif key == K_n:
-            return "n"
+            if Events.UPPERCASE:
+                return "N"
+            else:
+                return "n"
         elif key == K_o:
-            return "o"
+            if Events.UPPERCASE:
+                return "O"
+            else:
+                return "o"
         elif key == K_p:
-            return "p"
+            if Events.UPPERCASE:
+                return "P"
+            else:
+                return "p"
         elif key == K_q:
-            return "q"
+            if Events.UPPERCASE:
+                return "Q"
+            else:
+                return "q"
         elif key == K_r:
-            return "r"
+            if Events.UPPERCASE:
+                return "R"
+            else:
+                return "r"
         elif key == K_s:
-            return "s"
+            if Events.UPPERCASE:
+                return "S"
+            else:
+                return "s"
         elif key == K_t:
-            return "t"
+            if Events.UPPERCASE:
+                return "T"
+            else:
+                return "t"
         elif key == K_u:
-            return "u"
+            if Events.UPPERCASE:
+                return "U"
+            else:
+                return "u"
         elif key == K_v:
-            return "v"
+            if Events.UPPERCASE:
+                return "V"
+            else:
+                return "v"
         elif key == K_w:
-            return "w"
+            if Events.UPPERCASE:
+                return "W"
+            else:
+                return "w"
         elif key == K_x:
-            return "x"
+            if Events.UPPERCASE:
+                return "X"
+            else:
+                return "x"
         elif key == K_y:
-            return "y"
+            if Events.UPPERCASE:
+                return "Y"
+            else:
+                return "y"
         elif key == K_z:
-            return "z"
-        elif (key == K_0 or key == K_KP0):
+            if Events.UPPERCASE:
+                return "Z"
+            else:
+                return "z"
+        elif key == K_0 or key == K_KP0:
             return "0"
-        elif (key == K_1 or key == K_KP1):
+        elif key == K_1 or key == K_KP1:
             return "1"
-        elif (key == K_2 or key == K_KP2):
+        elif key == K_2 or key == K_KP2:
             return "2"
-        elif (key == K_3 or key == K_KP3):
+        elif key == K_3 or key == K_KP3:
             return "3"
-        elif (key == K_4 or key == K_KP4):
+        elif key == K_4 or key == K_KP4:
             return "4"
-        elif (key == K_5 or key == K_KP5):
+        elif key == K_5 or key == K_KP5:
             return "5"
-        elif (key == K_6 or key == K_KP6):
+        elif key == K_6 or key == K_KP6:
             return "6"
-        elif (key == K_7 or key == K_KP7):
+        elif key == K_7 or key == K_KP7:
             return "7"
-        elif (key == K_8 or key == K_KP8):
+        elif key == K_8 or key == K_KP8:
             return "8"
-        elif (key == K_9 or key == K_KP9):
+        elif key == K_9 or key == K_KP9:
             return "9"
         elif key == K_DELETE:
             return Events.SPECIAL_KEYS.get("DELETE")
         elif key == K_BACKSPACE:
             return Events.SPECIAL_KEYS.get("BACKSPACE")
         elif key == K_SPACE:
-            return Events.SPECIAL_KEYS.get("SPACE")
+            return " "
+        elif key == K_LSHIFT or key == K_RSHIFT:
+
+            if event_type == KEYDOWN:
+                Events.UPPERCASE = True
+            elif event_type == KEYUP:
+                Events.UPPERCASE = False
         else:
             return Events.SPECIAL_KEYS.get("UNREGISTERED")
 
