@@ -143,24 +143,51 @@ class BlueprintControlForm(Form):
 
     def connect_blueprints(self, bp_1, bp_2):
         valid = True
-        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
-            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE")) or \
-                    (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")):
+        type_1 = bp_1.get_blueprint().get_type()
+        type_2 = bp_2.get_blueprint().get_type()
+        if type_1 == Blueprint.TYPES.get("ATTRIBUTE"):
+            if (type_2 == Blueprint.TYPES.get("ATTRIBUTE")) or \
+                    (type_2 == Blueprint.TYPES.get("FUNCTION")):
                 valid = False
-        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
-            if bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+        if type_1 == Blueprint.TYPES.get("CHARACTER"):
+            if type_2 == Blueprint.TYPES.get("CHARACTER"):
                 valid = False
-        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
-            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")) or \
-                    (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE")):
+        if type_1 == Blueprint.TYPES.get("FUNCTION"):
+            if (type_2 == Blueprint.TYPES.get("FUNCTION")) or \
+                    (type_2 == Blueprint.TYPES.get("ATTRIBUTE")):
                 valid = False
-        if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
-            if bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+        if type_1 == Blueprint.TYPES.get("SPRITE"):
+            if type_2 == Blueprint.TYPES.get("SPRITE"):
                 valid = False
         for con in self.__bps_connections:
             if ((con[0] == bp_1) and (con[1] == bp_2)) or \
                     ((con[0] == bp_2) and (con[1] == bp_1)):
                 valid = False
         if valid:
+            if type_1 == Blueprint.TYPES.get("CHARACTER"):
+                if type_2 == Blueprint.TYPES.get("ATTRIBUTE"):
+                    bp_1.get_blueprint().add_attribute(bp_2.get_blueprint())
+                elif type_2 == Blueprint.TYPES.get("FUNCTION"):
+                    bp_1.get_blueprint().add_function(bp_2.get_blueprint())
+                elif type_2 == Blueprint.TYPES.get("SPRITE"):
+                    bp_1.get_blueprint().add_sprite(bp_2.get_blueprint())
+            elif type_1 == Blueprint.TYPES.get("SPRITE"):
+                if type_2 == Blueprint.TYPES.get("ATTRIBUTE"):
+                    bp_1.get_blueprint().add_attribute(bp_2.get_blueprint())
+                elif type_2 == Blueprint.TYPES.get("FUNCTION"):
+                    bp_1.get_blueprint().add_function(bp_2.get_blueprint())
+            # OTHER WAY AROUND
+            elif type_2 == Blueprint.TYPES.get("CHARACTER"):
+                if type_1 == Blueprint.TYPES.get("ATTRIBUTE"):
+                    bp_2.get_blueprint().add_attribute(bp_1.get_blueprint())
+                elif type_1 == Blueprint.TYPES.get("FUNCTION"):
+                    bp_2.get_blueprint().add_function(bp_1.get_blueprint())
+                elif type_1 == Blueprint.TYPES.get("SPRITE"):
+                    bp_2.get_blueprint().add_sprite(bp_1.get_blueprint())
+            elif type_2 == Blueprint.TYPES.get("SPRITE"):
+                if type_1 == Blueprint.TYPES.get("ATTRIBUTE"):
+                    bp_2.get_blueprint().add_attribute(bp_1.get_blueprint())
+                elif type_1 == Blueprint.TYPES.get("FUNCTION"):
+                    bp_2.get_blueprint().add_function(bp_1.get_blueprint())
             self.__bps_connections.append([bp_1, bp_2])
             self.__logger.debug("Blueprints connected")

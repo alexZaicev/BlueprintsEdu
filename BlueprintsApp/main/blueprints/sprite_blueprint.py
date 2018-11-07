@@ -8,3 +8,11 @@ class SpriteBlueprint(Blueprint):
         self.image = image
         self.attributes = attributes
         self.functions = functions
+
+    def add_attribute(self, attribute):
+        if attribute not in self.attributes:
+            self.attributes.append(attribute)
+
+    def add_function(self, func):
+        if func not in self.functions:
+            self.functions.append(func)

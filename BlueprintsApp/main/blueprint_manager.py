@@ -131,9 +131,10 @@ class BlueprintManager(object):
     @classmethod
     def parse_character(cls, data):
         bp = BlueprintManager.get_general_data(data)
-        bp["ATTRIBUTES"] = data.attributes
-        bp["FUNCTIONS"] = data.functions
-        bp["SPRITES"] = data.sprites
+        # TODO implement saving for bellow lists
+        # bp["ATTRIBUTES"] = data.attributes
+        # bp["FUNCTIONS"] = data.functions
+        # bp["SPRITES"] = data.sprites
         return bp
 
     @classmethod

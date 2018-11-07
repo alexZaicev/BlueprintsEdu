@@ -62,7 +62,10 @@ class StringUtils(Utils):
         "ID_DATA_TYPE": "Data Type",
         "ID_VALUE": "Value",
         "ID_UNKNOWN": "Unknown",
-        "ID_SAVE_AND_EXIT": "Save and Exit"
+        "ID_SAVE_AND_EXIT": "Save and Exit",
+        "ID_ATTRIBUTES": "Attributes",
+        "ID_FUNCTIONS": "Functions",
+        "ID_SPRITES": "Sprites"
     }
 
     RUSSIAN_DICT = {

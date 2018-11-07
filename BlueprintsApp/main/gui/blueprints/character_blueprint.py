@@ -17,6 +17,9 @@ class CharacterBlueprint(Blueprint):
     def get_data(self):
         data = super().get_data()
         data[1] = StringUtils.get_string("ID_CHARACTER")
+        data[2] = self.get_blueprint().attributes
+        data[3] = self.get_blueprint().functions
+        data[4] = self.get_blueprint().sprites
         return data
 
     def set_data(self, index, data):
@@ -25,7 +28,6 @@ class CharacterBlueprint(Blueprint):
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
-        # TODO add additional data
 
     def reset_selection(self):
         super().reset_selection()

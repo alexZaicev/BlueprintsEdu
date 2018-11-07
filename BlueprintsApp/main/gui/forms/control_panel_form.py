@@ -29,7 +29,7 @@ class ControlPanelForm(Form):
 
     def draw_form(self):
         form_rect = self.get_rect()
-        if (self.__bp is not None) and (self.__bp.focused):
+        if (self.__bp is not None) and self.__bp.focused:
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), form_rect, 0)
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), form_rect, 2)
         else:
@@ -47,8 +47,8 @@ class ControlPanelForm(Form):
         pos = 1
         for t in AttributeBlueprint.DATA_TYPE:
             r = pg.Rect((self.__bp.data_type_pressed[1].left, int(
-                self.__bp.data_type_pressed[1].top + self.__bp.data_type_pressed[1].height*pos)),
-                self.__bp.data_type_pressed[1].size)
+                self.__bp.data_type_pressed[1].top + self.__bp.data_type_pressed[1].height * pos)),
+                        self.__bp.data_type_pressed[1].size)
             font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
             t = StringUtils.get_string(AttributeBlueprint.DATA_TYPE.get(t))
             txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
@@ -61,57 +61,60 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
-    def display_data(self, banner):
-
-        def __blit(font, text, text2, coords):
+    def blit(self, font, text, text2, coords):
+        if text is not None:
             text = str(text)
-            text2 = str(text2)
             t = font.render(text, True, Themes.DEFAULT_THEME.get("text_area_text"))
             r = t.get_rect()
             r.topleft = coords
 
+            self.display.blit(t, r)
+
+        if text2 is not None:
             br = pg.Rect((0, 0),
                          (int(self.get_rect().width * .5), font.size(text2)[1]))
             br.topright = (int(self.get_rect().right - self.get_rect().width * .05), coords[1])
             if not self.ta_populated:
                 self.__tas.append(br)
-
             t2 = font.render(text2, True, Themes.DEFAULT_THEME.get("text_area_text"))
-            r2 = t.get_rect()
+            r2 = t2.get_rect()
             r2.centery = br.centery
             r2.left = br.left * 1.1
-            self.display.blit(t, r)
+
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), br, 0)
             self.display.blit(t2, r2)
 
+    def display_data(self, banner):
         if self.__bp is not None and self.__bp.focused:
             dt = self.__bp.get_data()
+            pos = 2
             font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
-            margin = int(font.size("SOME_TEXT")[1] * .35)
-            __blit(font, "{}:".format(StringUtils.get_string("ID_NAME")), dt.get(0),
-                   (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1)))
-            __blit(font, "{}:".format(StringUtils.get_string("ID_TYPE")), dt.get(1),
-                   (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + margin + font.size(dt.get(1))[1])))
+            margin = int(font.size("SOME_TEXT")[1] * .35) + font.size(dt.get(1))[1]
+            # DRAW GENERIC BLUEPRINT DATA
+            self.blit(font, "{}:".format(StringUtils.get_string("ID_NAME")), dt.get(0),
+                      (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1)))
+            self.blit(font, "{}:".format(StringUtils.get_string("ID_TYPE")), dt.get(1),
+                      (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + margin)))
 
             if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
                 # ATTRIBUTE RELATED INFORMATION
-                __blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), dt.get(2),
-                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 2*(margin + font.size(dt.get(1))[1]))))
-                __blit(font, "{}:".format(StringUtils.get_string("ID_VALUE")), dt.get(3),
-                       (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + 3*(margin + font.size(str(dt.get(1)))[1]))))
+                self.draw_attribute_data(dt, pos, font, banner, margin)
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
                 # FUNCTION RELATED INFORMATION
-                pass
+                self.draw_function_data(dt, pos, font, banner, margin)
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
                 # CHARACTER RELATED INFORMATION
-                pass
+                self.draw_character_data(dt, pos, font, banner, margin)
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                 # SPRITE RELATED INFORMATION
-                pass
+                self.draw_sprite_data(dt, pos, font, banner, margin)
             self.ta_populated = True
             if self.boarder_rect is not None:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
+            # DRAW ACTION RELATED WIDGETS
             if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+                # DATA TYPE DROP DOWN
                 if self.__bp.data_type_pressed[0]:
                     self.draw_data_type_selection()
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
@@ -120,6 +123,54 @@ class ControlPanelForm(Form):
                 pass
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
                 pass
+
+    def draw_attribute_data(self, data, pos, font, banner, margin):
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), data.get(2),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_VALUE")), str(data.get(3)),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+
+    def draw_function_data(self, data, pos, font, banner, margin):
+        pass
+
+    def draw_sprite_data(self, data, pos, font, banner, margin):
+        pass
+
+    def draw_character_data(self, data, pos, font, banner, margin):
+        if len(self.__bp.get_blueprint().attributes) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().attributes:
+                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
+                          None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
+        if len(self.__bp.get_blueprint().functions) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().functions:
+                self.blit(font, "{}".format(bp.name), None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
+        if len(self.__bp.get_blueprint().sprites) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_SPRITES")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().sprites:
+                self.blit(font, "{}".format(bp.name), None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
 
     def check_form_events(self, event):
 
@@ -192,13 +243,13 @@ class ControlPanelForm(Form):
     def __function_event(self, event):
         pass
 
-    def int_try_parse(cls, num):
+    def int_try_parse(self, num):
         try:
             return True, int(num)
         except ValueError as ex:
             return False, num
 
-    def float_try_parse(cls, num):
+    def float_try_parse(self, num):
         try:
             return True, float(num)
         except ValueError as ex:
@@ -208,7 +259,8 @@ class ControlPanelForm(Form):
         """Description: Method validates control panel input and sets data to
         the selected blueprint
         """
-        def __write_str(index, data, c):
+
+        def __write_str(data):
             if len(data) < 15:
                 data += c
                 self.__bp.set_data(index, data)
@@ -232,8 +284,8 @@ class ControlPanelForm(Form):
                 else:
                     self.__bp.set_data(index, "")
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.STRING:
-                __write_str(index, dt, c)
+                __write_str(dt)
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.CHAR:
                 self.__bp.set_data(index, c)
         else:
-            __write_str(index, dt, c)
+            __write_str(dt)
