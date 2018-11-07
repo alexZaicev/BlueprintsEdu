@@ -11,9 +11,8 @@ class CharacterBlueprint(Blueprint):
 
     def __init__(self, panel):
         Blueprint.__init__(self, panel, CB())
-        # TODO improve random blueprint name generation
         self.set_custom_size(CharacterBlueprint.SIZE)
-        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .1)))
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
 
     def get_data(self):
         data = super().get_data()
@@ -25,7 +24,7 @@ class CharacterBlueprint(Blueprint):
 
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
-        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .1)))
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
         # TODO add additional data
 
     def reset_selection(self):

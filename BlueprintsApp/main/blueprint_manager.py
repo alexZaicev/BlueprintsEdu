@@ -9,10 +9,13 @@ from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.character_blueprint import CharacterBlueprint as CB
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
+from blueprints.function_blueprint import FunctionBlueprint as FB
+from blueprints.sprite_blueprint import SpriteBlueprint as SB
+from gui.blueprints.function_blueprint import FunctionBlueprint
+from gui.blueprints.sprite_blueprint import SpriteBlueprint
 
 
 class BlueprintManager(object):
-
     __LOGGER = logger_utils.get_logger(__name__)
 
     def __init__(self):
@@ -98,31 +101,39 @@ class BlueprintManager(object):
             BlueprintManager.__LOGGER.error("Unknown blueprint type {}".format(bp.get("BLUEPRINT").get("TYPE")))
 
     @classmethod
+    def get_general_data(cls, data):
+        return {"NAME": data.name,
+                "TYPE": data.get_type()
+                }
+
+    @classmethod
     def parse_attribute(cls, data):
-        bp = {
-            "NAME": data.name,
-            "TYPE": data.get_type(),
-            "DATA": {
-                "TYPE": data.get_data_type(),
-                "VALUE": data.get_value()
-            }
-        }
+        bp = BlueprintManager.get_general_data(data)
+        d = dict()
+        d["TYPE"] = data.get_data_type()
+        d["NAME"] = data.get_value()
+        bp["DATA"] = d
         return bp
 
     @classmethod
     def parse_function(cls, data):
-        return dict()
+        bp = BlueprintManager.get_general_data(data)
+        bp["CODE"] = data.code
+        return bp
 
     @classmethod
     def parse_sprite(cls, data):
-        return dict()
+        bp = BlueprintManager.get_general_data(data)
+        bp["ATTRIBUTES"] = data.attributes
+        bp["FUNCTIONS"] = data.functions
+        return bp
 
     @classmethod
     def parse_character(cls, data):
-        bp = {
-            "NAME": data.name,
-            "TYPE": data.get_type()
-        }
+        bp = BlueprintManager.get_general_data(data)
+        bp["ATTRIBUTES"] = data.attributes
+        bp["FUNCTIONS"] = data.functions
+        bp["SPRITES"] = data.sprites
         return bp
 
     @classmethod
@@ -139,11 +150,27 @@ class BlueprintManager(object):
 
     @classmethod
     def reverse_parse_function(cls, panel, data):
-        pass
+        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        bp = FB(name=d.get("NAME"))
+        bp_gui = FunctionBlueprint(panel)
+        bp_gui.initialize(
+            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
+            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            bp, panel
+        )
+        return bp_gui
 
     @classmethod
     def reverse_parse_sprite(cls, panel, data):
-        pass
+        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        bp = SB(name=d.get("NAME"))
+        bp_gui = SpriteBlueprint(panel)
+        bp_gui.initialize(
+            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
+            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            bp, panel
+        )
+        return bp_gui
 
     @classmethod
     def reverse_parse_character(cls, panel, data):

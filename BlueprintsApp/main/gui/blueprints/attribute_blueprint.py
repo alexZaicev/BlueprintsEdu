@@ -2,6 +2,8 @@ from gui.blueprints.blueprint import Blueprint
 from utils.string_utils import StringUtils
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from utils import logger_utils
+import pygame as pg
+from utils.gui_utils import Themes
 
 
 class AttributeBlueprint(Blueprint):
@@ -21,6 +23,7 @@ class AttributeBlueprint(Blueprint):
         self.set_custom_size(AttributeBlueprint.SIZE)
         self.data_type_pressed = [False, None]  # IS PRESSED; TEXT BOX
         self.data_type_selection = list()
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .23)))
 
     def reset_selection(self):
         super().reset_selection()
@@ -29,6 +32,7 @@ class AttributeBlueprint(Blueprint):
 
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .23)))
         # TODO add additional data
 
     def get_data(self):

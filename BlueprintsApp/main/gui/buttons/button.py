@@ -18,7 +18,7 @@ class Button(ABC):
         self.__height = int(font.size(self.__text_str)[1] * 1.1)
         self.__width = int(font.size(self.__text_str)[0] * 1.1)
         self.color = Themes.DEFAULT_THEME.get("button")  # Default color but overrides in scene drawings
-        self.set_coordinates(pos)
+        self.__x, self.__y = self.set_coordinates(pos)
 
     @abstractmethod
     def update_button(self, text, color):
@@ -39,12 +39,13 @@ class Button(ABC):
         return self.color
 
     def set_coordinates(self, pos):
-        self.__x = int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_WIDTH + self.__width * .5)
+        x = int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_WIDTH + self.__width * .5)
         start = int(app_utils.BOARD_HEGHT - (app_utils.BOARD_HEGHT * 0.05 + self.__height * .5))
         if pos > 0:
-            self.__y = int(start - (self.__height + int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_HEGHT)) * pos)
+            y = int(start - (self.__height + int(gui_utils.BUTTON_MARGIN * app_utils.BOARD_HEGHT)) * pos)
         else:
-            self.__y = start
+            y = start
+        return x, y
 
     def set_custom_coordinates(self, pos):
         self.__x, self.__y = pos
@@ -69,8 +70,8 @@ class Button(ABC):
 
     def is_hovered(self, coords):
         r = self.get_rect()
-        return (coords[0] >= r.x and coords[0] <= (r.x + r.width) and
-                coords[1] >= r.y and coords[1] <= (r.y + r.height))
+        return (r.x <= coords[0] <= (r.x + r.width) and
+                r.y <= coords[1] <= (r.y + r.height))
 
     def get_rect(self):
         return pg.Rect(self.get_topleft(), (self.__width, self.__height))

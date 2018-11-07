@@ -11,13 +11,12 @@ class FunctionBlueprint(Blueprint):
 
     def __init__(self, panel):
         Blueprint.__init__(self, panel, FB())
-        # TODO improve random blueprint name generation
         self.set_custom_size(FunctionBlueprint.SIZE)
-        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .1)))
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
 
     def get_data(self):
         data = super().get_data()
-        data["type"] = StringUtils.get_string("ID_FUNCTION")
+        data[1] = StringUtils.get_string("ID_FUNCTION")
         return data
 
     def set_data(self, index, data):
@@ -25,4 +24,8 @@ class FunctionBlueprint(Blueprint):
 
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
+        self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
         # TODO add additional data
+
+    def reset_selection(self):
+        super().reset_selection()

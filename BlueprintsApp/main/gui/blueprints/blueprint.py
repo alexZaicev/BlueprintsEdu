@@ -1,9 +1,7 @@
 from utils.gui_utils import Themes
 from abc import ABC, abstractmethod
-from utils import app_utils
 import pygame as pg
 from random import randint
-import json
 
 
 class Blueprint(ABC):
@@ -18,6 +16,8 @@ class Blueprint(ABC):
         self.__height = self.__panel.height * .2
         self.__x = randint(int(panel.topleft[0] * 1.05), int(panel.topleft[0] + panel.width * .9 - self.__width))
         self.__y = randint(int(panel.topleft[1] * 1.05), int(panel.topleft[1] + panel.height * .9 - self.__height))
+        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
+        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
     def initialize(self, coords, size, blueprint, panel):

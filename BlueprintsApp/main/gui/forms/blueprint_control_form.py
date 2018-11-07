@@ -3,7 +3,6 @@ from utils.gui_utils import Themes
 from utils import logger_utils
 import pygame as pg
 from pygame.locals import *
-from utils.string_utils import StringUtils
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
@@ -149,14 +148,14 @@ class BlueprintControlForm(Form):
                     (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")):
                 valid = False
         if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
-            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER")):
+            if bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
                 valid = False
         if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
             if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION")) or \
                     (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE")):
                 valid = False
         if bp_1.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
-            if (bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE")):
+            if bp_2.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                 valid = False
         for con in self.__bps_connections:
             if ((con[0] == bp_1) and (con[1] == bp_2)) or \

@@ -62,6 +62,7 @@ class ControlPanelForm(Form):
             self.display.blit(s[1], s[2])
 
     def display_data(self, banner):
+
         def __blit(font, text, text2, coords):
             text = str(text)
             text2 = str(text2)
@@ -83,7 +84,7 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), br, 0)
             self.display.blit(t2, r2)
 
-        if (self.__bp is not None) and (self.__bp.focused):
+        if self.__bp is not None and self.__bp.focused:
             dt = self.__bp.get_data()
             font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
             margin = int(font.size("SOME_TEXT")[1] * .35)
@@ -121,7 +122,8 @@ class ControlPanelForm(Form):
                 pass
 
     def check_form_events(self, event):
-        def __check_textarea_selection(event):
+
+        def __check_textarea_selection():
             found = False
             self.__bp.reset_selection()
             for ta in self.__tas:
@@ -153,7 +155,7 @@ class ControlPanelForm(Form):
                     # FUNCTION specific events
                     self.__function_event(event)
 
-                __check_textarea_selection(event)
+                __check_textarea_selection()
         elif event.type == KEYDOWN:
             if self.__bp is not None and self.boarder_rect is not None:
                 c = Events.get_char(event.key)
