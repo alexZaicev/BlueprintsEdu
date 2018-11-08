@@ -10,6 +10,9 @@ from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.blueprint import Blueprint
 from project_manager import ProjectManager
 from blueprint_manager import BlueprintManager
+from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from blueprints.function_blueprint import FunctionBlueprint as FB
+from blueprints.sprite_blueprint import SpriteBlueprint as SB
 
 
 class BlueprintControlForm(Form):
@@ -38,9 +41,10 @@ class BlueprintControlForm(Form):
                     pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), bp.get_rect(), 2)
 
     def draw_connections(self):
-        for con in self.__bps_connections:
-            c1 = con[0].get_rect().center
-            c2 = con[1].get_rect().center
+        self.update_connections()
+        for root, slave in self.__bps_connections:
+            c1 = root.get_rect().center
+            c2 = slave.get_rect().center
             pg.draw.line(self.display, Themes.DEFAULT_THEME.get("connection_line"), c1, c2, 2)
 
     def unfocuse_blueprints(self):
@@ -52,7 +56,7 @@ class BlueprintControlForm(Form):
     def check_form_events(self, event):
         super().check_form_events(event)
         if event.type == MOUSEBUTTONDOWN:
-            if event.button == 1:   # LEFT MOUSE BUTTON
+            if event.button == 1:  # LEFT MOUSE BUTTON
                 pos = pg.mouse.get_pos()
                 if len(self.__bps) > 0:
                     for bp in self.__bps:
@@ -76,7 +80,7 @@ class BlueprintControlForm(Form):
                                     self.connect_blueprints(bp_1, bp)
 
         elif event.type == MOUSEBUTTONUP:
-            if event.button == 1:   # LEFT MOUSE BUTTON
+            if event.button == 1:  # LEFT MOUSE BUTTON
                 pos = pg.mouse.get_pos()
                 if len(self.__bps) > 0:
                     for bp in self.__bps:
@@ -193,5 +197,49 @@ class BlueprintControlForm(Form):
                     bp_2.get_blueprint().add_function(bp_1.get_blueprint())
                 elif type_1 == Blueprint.TYPES.get("CHARACTER"):
                     bp_1.get_blueprint().add_sprite(bp_2.get_blueprint())
-            self.__bps_connections.append([bp_1, bp_2])
-            self.__logger.debug("Blueprints connected")
+
+    def remove_connection(self, bp_1, bp_2):
+        pare = None
+        for root, slave in self.__bps_connections:
+            if root == bp_1 and slave == bp_2:
+                pare = [root, slave]
+                break
+            elif root == bp_2 and slave == bp_1:
+                pare = [root, slave]
+                break
+        if pare is not None:
+            self.__bps_connections.remove(pare)
+
+    def update_connections(self):
+        self.__bps_connections.clear()
+        for bp in self.__bps:
+            if isinstance(bp, CharacterBlueprint):
+                if len(bp.get_blueprint().attributes) > 0:
+                    for b in bp.get_blueprint().attributes:
+                        if isinstance(b, AB):
+                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                if len(bp.get_blueprint().functions) > 0:
+                    for b in bp.get_blueprint().functions:
+                        if isinstance(b, FB):
+                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                if len(bp.get_blueprint().sprites) > 0:
+                    for b in bp.get_blueprint().sprites:
+                        if isinstance(b, SB):
+                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+            elif isinstance(bp, SpriteBlueprint):
+                if len(bp.get_blueprint().attributes) > 0:
+                    for b in bp.get_blueprint().attributes:
+                        if isinstance(b, AB):
+                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                if len(bp.get_blueprint().functions) > 0:
+                    for b in bp.get_blueprint().functions:
+                        if isinstance(b, FB):
+                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+
+    def find_blueprint(self, name, bp_type):
+        r = None
+        for bp in self.__bps:
+            if bp.get_blueprint().name == name and \
+                    bp.get_blueprint().get_type() == bp_type:
+                r = bp
+        return r

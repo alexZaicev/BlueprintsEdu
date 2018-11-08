@@ -34,7 +34,8 @@ class DevelopmentScene(SceneBuilder):
         self.__init_btn_size()
         self.__file_menu_content = self.__init_file_menu()
         self.__edit_menu_content = self.__init_edit_menu()
-        self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, self.__btn_settings_pressed = False, False, False, False
+        self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
+            self.__btn_settings_pressed = False, False, False, False
 
         self.__cont_panel = ControlPanelForm(self.display,
                                              (int(app_utils.BOARD_WIDTH * .005), int(self.btn_file.get_rect().bottom * 1.005)),
@@ -44,7 +45,7 @@ class DevelopmentScene(SceneBuilder):
                                                 int(self.btn_file.get_rect().bottom * 1.05)),
                                                (int(app_utils.BOARD_WIDTH * .723),
                                                 int(app_utils.BOARD_HEGHT * .945)))
-        if (project.get("CONNECTIONS") is not None and project.get("BLUEPRINTS") is not None):
+        if project.get("CONNECTIONS") is not None and project.get("BLUEPRINTS") is not None:
             self.__bp_panel.load_project(project.get("CONNECTIONS"), project.get("BLUEPRINTS"))
 
 # ----------------INITIALIZATIONS----------------

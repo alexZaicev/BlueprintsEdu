@@ -16,3 +16,9 @@ class SpriteBlueprint(Blueprint):
     def add_function(self, func):
         if func not in self.functions:
             self.functions.append(func)
+
+    def remove_connection(self, bp):
+        if bp.get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            self.attributes.remove(bp)
+        elif bp.get_type() == Blueprint.TYPES.get("FUNCTION"):
+            self.functions.remove(bp)

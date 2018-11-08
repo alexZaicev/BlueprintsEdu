@@ -29,3 +29,11 @@ class CharacterBlueprint(Blueprint):
         # TODO implement multiple sprite object
         # if sprite not in self.sprites:
         #     self.sprites.append(sprite)
+
+    def remove_connection(self, bp):
+        if bp.get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            self.attributes.remove(bp)
+        elif bp.get_type() == Blueprint.TYPES.get("FUNCTION"):
+            self.functions.remove(bp)
+        elif bp.get_type() == Blueprint.TYPES.get("SPRITE"):
+            self.sprites.remove(bp)

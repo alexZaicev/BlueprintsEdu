@@ -8,6 +8,9 @@ from pygame.locals import *
 from utils.app_utils import Events
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from blueprints import attribute_blueprint
+from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from blueprints.function_blueprint import FunctionBlueprint as FB
+from blueprints.sprite_blueprint import SpriteBlueprint as SB
 
 
 class ControlPanelForm(Form):
@@ -61,12 +64,17 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
-    def blit(self, font, text, text2, coords):
+    def blit(self, font, text, text2, coords, header=True):
         if text is not None:
             text = str(text)
             t = font.render(text, True, Themes.DEFAULT_THEME.get("text_area_text"))
             r = t.get_rect()
             r.topleft = coords
+            if text2 is None and not header:
+                br = pg.Rect((int(r.left * .72), r.top), (int(r.width * 1.44), r.height))
+                if not self.ta_populated:
+                    self.__tas.append(br)
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), br, 0)
 
             self.display.blit(t, r)
 
@@ -145,14 +153,16 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().attributes:
-                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
-                          None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
+                if isinstance(bp, AB):
+                    self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
+                              None,
+                              (int(self.get_rect().left + self.get_rect().width * .12),
+                               int(banner.bottom * 1.1 + pos * margin)), header=False)
+                    pos += 1
 
-            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            r = pg.Rect(
+                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
             s = pos = pos + 1
         if len(self.__bp.get_blueprint().functions) > 0:
@@ -161,12 +171,14 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().functions:
-                self.blit(font, "{}()".format(bp.name), None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
-            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+                if isinstance(bp, FB):
+                    self.blit(font, "{}()".format(bp.name), None,
+                              (int(self.get_rect().left + self.get_rect().width * .12),
+                               int(banner.bottom * 1.1 + pos * margin)), header=False)
+                    pos += 1
+            r = pg.Rect(
+                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
     def draw_character_data(self, data, pos, font, banner, margin):
@@ -177,14 +189,16 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().attributes:
-                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
-                          None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
+                if isinstance(bp, AB):
+                    self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
+                              None,
+                              (int(self.get_rect().left + self.get_rect().width * .12),
+                               int(banner.bottom * 1.1 + pos * margin)), header=False)
+                    pos += 1
 
-            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            r = pg.Rect(
+                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
             s = pos = pos + 1
@@ -194,13 +208,15 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().functions:
-                self.blit(font, "{}()".format(bp.name), None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
+                if isinstance(bp, FB):
+                    self.blit(font, "{}()".format(bp.name), None,
+                              (int(self.get_rect().left + self.get_rect().width * .12),
+                               int(banner.bottom * 1.1 + pos * margin)), header=False)
+                    pos += 1
 
-            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            r = pg.Rect(
+                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
             s = pos = pos + 1
@@ -210,82 +226,116 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().sprites:
-                self.blit(font, "{}".format(bp.name), None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
+                if isinstance(bp, SB):
+                    self.blit(font, "{}".format(bp.name), None,
+                              (int(self.get_rect().left + self.get_rect().width * .12),
+                               int(banner.bottom * 1.1 + pos * margin)), header=False)
+                    pos += 1
 
-            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            r = pg.Rect(
+                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
     def check_form_events(self, event):
 
         def __check_textarea_selection():
-            found = False
-            self.__bp.reset_selection()
-            for ta in self.__tas:
-                if ta.collidepoint(event.pos) == 1:
-                    self.boarder_rect = ta
-                    found = True
-                    if self.__tas.index(ta) == 2:
-                        # DATA TYPE SELECTION
-                        self.__bp.data_type_pressed = True, ta
-                    break
-            else:  # if break then not reachable
-                self.__bp.reset_selection()
-            if not found:
-                self.boarder_rect = None
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    found = False
+                    self.__bp.reset_selection()
+                    for ta in self.__tas:
+                        if ta.collidepoint(event.pos) == 1:
+                            self.boarder_rect = ta
+                            found = True
+                            if self.__tas.index(ta) == 2:
+                                # DATA TYPE SELECTION
+                                self.__bp.data_type_pressed = True, ta
+                            break
+                    else:  # if break then not reachable
+                        self.__bp.reset_selection()
+                    if not found:
+                        self.boarder_rect = None
 
         super().check_form_events(event)
-        if event.type == MOUSEBUTTONDOWN:
-            if event.button == 1 and self.__bp is not None:
-                if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
-                    # ATTRIBUTE specific events
-                    self.__attribute_events(event)
-                elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
-                    # CHARACTER specific events
-                    self.__character_events(event)
-                elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
-                    # SPRITE specific events
-                    self.__sprite_events(event)
-                elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
-                    # FUNCTION specific events
-                    self.__function_event(event)
+        if self.__bp is not None:
+            if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+                # ATTRIBUTE specific events
+                self.__attribute_events(event)
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+                # CHARACTER specific events
+                self.__character_events(event)
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+                # SPRITE specific events
+                self.__sprite_events(event)
+            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+                # FUNCTION specific events
+                self.__function_event(event)
 
-                __check_textarea_selection()
-        elif event.type == KEYDOWN or event.type == KEYUP:
-            if self.__bp is not None and self.boarder_rect is not None:
-                c = Events.get_char(event.key, event.type)
-                if event.type == KEYDOWN:
-                    index = [
-                        i for i in range(0, len(self.__tas), 1) if self.__tas[i].topleft == self.boarder_rect.topleft
-                    ][0]
-                    if c == Events.SPECIAL_KEYS.get("DELETE"):
-                        self.__bp.set_data(index, "")
-                    elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
-                        dt = str(self.__bp.get_data().get(index))
-                        if len(dt) > 0:
-                            dt = dt[:-1]
-                            self.__bp.set_data(index, dt)
-                    elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
-                        # ALL UNREGISTERED KEYS ARE SKIPPED
-                        pass
-                    elif isinstance(c, str):
-                        self.__set_str(index, c)
+            __check_textarea_selection()
+
+            if event.type == KEYDOWN or event.type == KEYUP:
+                if self.boarder_rect is not None and self.ta_populated:
+                    c = Events.get_char(event.key, event.type)
+                    if event.type == KEYDOWN:
+                        index = [
+                            i for i in range(0, len(self.__tas), 1) if
+                            self.__tas[i].topleft == self.boarder_rect.topleft
+                        ][0]
+                        if c == Events.SPECIAL_KEYS.get("DELETE"):
+                            self.__bp.set_data(index, "")
+                        elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
+                            dt = str(self.__bp.get_data().get(index))
+                            if len(dt) > 0:
+                                dt = dt[:-1]
+                                self.__bp.set_data(index, dt)
+                        elif c == Events.SPECIAL_KEYS.get("UNREGISTERED"):
+                            # ALL UNREGISTERED KEYS ARE SKIPPED
+                            pass
+                        elif isinstance(c, str):
+                            self.__set_str(index, c)
 
     def __attribute_events(self, event):
-        for ls in self.__bp.data_type_selection:
-            if ls[0].collidepoint(event.pos) == 1:
-                self.__bp.set_data(2, ls[3])
-                self.__bp.reset_selection()
-                break
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                for ls in self.__bp.data_type_selection:
+                    if ls[0].collidepoint(event.pos) == 1:
+                        self.__bp.set_data(2, ls[3])
+                        self.__bp.reset_selection()
+                        break
 
     def __character_events(self, event):
-        pass
+        if event.type == KEYDOWN:
+            c = Events.get_char(event.key, event_type=event.type)
+            if c == Events.SPECIAL_KEYS.get("DELETE"):
+                if self.ta_populated and self.boarder_rect is not None:
+                    # DELETE connection from character
+                    al = list()
+                    al.extend(self.__bp.get_blueprint().attributes)
+                    al.extend(self.__bp.get_blueprint().functions)
+                    al.extend(self.__bp.get_blueprint().sprites)
+                    i = self.__tas.index(self.boarder_rect) - 2  # 2 = INDEX OF NAME AND TYPE TextAreas
+                    if 0 <= i < len(al):
+                        self.__bp.get_blueprint().remove_connection(al[i])
+                        self.__tas.clear()
+                        self.ta_populated = False
+                        self.boarder_rect = None
 
     def __sprite_events(self, event):
-        pass
+        if event.type == KEYDOWN:
+            c = Events.get_char(event.key, event_type=event.type)
+            if c == Events.SPECIAL_KEYS.get("DELETE"):
+                if self.ta_populated and self.boarder_rect is not None:
+                    # DELETE connection from character
+                    al = list()
+                    al.extend(self.__bp.get_blueprint().attributes)
+                    al.extend(self.__bp.get_blueprint().functions)
+                    i = self.__tas.index(self.boarder_rect) - 2  # 2 = INDEX OF NAME AND TYPE TextAreas
+                    if 0 <= i < len(al):
+                        self.__bp.get_blueprint().remove_connection(al[i])
+                        self.__tas.clear()
+                        self.ta_populated = False
+                        self.boarder_rect = None
 
     def __function_event(self, event):
         pass
