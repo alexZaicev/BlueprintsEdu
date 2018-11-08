@@ -145,6 +145,13 @@ class BlueprintControlForm(Form):
         self.__logger.debug(self.__bps)
         self.__bps_connections = BlueprintManager.generate_connections(bp_conn, self.__bps)
 
+    def clear_connections(self):
+        self.__bps_connections.clear()
+        for bp in self.__bps:
+            if isinstance(bp, CharacterBlueprint) or isinstance(bp, SpriteBlueprint):
+                bp.get_blueprint().clear_connections()
+        self.__logger.debug("Connections cleared")
+
     def connect_blueprints(self, bp_1, bp_2):
         valid = True
         type_1 = bp_1.get_blueprint().get_type()

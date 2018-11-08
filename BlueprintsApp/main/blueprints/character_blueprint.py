@@ -37,3 +37,8 @@ class CharacterBlueprint(Blueprint):
             self.functions.remove(bp)
         elif bp.get_type() == Blueprint.TYPES.get("SPRITE"):
             self.sprites.remove(bp)
+
+    def clear_connections(self):
+        self.attributes.clear()
+        self.functions.clear()
+        self.sprites.clear()

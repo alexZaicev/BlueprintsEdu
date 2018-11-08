@@ -3,11 +3,13 @@ from blueprints.blueprint import Blueprint
 
 class SpriteBlueprint(Blueprint):
 
-    def __init__(self, name=None, image=None, attributes=list(), functions=list()):
+    def __init__(self, name=None, image=None, attributes=None, functions=None):
         Blueprint.__init__(self, Blueprint.TYPES.get("SPRITE"), name)
         self.image = image
-        self.attributes = attributes
-        self.functions = functions
+        if attributes is None:
+            self.attributes = list()
+        if functions is None:
+            self.functions = list()
 
     def add_attribute(self, attribute):
         if attribute not in self.attributes:
@@ -22,3 +24,7 @@ class SpriteBlueprint(Blueprint):
             self.attributes.remove(bp)
         elif bp.get_type() == Blueprint.TYPES.get("FUNCTION"):
             self.functions.remove(bp)
+
+    def clear_connections(self):
+        self.attributes.clear()
+        self.functions.clear()

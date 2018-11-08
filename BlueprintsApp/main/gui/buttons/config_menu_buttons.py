@@ -8,7 +8,7 @@ class LanguageButton(Button):
     def __init__(self, pos):
         Button.__init__(self, StringUtils.get_string("ID_LANGUAGE"), pos)
 
-    def on_click(self, board):
+    def on_click(self, board, form=None):
         super().on_click(board)
 
     def update_button(self, color=Themes.DEFAULT_THEME.get("button")):
@@ -20,7 +20,7 @@ class ThemeButton(Button):
     def __init__(self, pos):
         Button.__init__(self, StringUtils.get_string("ID_THEME"), pos)
 
-    def on_click(self, board):
+    def on_click(self, board, form=None):
         super().on_click(board)
 
     def update_button(self, color=Themes.DEFAULT_THEME.get("button")):

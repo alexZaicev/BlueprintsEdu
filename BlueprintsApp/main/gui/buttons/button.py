@@ -29,7 +29,7 @@ class Button(ABC):
         self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
-    def on_click(self, board):
+    def on_click(self, board, form=None):
         pass
 
     def get_text(self):
@@ -80,3 +80,7 @@ class Button(ABC):
         text_rect = self.__text.get_rect()
         text_rect.center = self.get_rect().center
         return text_rect
+
+    def change_font_color(self, color):
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(self.__height * .5))
+        self.__text = font.render(self.__text_str, True, color)

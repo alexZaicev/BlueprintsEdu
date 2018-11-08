@@ -10,7 +10,7 @@ class BackButton(Button):
     def __init__(self, pos=0):
         Button.__init__(self, StringUtils.get_string("ID_BACK"), pos)
 
-    def on_click(self, board, scene=None):
+    def on_click(self, board, scene=None, form=None):
         super().on_click(board)
         if scene is None:
             board.set_scene(scene_utils.WELCOME_SCENE)

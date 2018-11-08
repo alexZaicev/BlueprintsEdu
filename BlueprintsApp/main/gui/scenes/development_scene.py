@@ -1,9 +1,7 @@
 from gui.scenes.scene_builder import SceneBuilder
 from utils import logger_utils
-from utils.gui_utils import Themes
 import pygame as pg
 from utils import app_utils, gui_utils
-from utils.string_utils import StringUtils
 from gui.forms.control_panel_form import ControlPanelForm
 from gui.forms.blueprint_control_form import BlueprintControlForm
 from gui.buttons.exit_button import ExitButton
@@ -12,7 +10,6 @@ from gui.buttons.develop_menu_buttons import *
 
 
 class DevelopmentScene(SceneBuilder):
-
     BTN_SIZE = [1.1, .05]
 
     def __init__(self, display, project):
@@ -34,11 +31,14 @@ class DevelopmentScene(SceneBuilder):
         self.__init_btn_size()
         self.__file_menu_content = self.__init_file_menu()
         self.__edit_menu_content = self.__init_edit_menu()
+        self.__settings_menu_content = self.__init_settings_menu()
+        self.__run_menu_content = self.__init_run_menu()
         self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
             self.__btn_settings_pressed = False, False, False, False
 
         self.__cont_panel = ControlPanelForm(self.display,
-                                             (int(app_utils.BOARD_WIDTH * .005), int(self.btn_file.get_rect().bottom * 1.005)),
+                                             (int(app_utils.BOARD_WIDTH * .005),
+                                              int(self.btn_file.get_rect().bottom * 1.005)),
                                              (int(app_utils.BOARD_WIDTH * .265), int(app_utils.BOARD_HEGHT * .945)))
         self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display, self.__project,
                                                (int(self.__cont_panel.get_rect().right + app_utils.BOARD_WIDTH * .005),
@@ -48,7 +48,7 @@ class DevelopmentScene(SceneBuilder):
         if project.get("CONNECTIONS") is not None and project.get("BLUEPRINTS") is not None:
             self.__bp_panel.load_project(project.get("CONNECTIONS"), project.get("BLUEPRINTS"))
 
-# ----------------INITIALIZATIONS----------------
+    # ----------------INITIALIZATIONS----------------
 
     def __init_btn_coords(self):
         self.btn_file.set_custom_coordinates(
@@ -56,7 +56,8 @@ class DevelopmentScene(SceneBuilder):
              int(0 + self.btn_file.get_rect().height * .5)))
         self.btn_edit.set_custom_coordinates(
             (int(self.btn_file.get_rect().right + (self.btn_run.get_rect().width * .5
-                                                   + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)), int(0 + self.btn_file.get_rect().height * .5)))
+                                                   + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)),
+             int(0 + self.btn_file.get_rect().height * .5)))
         self.btn_run.set_custom_coordinates(
             (int(self.btn_edit.get_rect().right + (self.btn_run.get_rect().width * .5
                                                    + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)),
@@ -78,9 +79,14 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_file.get_rect()
         # TODO investigate why r.left offset is different for each button
 
+        close = CloseProject()
+        close.set_custom_size(DevelopmentScene.BTN_SIZE)
+        close.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), r.bottom))
+        close.color = Themes.DEFAULT_THEME.get("menu_background")
+
         save = SaveButton()
         save.set_custom_size(DevelopmentScene.BTN_SIZE)
-        save.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .003), r.bottom))
+        save.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .003), close.get_rect().bottom))
         save.color = Themes.DEFAULT_THEME.get("menu_background")
 
         sae = SaveExitButton()
@@ -88,12 +94,12 @@ class DevelopmentScene(SceneBuilder):
         sae.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), save.get_rect().bottom))
         sae.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        exit = ExitButton()
-        exit.set_custom_size(DevelopmentScene.BTN_SIZE)
-        exit.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), sae.get_rect().bottom))
-        exit.color = Themes.DEFAULT_THEME.get("menu_background")
+        ex = ExitButton()
+        ex.set_custom_size(DevelopmentScene.BTN_SIZE)
+        ex.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), sae.get_rect().bottom))
+        ex.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([save, sae, exit])
+        result.extend([close, save, sae, ex])
         return result
 
     def __init_edit_menu(self):
@@ -119,14 +125,28 @@ class DevelopmentScene(SceneBuilder):
         add_sprite.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([add_attr, add_char, add_func, add_sprite])
+        clear = ClearConnections()
+        clear.set_custom_size(DevelopmentScene.BTN_SIZE)
+        clear.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_sprite.get_rect().bottom))
+        clear.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        result.extend([add_attr, add_char, add_func, add_sprite, clear])
         return result
 
-# ----------------END----------------
+    def __init_settings_menu(self):
+        result = list()
+        return result
+
+    def __init_run_menu(self):
+        result = list()
+        return result
+
+    # ----------------END----------------
 
     def draw_menu_buttons(self):
         """Description: function draws development menu navigation barself.
             Button <<FILE>>: Opens project/file manipulation to the user
+            Button <<EDIT>>: Opens project editing options to the user
             Button <<RUN>>: Opens run/build project manipulation to the user
             Button <<SETTINGS>>: Opens blueprints/blueprint development window manipulation to the user
         """
@@ -143,7 +163,8 @@ class DevelopmentScene(SceneBuilder):
     def draw_drop_down(self):
         def __draw_file_menu():
             r = pg.Rect((self.btn_file.get_rect().left, self.btn_file.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
+                        (int(app_utils.BOARD_WIDTH * .15),
+                         int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__file_menu_content:
                 pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
@@ -151,7 +172,8 @@ class DevelopmentScene(SceneBuilder):
 
         def __draw_edit_menu():
             r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .15), int(self.btn_file.get_rect().height * len(self.__edit_menu_content))))
+                        (int(app_utils.BOARD_WIDTH * .2),
+                         int(self.btn_file.get_rect().height * len(self.__edit_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__edit_menu_content:
                 pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
@@ -183,6 +205,7 @@ class DevelopmentScene(SceneBuilder):
         super().draw_scene()
 
     def check_button_hover(self):
+        self.check_menu_button_hoover()
         if not self.__btn_settings_pressed:
             if self.btn_settings.is_hovered(pg.mouse.get_pos()):
                 self.btn_settings.color = Themes.DEFAULT_THEME.get("selection_background")
@@ -212,6 +235,28 @@ class DevelopmentScene(SceneBuilder):
         else:
             self.btn_edit.color = Themes.DEFAULT_THEME.get("selection_background")
 
+    def check_menu_button_hoover(self):
+        for btn in self.__file_menu_content:
+            if btn.get_rect().collidepoint(pg.mouse.get_pos()):
+                btn.change_font_color(Themes.DEFAULT_THEME.get("text_area_text"))
+            else:
+                btn.change_font_color(Themes.DEFAULT_THEME.get("font"))
+        for btn in self.__edit_menu_content:
+            if btn.get_rect().collidepoint(pg.mouse.get_pos()):
+                btn.change_font_color(Themes.DEFAULT_THEME.get("text_area_text"))
+            else:
+                btn.change_font_color(Themes.DEFAULT_THEME.get("font"))
+        for btn in self.__settings_menu_content:
+            if btn.get_rect().collidepoint(pg.mouse.get_pos()):
+                btn.change_font_color(Themes.DEFAULT_THEME.get("text_area_text"))
+            else:
+                btn.change_font_color(Themes.DEFAULT_THEME.get("font"))
+        for btn in self.__run_menu_content:
+            if btn.get_rect().collidepoint(pg.mouse.get_pos()):
+                btn.change_font_color(Themes.DEFAULT_THEME.get("text_area_text"))
+            else:
+                btn.change_font_color(Themes.DEFAULT_THEME.get("font"))
+
     def check_events(self, event, board):
         super().check_events(event, board)
 
@@ -221,16 +266,13 @@ class DevelopmentScene(SceneBuilder):
             self.__btn_run_pressed = False
             self.__btn_settings_pressed = False
 
-        def __check_file_menu_press(pos, board):
+        def __check_file_menu_press():
             if self.__btn_file_pressed:
                 for btn in self.__file_menu_content:
                     if btn.get_rect().collidepoint(pos):
-                        if isinstance(btn, SaveButton) or isinstance(btn, SaveExitButton):
-                            btn.on_click(board, self.__bp_panel)
-                        else:
-                            btn.on_click(board)
+                        btn.on_click(board, self.__bp_panel)
 
-        def __check_edit_menu_press(pos, board):
+        def __check_edit_menu_press():
             if self.__btn_edit_pressed:
                 for btn in self.__edit_menu_content:
                     if btn.get_rect().collidepoint(pos):
@@ -251,8 +293,8 @@ class DevelopmentScene(SceneBuilder):
                     __reset_btn_menu()
                     self.__btn_edit_pressed = True
             else:
-                __check_file_menu_press(pos, board)
-                __check_edit_menu_press(pos, board)
+                __check_file_menu_press()
+                __check_edit_menu_press()
                 __reset_btn_menu()
         self.__cont_panel.check_form_events(event)
         self.__bp_panel.check_form_events(event)
