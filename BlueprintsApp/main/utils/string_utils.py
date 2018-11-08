@@ -67,7 +67,10 @@ class StringUtils(Utils):
         "ID_FUNCTIONS": "Functions",
         "ID_SPRITES": "Sprites",
         "ID_CLOSE_PROJECT": "Close Project",
-        "ID_CLEAR_CONNECTIONS": "Clear Connections"
+        "ID_CLEAR_CONNECTIONS": "Clear Connections",
+        "ID_GENERATE": "Generate",
+        "ID_GENERATE_AND_RUN": "Generate and Run",
+        "ID_DISPLAY": "Display"
     }
 
     RUSSIAN_DICT = {

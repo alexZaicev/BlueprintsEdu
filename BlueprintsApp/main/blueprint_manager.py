@@ -118,7 +118,7 @@ class BlueprintManager(object):
         bp = BlueprintManager.get_general_data(data)
         d = dict()
         d["TYPE"] = data.get_data_type()
-        d["NAME"] = data.get_value()
+        d["VALUE"] = data.get_value()
         bp["DATA"] = d
         return bp
 

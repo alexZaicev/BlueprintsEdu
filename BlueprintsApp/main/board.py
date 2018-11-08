@@ -4,6 +4,7 @@ import pygame as pg
 from utils.enums import status
 from utils import scene_utils
 from config_manager import ConfigManager
+from utils.app_utils import DisplaySettings
 
 
 class Board(object):
@@ -19,8 +20,7 @@ class Board(object):
 
     def __setup_board(self):
         self.clock = pg.time.Clock()
-        self.display = pg.display.set_mode((app_utils.BOARD_WIDTH, app_utils.BOARD_HEGHT))
-        # TODO load saved theme from config
+        self.display = pg.display.set_mode(DisplaySettings.DEFAULT_SCREEN_SIZE)
         self.__scene_builder = scene_utils.get_scene(scene_utils.WELCOME_SCENE, self.display)
         pg.display.set_caption(app_utils.CAPTION)
 

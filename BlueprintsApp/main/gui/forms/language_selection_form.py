@@ -8,7 +8,7 @@ from pygame.locals import *
 from utils import logger_utils
 
 
-class LanguageSelectForm(Form):
+class LanguageSelectionForm(Form):
 
     def __init__(self, display, coords=None, size=None):
         Form.__init__(self, display, coords, size)
@@ -19,13 +19,14 @@ class LanguageSelectForm(Form):
         self.__lang_content = list()
         self.__lang_counter = 0
         self.__is_drop_down_pressed = False
+        self.__selected = False
 
     def get_icon(self, menu):
         img = pg.image.load(Images.DROP_DOWN)
         img_rect = img.get_rect()
         img_rect.midright = (
             int(menu.right - app_utils.BOARD_WIDTH * .01), int(menu.center[1]))
-        return (img, img_rect)
+        return img, img_rect
 
     def draw_form(self):
         super().draw_form()
@@ -102,10 +103,10 @@ class LanguageSelectForm(Form):
         elif event.type == MOUSEBUTTONDOWN:
             if self.__is_drop_down_pressed:
                 if event.button == 4:
-                    self.__theme_counter -= 1
-                elif event.button == 5 and len(Themes.THEMES) > 3:
+                    self.__lang_counter -= 1
+                elif event.button == 5 and len(StringUtils.LANGUAGES) > 3:
                     self.__lang_counter += 1
                 if self.__lang_counter < 0:
                     self.__lang_counter = 0
-                elif (len(Themes.THEMES) > 3) and (self.__lang_counter > len(Themes.THEMES) - 3):
-                    self.__lang_counter = (len(Themes.THEMES) - 3)
+                elif (len(StringUtils.LANGUAGES) > 3) and (self.__lang_counter > len(StringUtils.LANGUAGES) - 3):
+                    self.__lang_counter = (len(StringUtils.LANGUAGES) - 3)

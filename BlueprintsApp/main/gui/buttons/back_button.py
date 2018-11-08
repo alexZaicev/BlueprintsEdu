@@ -1,7 +1,6 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
 from utils import scene_utils
-import time
 from utils.gui_utils import Themes
 
 

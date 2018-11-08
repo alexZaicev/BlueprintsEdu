@@ -153,7 +153,7 @@ class SaveExitButton(Button):
         super().update_button(text, color)
 
 
-class CloseProject(Button):
+class CloseProjectButton(Button):
 
     def __init__(self, pos=0):
         Button.__init__(self, StringUtils.get_string("ID_CLOSE_PROJECT"), pos)
@@ -170,7 +170,7 @@ class CloseProject(Button):
         super().update_button(text, color)
 
 
-class ClearConnections(Button):
+class ClearConnectionsButton(Button):
 
     def __init__(self, pos=0):
         Button.__init__(self, StringUtils.get_string("ID_CLEAR_CONNECTIONS"), pos)
@@ -184,3 +184,39 @@ class ClearConnections(Button):
         super().on_click(board)
         if form is not None:
             form.clear_connections()
+
+
+class GenerateButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_GENERATE"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_GENERATE")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        # TODO prepare data file for transfer
+        # TODO transfer data
+        # TODO receive data, inform user
+
+
+class GenerateRunButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_GENERATE_AND_RUN"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_GENERATE_AND_RUN")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        # TODO prepare data file for transfer
+        # TODO transfer data
+        # TODO receive data, inform user
+        # TODO execute received files
+

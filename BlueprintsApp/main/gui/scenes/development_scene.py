@@ -79,7 +79,7 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_file.get_rect()
         # TODO investigate why r.left offset is different for each button
 
-        close = CloseProject()
+        close = CloseProjectButton()
         close.set_custom_size(DevelopmentScene.BTN_SIZE)
         close.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), r.bottom))
         close.color = Themes.DEFAULT_THEME.get("menu_background")
@@ -125,7 +125,7 @@ class DevelopmentScene(SceneBuilder):
         add_sprite.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        clear = ClearConnections()
+        clear = ClearConnectionsButton()
         clear.set_custom_size(DevelopmentScene.BTN_SIZE)
         clear.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_sprite.get_rect().bottom))
         clear.color = Themes.DEFAULT_THEME.get("menu_background")
@@ -135,10 +135,26 @@ class DevelopmentScene(SceneBuilder):
 
     def __init_settings_menu(self):
         result = list()
+        r = self.btn_settings.get_rect()
+
+        result.extend([])
         return result
 
     def __init_run_menu(self):
         result = list()
+        r = self.btn_run.get_rect()
+
+        gen = GenerateButton()
+        gen.set_custom_size(DevelopmentScene.BTN_SIZE)
+        gen.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
+        gen.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        gen_run = GenerateRunButton()
+        gen_run.set_custom_size(DevelopmentScene.BTN_SIZE)
+        gen_run.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), gen.get_rect().bottom))
+        gen_run.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        result.extend([gen, gen_run])
         return result
 
     # ----------------END----------------
@@ -180,19 +196,31 @@ class DevelopmentScene(SceneBuilder):
                 self.display.blit(btn.get_text(), btn.get_text_rect())
 
         def __draw_run_menu():
-            pass
+            r = pg.Rect((self.btn_run.get_rect().left, self.btn_run.get_rect().bottom),
+                        (int(app_utils.BOARD_WIDTH * .2),
+                         int(self.btn_file.get_rect().height * len(self.__run_menu_content))))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
+            for btn in self.__run_menu_content:
+                pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
+                self.display.blit(btn.get_text(), btn.get_text_rect())
 
         def __draw_settings_menu():
-            pass
+            r = pg.Rect((self.btn_settings.get_rect().left, self.btn_settings.get_rect().bottom),
+                        (int(app_utils.BOARD_WIDTH * .2),
+                         int(self.btn_file.get_rect().height * len(self.__settings_menu_content))))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
+            for btn in self.__settings_menu_content:
+                pg.draw.rect(self.display, btn.color, btn.get_rect(), 0)
+                self.display.blit(btn.get_text(), btn.get_text_rect())
 
         if self.__btn_file_pressed:
             __draw_file_menu()
         elif self.__btn_edit_pressed:
             __draw_edit_menu()
         elif self.__btn_run_pressed:
-            pass
+            __draw_run_menu()
         elif self.__btn_settings_pressed:
-            pass
+            __draw_settings_menu()
 
     def draw_scene(self):
         """Description: main scene drawing function, orchestrating component drawings on display
@@ -278,6 +306,18 @@ class DevelopmentScene(SceneBuilder):
                     if btn.get_rect().collidepoint(pos):
                         btn.on_click(board, self.__bp_panel)
 
+        def __check_run_menu_press():
+            if self.__btn_run_pressed:
+                for btn in self.__run_menu_content:
+                    if btn.get_rect().collidepoint(pos):
+                        btn.on_click(board, self.__bp_panel)
+
+        def __check_settings_menu_press():
+            if self.__btn_settings_pressed:
+                for btn in self.__settings_menu_content:
+                    if btn.get_rect().collidepoint(pos):
+                        btn.on_click(board, self.__bp_panel)
+
         if event.type == MOUSEBUTTONDOWN:
             pos = pg.mouse.get_pos()
             if self.btn_file.get_rect().collidepoint(pos):
@@ -292,9 +332,23 @@ class DevelopmentScene(SceneBuilder):
                 else:
                     __reset_btn_menu()
                     self.__btn_edit_pressed = True
+            elif self.btn_run.get_rect().collidepoint(pos):
+                if self.__btn_run_pressed:
+                    __reset_btn_menu()
+                else:
+                    __reset_btn_menu()
+                    self.__btn_run_pressed = True
+            elif self.btn_settings.get_rect().collidepoint(pos):
+                if self.__btn_settings_pressed:
+                    __reset_btn_menu()
+                else:
+                    __reset_btn_menu()
+                    self.__btn_settings_pressed = True
             else:
                 __check_file_menu_press()
                 __check_edit_menu_press()
+                __check_run_menu_press()
+                __check_settings_menu_press()
                 __reset_btn_menu()
         self.__cont_panel.check_form_events(event)
         self.__bp_panel.check_form_events(event)

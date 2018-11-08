@@ -1,6 +1,7 @@
 from utils.utils import Utils
 from utils.string_utils import StringUtils
 from pygame.locals import *
+import pygame as pg
 
 CAPTION = "BlueprintEdu V1.0"
 
@@ -13,7 +14,6 @@ FPS = 90
 
 
 class Events(Utils):
-
     SPECIAL_KEYS = {
         "DELETE": "DEL",
         "BACKSPACE": "BACK",
@@ -191,7 +191,6 @@ class Events(Utils):
 
 
 class DisplaySettings(Utils):
-
     DEFAULT_SCREEN_SIZE = [1024, 720]
 
     SCREEN_SIZES = {
@@ -200,8 +199,33 @@ class DisplaySettings(Utils):
     }
 
     @classmethod
-    def get_size(cls, size_id):
-        return DisplaySettings.SCREEN_SIZES.get(size_id)
+    def get_size_by_key(cls, key):
+        return DisplaySettings.SCREEN_SIZES.get(key)
+
+    @classmethod
+    def get_size_name(cls, size=None):
+        r = None
+        if size is None:
+            size = DisplaySettings.DEFAULT_SCREEN_SIZE
+        for k, v in DisplaySettings.SCREEN_SIZES.items():
+            if v == size:
+                r = k
+        return r
+
+    @classmethod
+    def get_size_by_id(cls, size_id):
+        r = None
+        i = 0
+        for k, v in DisplaySettings.SCREEN_SIZES.items():
+            if i == size_id:
+                r = v
+                break
+            i += 1
+        return r
+
+    @classmethod
+    def set_size_by_key(cls, key):
+        DisplaySettings.DEFAULT_SCREEN_SIZE = DisplaySettings.get_size_by_key(key)
 
 
 class Colors(Utils):
