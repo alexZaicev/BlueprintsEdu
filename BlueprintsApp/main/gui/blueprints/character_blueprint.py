@@ -24,6 +24,8 @@ class CharacterBlueprint(Blueprint):
 
     def set_data(self, index, data):
         super().set_data(index, data)
+        self.update_displayed_data(self.font.render(self.get_blueprint().name,
+                                                    True, Themes.DEFAULT_THEME.get("font")))
 
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
@@ -31,3 +33,6 @@ class CharacterBlueprint(Blueprint):
 
     def reset_selection(self):
         super().reset_selection()
+
+    def update_displayed_data(self, text):
+        super().update_displayed_data(text)

@@ -176,6 +176,8 @@ class BlueprintControlForm(Form):
                     bp_1.get_blueprint().add_attribute(bp_2.get_blueprint())
                 elif type_2 == Blueprint.TYPES.get("FUNCTION"):
                     bp_1.get_blueprint().add_function(bp_2.get_blueprint())
+                elif type_2 == Blueprint.TYPES.get("CHARACTER"):
+                    bp_2.get_blueprint().add_sprite(bp_1.get_blueprint())
             # OTHER WAY AROUND
             elif type_2 == Blueprint.TYPES.get("CHARACTER"):
                 if type_1 == Blueprint.TYPES.get("ATTRIBUTE"):
@@ -189,5 +191,7 @@ class BlueprintControlForm(Form):
                     bp_2.get_blueprint().add_attribute(bp_1.get_blueprint())
                 elif type_1 == Blueprint.TYPES.get("FUNCTION"):
                     bp_2.get_blueprint().add_function(bp_1.get_blueprint())
+                elif type_1 == Blueprint.TYPES.get("CHARACTER"):
+                    bp_1.get_blueprint().add_sprite(bp_2.get_blueprint())
             self.__bps_connections.append([bp_1, bp_2])
             self.__logger.debug("Blueprints connected")

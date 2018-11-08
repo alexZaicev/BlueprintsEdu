@@ -134,10 +134,31 @@ class ControlPanelForm(Form):
                    int(banner.bottom * 1.1 + pos * margin)))
 
     def draw_function_data(self, data, pos, font, banner, margin):
+        # TODO implement method
         pass
 
     def draw_sprite_data(self, data, pos, font, banner, margin):
-        pass
+        if len(self.__bp.get_blueprint().attributes) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().attributes:
+                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
+                          None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
+        if len(self.__bp.get_blueprint().functions) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().functions:
+                self.blit(font, "{}()".format(bp.name), None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
 
     def draw_character_data(self, data, pos, font, banner, margin):
         if len(self.__bp.get_blueprint().attributes) > 0:
@@ -157,7 +178,7 @@ class ControlPanelForm(Form):
                        int(banner.bottom * 1.1 + pos * margin)))
             pos += 1
             for bp in self.__bp.get_blueprint().functions:
-                self.blit(font, "{}".format(bp.name), None,
+                self.blit(font, "{}()".format(bp.name), None,
                           (int(self.get_rect().left + self.get_rect().width * .12),
                            int(banner.bottom * 1.1 + pos * margin)))
                 pos += 1

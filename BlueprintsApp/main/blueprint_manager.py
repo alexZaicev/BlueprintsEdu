@@ -72,6 +72,13 @@ class BlueprintManager(object):
         BlueprintManager.__LOGGER.debug(contents)
         for d in contents:
             r.append(BlueprintManager.call_reverse_parser(panel, d))
+        # FIND CHARACTER/SPRITE AND PARSE CONNECTIONS
+        if len(r) > 0:
+            for bp in r:
+                if bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+                    BlueprintManager.sort_character_connections(bp, r)
+                elif bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+                    BlueprintManager.sort_sprite_connections(bp, r)
         return r
 
     @classmethod
@@ -124,17 +131,31 @@ class BlueprintManager(object):
     @classmethod
     def parse_sprite(cls, data):
         bp = BlueprintManager.get_general_data(data)
-        bp["ATTRIBUTES"] = data.attributes
-        bp["FUNCTIONS"] = data.functions
+        d = dict()
+        for att in data.attributes:
+            d[att.name] = att.get_type()
+        bp["ATTRIBUTES"] = d
+        d = dict()
+        for func in data.functions:
+            d[func.name] = func.get_type()
+        bp["FUNCTIONS"] = d
         return bp
 
     @classmethod
     def parse_character(cls, data):
         bp = BlueprintManager.get_general_data(data)
-        # TODO implement saving for bellow lists
-        # bp["ATTRIBUTES"] = data.attributes
-        # bp["FUNCTIONS"] = data.functions
-        # bp["SPRITES"] = data.sprites
+        d = dict()
+        for att in data.attributes:
+            d[att.name] = att.get_type()
+        bp["ATTRIBUTES"] = d
+        d = dict()
+        for func in data.functions:
+            d[func.name] = func.get_type()
+        bp["FUNCTIONS"] = d
+        d = dict()
+        for sp in data.sprites:
+            d[sp.name] = sp.get_type()
+        bp["SPRITES"] = d
         return bp
 
     @classmethod
@@ -165,6 +186,10 @@ class BlueprintManager(object):
     def reverse_parse_sprite(cls, panel, data):
         d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
         bp = SB(name=d.get("NAME"))
+        for k, v in d.get("ATTRIBUTES").items():
+            bp.attributes.append({k: v})
+        for k, v in d.get("FUNCTIONS").items():
+            bp.functions.append({k: v})
         bp_gui = SpriteBlueprint(panel)
         bp_gui.initialize(
             (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
@@ -177,6 +202,12 @@ class BlueprintManager(object):
     def reverse_parse_character(cls, panel, data):
         d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
         bp = CB(name=d.get("NAME"))
+        for k, v in d.get("ATTRIBUTES").items():
+            bp.attributes.append({k: v})
+        for k, v in d.get("FUNCTIONS").items():
+            bp.functions.append({k: v})
+        for k, v in d.get("SPRITES").items():
+            bp.sprites.append({k: v})
         bp_gui = CharacterBlueprint(panel)
         bp_gui.initialize(
             (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
@@ -184,3 +215,53 @@ class BlueprintManager(object):
             bp, panel
         )
         return bp_gui
+
+    @classmethod
+    def sort_character_connections(cls, character, bp_guis):
+        cb = character.get_blueprint()
+        bps = [
+            bp.get_blueprint() for bp in bp_guis
+        ]
+        # SORT ATTRIBUTES
+        a, f, s = list(), list(), list()
+        for att in cb.attributes:
+            for bp in bps:
+                name = list(att.keys())[0]
+                if name == bp.name and att.get(name) == bp.get_type():
+                    a.append(bp)
+        # SORT FUNCTIONS
+        for func in cb.functions:
+            for bp in bps:
+                name = list(func.keys())[0]
+                if name == bp.name and func.get(name) == bp.get_type():
+                    f.append(bp)
+        # SORT SPRITES
+        for sp in cb.sprites:
+            for bp in bps:
+                name = list(sp.keys())[0]
+                if name == bp.name and sp.get(name) == bp.get_type():
+                    s.append(bp)
+        cb.attributes = a
+        cb.functions = f
+        cb.sprites = s
+
+    @classmethod
+    def sort_sprite_connections(cls, sprite, bp_guis):
+        sb = sprite.get_blueprint()
+        bps = [
+            bp.get_blueprint() for bp in bp_guis
+        ]
+        a, f = list(), list()
+        for att in sb.attributes:
+            for bp in bps:
+                name = list(att.keys())[0]
+                if name == bp.name and att.get(name) == bp.get_type():
+                    a.append(bp)
+        # SORT FUNCTIONS
+        for func in sb.functions:
+            for bp in bps:
+                name = list(func.keys())[0]
+                if name == bp.name and func.get(name) == bp.get_type():
+                    f.append(bp)
+        sb.attributes = a
+        sb.functions = f

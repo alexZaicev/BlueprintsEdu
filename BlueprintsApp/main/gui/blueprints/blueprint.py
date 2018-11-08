@@ -65,9 +65,9 @@ class Blueprint(ABC):
         self.font = font
         self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
-    def update_displayed_data(self):
-        # TODO make abstract
-        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+    @abstractmethod
+    def update_displayed_data(self, text):
+        self.__text = text
 
     def get_text_rect(self):
         rect_txt = self.__text.get_rect()
@@ -91,4 +91,3 @@ class Blueprint(ABC):
     def set_data(self, index, data):
         if index == 0:
             self.__blueprint.name = data
-        self.update_displayed_data()

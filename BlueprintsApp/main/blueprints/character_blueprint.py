@@ -3,12 +3,14 @@ from blueprints.blueprint import Blueprint
 
 class CharacterBlueprint(Blueprint):
 
-    def __init__(self, name=None, attributes=None, functions=None, sprites=list()):
+    def __init__(self, name=None, attributes=None, functions=None, sprites=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("CHARACTER"), name=name)
         if functions is None:
             functions = list()
         if attributes is None:
             attributes = list()
+        if sprites is None:
+            sprites = list()
         self.attributes = attributes  # DATA RELATED TO CHARACTER
         self.functions = functions
         self.sprites = sprites

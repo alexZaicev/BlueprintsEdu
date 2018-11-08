@@ -50,3 +50,8 @@ class AttributeBlueprint(Blueprint):
         elif index == 3:
             self.get_blueprint().set_value(data)
         super().set_data(index, data)
+        self.update_displayed_data(self.font.render(self.get_blueprint().name,
+                                                    True, Themes.DEFAULT_THEME.get("font")))
+
+    def update_displayed_data(self, text):
+        super().update_displayed_data(text)
