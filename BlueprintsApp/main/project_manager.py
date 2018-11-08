@@ -4,7 +4,6 @@ import time
 import datetime
 import shutil
 from project import Project
-from utils.gui_utils import Themes
 import json
 from blueprint_manager import BlueprintManager
 

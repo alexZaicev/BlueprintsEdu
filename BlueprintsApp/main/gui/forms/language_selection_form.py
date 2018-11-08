@@ -3,7 +3,7 @@ import pygame as pg
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
 from utils.app_utils import Images
-from utils import app_utils
+from utils.app_utils import DisplaySettings
 from pygame.locals import *
 from utils import logger_utils
 
@@ -21,6 +21,9 @@ class LanguageSelectionForm(Form):
         self.__is_drop_down_pressed = False
         self.__selected = False
 
+    def update_form(self, coords=None, size=None):
+        super().update_form(coords=coords, size=size)
+
     def draw_form(self):
         super().draw_form()
         if self.visible:
@@ -35,7 +38,8 @@ class LanguageSelectionForm(Form):
             self.lang_select.centerx = self.get_rect().centerx
             img = Images.get_icon(Images.DROP_DOWN)
             img[1].midright = (
-                int(self.lang_select.right - app_utils.BOARD_WIDTH * .01), int(self.lang_select.center[1]))
+                int(self.lang_select.right - DisplaySettings.get_size_by_key()[0] * .01),
+                int(self.lang_select.center[1]))
             self.btn_drop_down = img[1]
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.lang_select, 0)
             self.display.blit(img[0], img[1])
@@ -53,7 +57,8 @@ class LanguageSelectionForm(Form):
             for pos in range(self.__lang_counter, len(StringUtils.LANGUAGES), 1):
                 if (pos - self.__lang_counter) < 3:
                     rect = pg.Rect((self.lang_select.x, int(self.lang_select.y +
-                                                            self.lang_select.height * ((pos - self.__lang_counter) + 1))),
+                                                            self.lang_select.height * (
+                                                                        (pos - self.__lang_counter) + 1))),
                                    self.lang_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.lang_select.height * 0.6))

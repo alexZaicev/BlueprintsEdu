@@ -2,6 +2,7 @@
 project '.blue' file configuration and loads that configuration to generate a working copy of a
 selected game API
 """
+from __future__ import division
 import json
 from blueprints.blueprint import Blueprint
 from utils import logger_utils
@@ -13,6 +14,7 @@ from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
+from utils.app_utils import DisplaySettings
 
 
 class BlueprintManager(object):
@@ -41,17 +43,28 @@ class BlueprintManager(object):
         return bp_conns
 
     @classmethod
+    def to_percentage(cls, value, constant):
+        return int(value * 100 / constant)
+
+    @classmethod
+    def from_percentage(cls, value, constant):
+        return int(constant / 100 * value)
+
+    @classmethod
     def parse_blueprints(cls, bps, bp_conns):
         """Description: Function analyses and creates JSON-format .bp files from
         blueprint connections.
         """
         data = dict()
         conns = list()
+        size = DisplaySettings.get_size_by_key()
         for bp, bp_rect in bps:
             d = dict()
             d["BLUEPRINT"] = BlueprintManager.call_parser(bp)
-            d["RECTANGLE"] = {"COORDS": {"X": bp_rect[0][0], "Y": bp_rect[0][1]},
-                              "SIZE": {"WIDTH": bp_rect[1][0], "HEIGHT": bp_rect[1][1]}}
+            d["RECTANGLE"] = {"COORDS": {"X": BlueprintManager.to_percentage(bp_rect[0][0], size[0]),
+                                         "Y": BlueprintManager.to_percentage(bp_rect[0][1], size[1])},
+                              "SIZE": {"WIDTH": BlueprintManager.to_percentage(bp_rect[1][0], size[0]),
+                                       "HEIGHT": BlueprintManager.to_percentage(bp_rect[1][1], size[1])}}
             data[bp.name] = json.dumps(d)
         for i in range(0, len(bp_conns), 1):
             bp1, bp2 = bp_conns[i]
@@ -160,31 +173,38 @@ class BlueprintManager(object):
 
     @classmethod
     def reverse_parse_attribute(cls, panel, data):
-        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
         bp = AB(name=d.get("NAME"), data_type=d.get("DATA").get("TYPE"), value=d.get("DATA").get("VALUE"))
         bp_gui = AttributeBlueprint(panel)
         bp_gui.initialize(
-            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
-            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            r[0], r[1],
             bp, panel
         )
         return bp_gui
 
     @classmethod
     def reverse_parse_function(cls, panel, data):
-        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
         bp = FB(name=d.get("NAME"))
         bp_gui = FunctionBlueprint(panel)
         bp_gui.initialize(
-            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
-            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            r[0], r[1],
             bp, panel
         )
         return bp_gui
 
     @classmethod
+    def extract_rect(cls, rect):
+        size = DisplaySettings.get_size_by_key()
+        coord = (BlueprintManager.from_percentage(rect.get("COORDS").get("X"), size[0]),
+                 BlueprintManager.from_percentage(rect.get("COORDS").get("Y"), size[1]))
+        size = (BlueprintManager.from_percentage(rect.get("SIZE").get("WIDTH"), size[0]),
+                BlueprintManager.from_percentage(rect.get("SIZE").get("HEIGHT"), size[1]))
+        return coord, size
+
+    @classmethod
     def reverse_parse_sprite(cls, panel, data):
-        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
         bp = SB(name=d.get("NAME"))
         for k, v in d.get("ATTRIBUTES").items():
             bp.attributes.append({k: v})
@@ -192,15 +212,14 @@ class BlueprintManager(object):
             bp.functions.append({k: v})
         bp_gui = SpriteBlueprint(panel)
         bp_gui.initialize(
-            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
-            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            r[0], r[1],
             bp, panel
         )
         return bp_gui
 
     @classmethod
     def reverse_parse_character(cls, panel, data):
-        d, r = data.get("BLUEPRINT"), data.get("RECTANGLE")
+        d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
         bp = CB(name=d.get("NAME"))
         for k, v in d.get("ATTRIBUTES").items():
             bp.attributes.append({k: v})
@@ -210,8 +229,7 @@ class BlueprintManager(object):
             bp.sprites.append({k: v})
         bp_gui = CharacterBlueprint(panel)
         bp_gui.initialize(
-            (r.get("COORDS").get("X"), r.get("COORDS").get("Y")),
-            (r.get("SIZE").get("WIDTH"), r.get("SIZE").get("HEIGHT")),
+            r[0], r[1],
             bp, panel
         )
         return bp_gui

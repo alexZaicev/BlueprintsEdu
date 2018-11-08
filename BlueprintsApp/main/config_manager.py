@@ -4,6 +4,7 @@ from utils import logger_utils
 from utils import app_utils
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
+from utils.app_utils import DisplaySettings
 
 
 class ConfigManager(object):
@@ -12,8 +13,8 @@ class ConfigManager(object):
     DEFAULT_CONFIG = {
         "SIZE":
         {
-            "WIDTH": 1024,
-            "HEIGHT": 720
+            "WIDTH": 800,
+            "HEIGHT": 600
         },
         "LANGUAGE": "ID_ENGLISH",
         "THEME": "ST_1"
@@ -37,7 +38,7 @@ class ConfigManager(object):
         with open(ConfigManager.CONFIG_PATH, 'r') as json_cfg:
             cfg = json.load(json_cfg)
             # LOADING CONFIGURATIONS
-            # TRY to find customed settings
+            # TRY to find custom settings
             try:
                 ConfigManager.LOGGER.info("Loading custom configuration settings...")
                 cfgs["screen"] = [cfg["CUSTOM"]["SIZE"]["WIDTH"], cfg["CUSTOM"]["SIZE"]["HEIGHT"]]
@@ -67,8 +68,8 @@ class ConfigManager(object):
         cfg_dict = dict()
         cfg_dict["CUSTOM"] = {
             "SIZE": {
-                "WIDTH": app_utils.BOARD_WIDTH,
-                "HEIGHT": app_utils.BOARD_HEGHT
+                "WIDTH": DisplaySettings.DEFAULT_SCREEN_SIZE[0],
+                "HEIGHT": DisplaySettings.DEFAULT_SCREEN_SIZE[1]
             },
             "LANGUAGE": StringUtils.DEFAULT_LANGUAGE,
             "THEME": Themes.get_value(Themes.DEFAULT_THEME)

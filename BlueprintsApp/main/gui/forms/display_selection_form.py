@@ -1,9 +1,9 @@
 from gui.forms.form import Form
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
-from utils.app_utils import DisplaySettings, Images
+from utils.app_utils import Images
 import pygame as pg
-from utils import app_utils
+from utils.app_utils import DisplaySettings
 from pygame.locals import *
 
 
@@ -19,6 +19,9 @@ class DisplaySelectionForm(Form):
         self.__is_drop_down_pressed = False
         self.__selected = False
 
+    def update_form(self, coords=None, size=None):
+        super().update_form(coords=coords, size=size)
+
     def draw_form(self):
         super().draw_form()
         if self.visible:
@@ -33,7 +36,8 @@ class DisplaySelectionForm(Form):
             self.size_select.centerx = self.get_rect().centerx
             img = Images.get_icon(Images.DROP_DOWN)
             img[1].midright = (
-                int(self.size_select.right - app_utils.BOARD_WIDTH * .01), int(self.size_select.center[1]))
+                int(self.size_select.right - DisplaySettings.get_size_by_key()[0] * .01),
+                int(self.size_select.center[1]))
             self.btn_drop_down = img[1]
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.size_select, 0)
             self.display.blit(img[0], img[1])
@@ -52,7 +56,7 @@ class DisplaySelectionForm(Form):
                 if (pos - self.__size_counter) < 3:
                     rect = pg.Rect((self.size_select.x, int(self.size_select.y +
                                                             self.size_select.height * (
-                                                                        (pos - self.__size_counter) + 1))),
+                                                                    (pos - self.__size_counter) + 1))),
                                    self.size_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.size_select.height * 0.6))
@@ -91,7 +95,8 @@ class DisplaySelectionForm(Form):
                 elif self.btn_apply.get_rect().collidepoint(pos) == 1:
                     for i in range(0, len(DisplaySettings.SCREEN_SIZES), 1):
                         if self.__size == DisplaySettings.get_size_name(DisplaySettings.get_size_by_id(i)):
-                            DisplaySettings.set_size_by_key(DisplaySettings.get_size_name(DisplaySettings.get_size_by_id(i)))
+                            DisplaySettings.set_size_by_key(
+                                DisplaySettings.get_size_name(DisplaySettings.get_size_by_id(i)))
                             self.display = pg.display.set_mode(DisplaySettings.DEFAULT_SCREEN_SIZE)
                 else:
                     self.__is_drop_down_pressed = False

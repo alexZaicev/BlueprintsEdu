@@ -5,10 +5,6 @@ import pygame as pg
 
 CAPTION = "BlueprintEdu V1.0"
 
-# WINDOW SIZING
-BOARD_WIDTH = 800  # 1280
-BOARD_HEGHT = 600  # 800
-
 # FRAMES PER SECOND
 FPS = 90
 
@@ -191,16 +187,20 @@ class Events(Utils):
 
 
 class DisplaySettings(Utils):
-    DEFAULT_SCREEN_SIZE = [1024, 720]
 
     SCREEN_SIZES = {
         "800x600": [800, 600],
         "1024x720": [1024, 720]
     }
 
+    DEFAULT_SCREEN_SIZE = SCREEN_SIZES.get("800x600")
+
     @classmethod
-    def get_size_by_key(cls, key):
-        return DisplaySettings.SCREEN_SIZES.get(key)
+    def get_size_by_key(cls, key=None):
+        if key is None:
+            return DisplaySettings.DEFAULT_SCREEN_SIZE
+        else:
+            return DisplaySettings.SCREEN_SIZES.get(key)
 
     @classmethod
     def get_size_name(cls, size=None):

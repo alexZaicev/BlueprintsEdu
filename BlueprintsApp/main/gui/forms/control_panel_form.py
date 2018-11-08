@@ -30,6 +30,9 @@ class ControlPanelForm(Form):
         self.ta_populated = False
         self.__bp = bp
 
+    def update_form(self, coords=None, size=None):
+        super().update_form(coords, size)
+
     def draw_form(self):
         form_rect = self.get_rect()
         if (self.__bp is not None) and self.__bp.focused:

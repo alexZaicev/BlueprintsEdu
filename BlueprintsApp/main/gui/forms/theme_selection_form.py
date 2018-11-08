@@ -3,7 +3,7 @@ import pygame as pg
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
 from utils.app_utils import Images
-from utils import app_utils
+from utils.app_utils import DisplaySettings
 from pygame.locals import *
 from utils import logger_utils
 
@@ -34,7 +34,8 @@ class ThemeSelectionForm(Form):
             self.theme_select.centerx = self.get_rect().centerx
             img = Images.get_icon(Images.DROP_DOWN)
             img[1].midright = (
-                int(self.theme_select.right - app_utils.BOARD_WIDTH * .01), int(self.theme_select.center[1]))
+                int(self.theme_select.right - DisplaySettings.get_size_by_key()[0] * .01),
+                int(self.theme_select.center[1]))
             self.btn_drop_down = img[1]
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.theme_select, 0)
             self.display.blit(img[0], img[1])
@@ -46,13 +47,17 @@ class ThemeSelectionForm(Form):
             self.display.blit(txt, rect_txt)
             self.draw_drop_down()
 
+    def update_form(self, coords=None, size=None):
+        super().update_form(coords=coords, size=size)
+
     def draw_drop_down(self):
         if self.__is_drop_down_pressed:
             self.__theme_content.clear()
             for pos in range(self.__theme_counter, len(Themes.THEMES), 1):
                 if (pos - self.__theme_counter) < 3:
                     rect = pg.Rect((self.theme_select.x, int(self.theme_select.y +
-                                                             self.theme_select.height * ((pos - self.__theme_counter) + 1))),
+                                                             self.theme_select.height * (
+                                                                         (pos - self.__theme_counter) + 1))),
                                    self.theme_select.size)
                     font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                                         int(self.theme_select.height * 0.6))

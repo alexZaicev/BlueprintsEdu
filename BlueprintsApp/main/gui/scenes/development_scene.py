@@ -7,6 +7,7 @@ from gui.forms.blueprint_control_form import BlueprintControlForm
 from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
 from gui.buttons.develop_menu_buttons import *
+from utils.app_utils import DisplaySettings
 
 
 class DevelopmentScene(SceneBuilder):
@@ -34,17 +35,19 @@ class DevelopmentScene(SceneBuilder):
         self.__settings_menu_content = self.__init_settings_menu()
         self.__run_menu_content = self.__init_run_menu()
         self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
-            self.__btn_settings_pressed = False, False, False, False
+        self.__btn_settings_pressed = False, False, False, False
 
         self.__cont_panel = ControlPanelForm(self.display,
-                                             (int(app_utils.BOARD_WIDTH * .005),
+                                             (int(DisplaySettings.get_size_by_key()[0] * .005),
                                               int(self.btn_file.get_rect().bottom * 1.005)),
-                                             (int(app_utils.BOARD_WIDTH * .265), int(app_utils.BOARD_HEGHT * .945)))
+                                             (int(DisplaySettings.get_size_by_key()[0] * .265),
+                                              int(DisplaySettings.get_size_by_key()[1] * .945)))
         self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display, self.__project,
-                                               (int(self.__cont_panel.get_rect().right + app_utils.BOARD_WIDTH * .005),
+                                               (int(self.__cont_panel.get_rect().right +
+                                                    DisplaySettings.get_size_by_key()[0] * .005),
                                                 int(self.btn_file.get_rect().bottom * 1.05)),
-                                               (int(app_utils.BOARD_WIDTH * .723),
-                                                int(app_utils.BOARD_HEGHT * .945)))
+                                               (int(DisplaySettings.get_size_by_key()[0] * .723),
+                                                int(DisplaySettings.get_size_by_key()[1] * .945)))
         if project.get("CONNECTIONS") is not None and project.get("BLUEPRINTS") is not None:
             self.__bp_panel.load_project(project.get("CONNECTIONS"), project.get("BLUEPRINTS"))
 
@@ -52,19 +55,23 @@ class DevelopmentScene(SceneBuilder):
 
     def __init_btn_coords(self):
         self.btn_file.set_custom_coordinates(
-            (int(app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN + self.btn_file.get_rect().width * .5),
+            (int(DisplaySettings.get_size_by_key()[
+                     0] * gui_utils.BUTTON_MENU_MARGIN + self.btn_file.get_rect().width * .5),
              int(0 + self.btn_file.get_rect().height * .5)))
         self.btn_edit.set_custom_coordinates(
             (int(self.btn_file.get_rect().right + (self.btn_run.get_rect().width * .5
-                                                   + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)),
+                                                   + DisplaySettings.get_size_by_key()[
+                                                       0] * gui_utils.BUTTON_MENU_MARGIN)),
              int(0 + self.btn_file.get_rect().height * .5)))
         self.btn_run.set_custom_coordinates(
             (int(self.btn_edit.get_rect().right + (self.btn_run.get_rect().width * .5
-                                                   + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)),
+                                                   + DisplaySettings.get_size_by_key()[
+                                                       0] * gui_utils.BUTTON_MENU_MARGIN)),
              int(0 + self.btn_run.get_rect().height * .5)))
         self.btn_settings.set_custom_coordinates((
             int(self.btn_run.get_rect().right + (self.btn_settings.get_rect().width * .5
-                                                 + app_utils.BOARD_WIDTH * gui_utils.BUTTON_MENU_MARGIN)),
+                                                 + DisplaySettings.get_size_by_key()[
+                                                     0] * gui_utils.BUTTON_MENU_MARGIN)),
             int(0 + self.btn_settings.get_rect().height * .5)))
 
     def __init_btn_size(self):
@@ -81,22 +88,22 @@ class DevelopmentScene(SceneBuilder):
 
         close = CloseProjectButton()
         close.set_custom_size(DevelopmentScene.BTN_SIZE)
-        close.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), r.bottom))
+        close.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .001), r.bottom))
         close.color = Themes.DEFAULT_THEME.get("menu_background")
 
         save = SaveButton()
         save.set_custom_size(DevelopmentScene.BTN_SIZE)
-        save.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .003), close.get_rect().bottom))
+        save.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .003), close.get_rect().bottom))
         save.color = Themes.DEFAULT_THEME.get("menu_background")
 
         sae = SaveExitButton()
         sae.set_custom_size(DevelopmentScene.BTN_SIZE)
-        sae.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .001), save.get_rect().bottom))
+        sae.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .001), save.get_rect().bottom))
         sae.color = Themes.DEFAULT_THEME.get("menu_background")
 
         ex = ExitButton()
         ex.set_custom_size(DevelopmentScene.BTN_SIZE)
-        ex.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .005), sae.get_rect().bottom))
+        ex.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), sae.get_rect().bottom))
         ex.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([close, save, sae, ex])
@@ -107,27 +114,27 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_edit.get_rect()
         add_attr = AddAttrButton()
         add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_attr.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
+        add_attr.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_char = AddCharacterButton()
         add_char.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_char.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_attr.get_rect().bottom))
+        add_char.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_attr.get_rect().bottom))
         add_char.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_func = AddFunctionButton()
         add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_func.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_char.get_rect().bottom))
+        add_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
         add_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_sprite = AddSpriteButton()
         add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_sprite.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_func.get_rect().bottom))
+        add_sprite.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
         clear = ClearConnectionsButton()
         clear.set_custom_size(DevelopmentScene.BTN_SIZE)
-        clear.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), add_sprite.get_rect().bottom))
+        clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_sprite.get_rect().bottom))
         clear.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([add_attr, add_char, add_func, add_sprite, clear])
@@ -146,12 +153,12 @@ class DevelopmentScene(SceneBuilder):
 
         gen = GenerateButton()
         gen.set_custom_size(DevelopmentScene.BTN_SIZE)
-        gen.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), r.bottom))
+        gen.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
         gen.color = Themes.DEFAULT_THEME.get("menu_background")
 
         gen_run = GenerateRunButton()
         gen_run.set_custom_size(DevelopmentScene.BTN_SIZE)
-        gen_run.set_topleft((int(r.left + app_utils.BOARD_WIDTH * .002), gen.get_rect().bottom))
+        gen_run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), gen.get_rect().bottom))
         gen_run.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([gen, gen_run])
@@ -179,7 +186,7 @@ class DevelopmentScene(SceneBuilder):
     def draw_drop_down(self):
         def __draw_file_menu():
             r = pg.Rect((self.btn_file.get_rect().left, self.btn_file.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .15),
+                        (int(DisplaySettings.get_size_by_key()[0] * .15),
                          int(self.btn_file.get_rect().height * len(self.__file_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__file_menu_content:
@@ -188,7 +195,7 @@ class DevelopmentScene(SceneBuilder):
 
         def __draw_edit_menu():
             r = pg.Rect((self.btn_edit.get_rect().left, self.btn_edit.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .2),
+                        (int(DisplaySettings.get_size_by_key()[0] * .2),
                          int(self.btn_file.get_rect().height * len(self.__edit_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__edit_menu_content:
@@ -197,7 +204,7 @@ class DevelopmentScene(SceneBuilder):
 
         def __draw_run_menu():
             r = pg.Rect((self.btn_run.get_rect().left, self.btn_run.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .2),
+                        (int(DisplaySettings.get_size_by_key()[0] * .2),
                          int(self.btn_file.get_rect().height * len(self.__run_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__run_menu_content:
@@ -206,7 +213,7 @@ class DevelopmentScene(SceneBuilder):
 
         def __draw_settings_menu():
             r = pg.Rect((self.btn_settings.get_rect().left, self.btn_settings.get_rect().bottom),
-                        (int(app_utils.BOARD_WIDTH * .2),
+                        (int(DisplaySettings.get_size_by_key()[0] * .2),
                          int(self.btn_file.get_rect().height * len(self.__settings_menu_content))))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("menu_background"), r, 0)
             for btn in self.__settings_menu_content:

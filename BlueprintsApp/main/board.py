@@ -16,6 +16,7 @@ class Board(object):
         logger.info("Board initialized")
         self.app_status = status.STARTED
         pg.init()
+        self.__scene_builder = None
         self.__setup_board()
 
     def __setup_board(self):

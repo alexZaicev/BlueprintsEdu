@@ -25,6 +25,9 @@ class BlueprintControlForm(Form):
         self.__bps = list()
         self.__bps_connections = list()
 
+    def update_form(self, coords=None, size=None):
+        super().update_form(coords, size)
+
     def draw_form(self):
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_disabled"), self.get_rect(), 0)
         if self.get_rect().collidepoint(pg.mouse.get_pos()) == 1:
@@ -47,7 +50,7 @@ class BlueprintControlForm(Form):
             c2 = slave.get_rect().center
             pg.draw.line(self.display, Themes.DEFAULT_THEME.get("connection_line"), c1, c2, 2)
 
-    def unfocuse_blueprints(self):
+    def unfocus_blueprints(self):
         self.__cont_panel.set_blueprint(None)
         if len(self.__bps) > 0:
             for bp in self.__bps:
@@ -64,11 +67,11 @@ class BlueprintControlForm(Form):
                             bp.pressed = True
                             bp.set_offset(pos)
                             if not bp.focused:
-                                self.unfocuse_blueprints()
+                                self.unfocus_blueprints()
                                 bp.focused = True
                                 self.__cont_panel.set_blueprint(bp)
                             elif bp.focused:
-                                self.unfocuse_blueprints()
+                                self.unfocus_blueprints()
                             break
             elif event.button == 3:  # RIGHT MOUSE BUTTON
                 pos = pg.mouse.get_pos()

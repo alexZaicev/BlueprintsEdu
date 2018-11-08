@@ -1,15 +1,14 @@
 from gui.scenes.scene_builder import SceneBuilder
 from utils import logger_utils
 from utils import app_utils
-from utils.app_utils import Colors, Fonts
 import pygame as pg
 from gui.buttons.new_button import NewButton
 from gui.buttons.load_button import LoadButton
 from gui.buttons.configuration_button import ConfigurationButton
-from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
 from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
+from utils.app_utils import DisplaySettings
 
 
 class WelcomeScene(SceneBuilder):
@@ -35,15 +34,19 @@ class WelcomeScene(SceneBuilder):
 
     def draw_scene(self):
         # PREPARE DATA TO DISPLAY
-        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .2))
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
+                            int(DisplaySettings.get_size_by_key()[1] * .2))
         txt_banner = font.render(StringUtils.get_string("ID_WELCOME"), True, Themes.DEFAULT_THEME.get("font"))
-        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"), int(app_utils.BOARD_HEGHT * .06))
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
+                            int(DisplaySettings.get_size_by_key()[1] * .06))
         txt_sub_banner = font.render(app_utils.CAPTION, True, Themes.DEFAULT_THEME.get("font"))
 
         rect_banner = txt_banner.get_rect()
-        rect_banner.midtop = (int(app_utils.BOARD_WIDTH / 2), int(app_utils.BOARD_HEGHT * .05))
+        rect_banner.midtop = (
+            int(DisplaySettings.get_size_by_key()[0] / 2), int(DisplaySettings.get_size_by_key()[1] * .05))
         rect_sub_banner = txt_sub_banner.get_rect()
-        rect_sub_banner.midtop = (int(app_utils.BOARD_WIDTH / 2), int(rect_banner.bottom + app_utils.BOARD_HEGHT * .02))
+        rect_sub_banner.midtop = (int(DisplaySettings.get_size_by_key()[0] / 2),
+                                  int(rect_banner.bottom + DisplaySettings.get_size_by_key()[1] * .02))
         # PUSH TO DISPLAY
         self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(txt_banner, rect_banner)
@@ -57,7 +60,7 @@ class WelcomeScene(SceneBuilder):
         if event.type == MOUSEBUTTONDOWN:
             self.check_button_press(pg.mouse.get_pos(), board)
 
-    def check_button_press(self, pos, board, draw_boarder=False):
+    def check_button_press(self, pos, board):
         if self.btn_new.get_rect().collidepoint(pos) == 1:
             self.btn_new.on_click(board)
         elif self.btn_load.get_rect().collidepoint(pos) == 1:

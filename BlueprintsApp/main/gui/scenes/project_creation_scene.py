@@ -1,5 +1,5 @@
 from gui.scenes.scene_builder import SceneBuilder
-from utils import logger_utils, app_utils
+from utils import logger_utils
 from utils.string_utils import StringUtils
 import pygame as pg
 from pygame.locals import *
@@ -9,6 +9,7 @@ from gui.buttons.create_button import CreateButton
 from utils.app_utils import GameApi
 from gui.popup import Popup
 from utils.gui_utils import Themes
+from utils.app_utils import DisplaySettings
 
 
 class ProjectCreationScene(SceneBuilder):
@@ -22,11 +23,7 @@ class ProjectCreationScene(SceneBuilder):
         self.__api = GameApi.DEFAULT_API
         self.btn_drop_down = None
         self.btn_create = CreateButton(1)
-        # self.btn_create.set_custom_coordinates(
-        #     (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .8))
         self.btn_cancel = CancelButton(0)
-        # self.btn_cancel.set_custom_coordinates(
-        #     (app_utils.BOARD_WIDTH * .87, app_utils.BOARD_HEGHT * .9))
         self.__is_drop_down_pressed = False
         self.__menu_content = []
         self.__menu_counter = 0
@@ -36,7 +33,7 @@ class ProjectCreationScene(SceneBuilder):
         img = pg.image.load(Images.DROP_DOWN)
         img_rect = img.get_rect()
         img_rect.midright = (
-            int(menu.right - app_utils.BOARD_WIDTH * .01), int(menu.center[1]))
+            int(menu.right - DisplaySettings.get_size_by_key()[0] * .01), int(menu.center[1]))
         return (img, img_rect)
 
     def draw_scene(self):
@@ -45,27 +42,29 @@ class ProjectCreationScene(SceneBuilder):
             self.__api = " --- {} ---".format(StringUtils.get_string("ID_SELECT"))
 
         font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
-                            int(app_utils.BOARD_WIDTH * .05))
+                            int(DisplaySettings.get_size_by_key()[0] * .05))
         txt_title = font.render(StringUtils.get_string(
             "ID_TITLE") + ":", True, Themes.DEFAULT_THEME.get("font"))
         rect_title = txt_title.get_rect()
-        rect_title.topleft = (int(app_utils.BOARD_WIDTH * .05),
-                              int(app_utils.BOARD_HEGHT * .15))
+        rect_title.topleft = (int(DisplaySettings.get_size_by_key()[0] * .05),
+                              int(DisplaySettings.get_size_by_key()[1] * .15))
         txt_api = font.render(StringUtils.get_string(
             "ID_GAME_API") + ":", True, Themes.DEFAULT_THEME.get("font"))
         rect_api = txt_api.get_rect()
-        rect_api.topleft = (int(int(app_utils.BOARD_WIDTH * .05)),
-                            int(rect_title.top + rect_title.height + app_utils.BOARD_HEGHT * .1))
-        self.input = pg.Rect((int(rect_api.right + app_utils.BOARD_WIDTH * .05), int(rect_title.top)),
-                             (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
+        rect_api.topleft = (int(int(DisplaySettings.get_size_by_key()[0] * .05)),
+                            int(rect_title.top + rect_title.height + DisplaySettings.get_size_by_key()[1] * .1))
+        self.input = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), int(rect_title.top)),
+                             (int(DisplaySettings.get_size_by_key()[0] * 0.6),
+                              int(DisplaySettings.get_size_by_key()[0] * .05)))
         font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
-                            int(app_utils.BOARD_WIDTH * .03))
+                            int(DisplaySettings.get_size_by_key()[0] * .03))
         txt_input = font.render(self.__project_name,
                                 True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_input = txt_input.get_rect()
         rect_input.center = self.input.center
-        self.api_select = pg.Rect((int(rect_api.right + app_utils.BOARD_WIDTH * .05), int(rect_api.top)),
-                                  (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
+        self.api_select = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), int(rect_api.top)),
+                                  (int(DisplaySettings.get_size_by_key()[0] * 0.6),
+                                   int(DisplaySettings.get_size_by_key()[0] * .05)))
         txt_select = font.render(
             self.__api, True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_select = txt_select.get_rect()
@@ -94,8 +93,10 @@ class ProjectCreationScene(SceneBuilder):
             self.__menu_content.clear()
             for pos in range(self.__menu_counter, len(GameApi.APIS), 1):
                 if (pos - self.__menu_counter) < 3:
-                    rect = pg.Rect((self.api_select.x, int(self.api_select.y + self.api_select.height * ((pos - self.__menu_counter) + 1))),
-                                   (int(app_utils.BOARD_WIDTH * 0.6), int(app_utils.BOARD_WIDTH * .05)))
+                    rect = pg.Rect((self.api_select.x, int(
+                        self.api_select.y + self.api_select.height * ((pos - self.__menu_counter) + 1))),
+                                   (int(DisplaySettings.get_size_by_key()[0] * 0.6),
+                                    int(DisplaySettings.get_size_by_key()[0] * .05)))
                     txt = font.render(GameApi.get_api(
                         pos)[1], True, Themes.DEFAULT_THEME.get("text_area_text"))
                     rect_txt = txt.get_rect()
@@ -147,7 +148,7 @@ class ProjectCreationScene(SceneBuilder):
                     self.__is_drop_down_pressed = False
 
     def check_button_pressed(self, event, board, pos):
-        if self.btn_create.get_rect().collidepoint(pos) == 1 and self.valide_project_info():
+        if self.btn_create.get_rect().collidepoint(pos) == 1 and self.validate_project_info():
             self.btn_create.on_click(board, {
                 "PROJECT_NAME": self.__project_name,
                 "PROJECT_API": self.__api
@@ -161,7 +162,7 @@ class ProjectCreationScene(SceneBuilder):
                 self.__is_drop_down_pressed = True
                 self.__menu_counter = 0
 
-    def valide_project_info(self):
+    def validate_project_info(self):
         valid = True
         if (StringUtils.get_string("ID_SELECT") in self.__api) and (len(self.__project_name) < 5):
             valid = False
@@ -199,4 +200,3 @@ class ProjectCreationScene(SceneBuilder):
                 elif isinstance(c, str):
                     if len(self.__project_name) <= 25:
                         self.__project_name += c
-

@@ -1,15 +1,14 @@
 from gui.scenes.scene_builder import SceneBuilder
 import pygame as pg
-from utils.app_utils import Images
-from utils import app_utils, logger_utils
+from utils import logger_utils
 from pygame.locals import *
-from utils import scene_utils, gui_utils
 from gui.buttons.select_button import SelectButton
 from gui.buttons.delete_button import DeleteButton
 from utils.string_utils import StringUtils
 from project_manager import ProjectManager
 from utils.gui_utils import Themes
 from gui.buttons.back_button import BackButton
+from utils.app_utils import DisplaySettings
 
 
 class LoadScene(SceneBuilder):
@@ -23,19 +22,21 @@ class LoadScene(SceneBuilder):
         self.btn_delete.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_back = BackButton(0)
         self.btn_back.color = Themes.DEFAULT_THEME.get("front_screen")
-        self.file_container = pg.Rect((int(app_utils.BOARD_WIDTH * .01), int(app_utils.BOARD_HEGHT * 0.22)),
-                                      (int(app_utils.BOARD_WIDTH * .98), int(app_utils.BOARD_HEGHT * .66)))
+        self.file_container = pg.Rect(
+            (int(DisplaySettings.get_size_by_key()[0] * .01), int(DisplaySettings.get_size_by_key()[1] * 0.22)),
+            (int(DisplaySettings.get_size_by_key()[0] * .98), int(DisplaySettings.get_size_by_key()[1] * .66)))
         self.files = ProjectManager.get_projects()
         self.__logger.debug(self.files)
 
     def draw_scene(self):
         # PREPARE DATA FOR DISPLAY
         font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
-                            int(app_utils.BOARD_HEGHT * 0.09))
+                            int(DisplaySettings.get_size_by_key()[1] * 0.09))
         header = font.render(StringUtils.get_string(
             "ID_SAVED_PROJECTS"), True, Themes.DEFAULT_THEME.get("font"))
         header_rect = header.get_rect()
-        header_rect.topleft = (int(app_utils.BOARD_WIDTH * .02), int(app_utils.BOARD_HEGHT * .05))
+        header_rect.topleft = (
+            int(DisplaySettings.get_size_by_key()[0] * .02), int(DisplaySettings.get_size_by_key()[1] * .05))
         # PUSH TO DISPLAY
         self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(header, header_rect)
@@ -68,14 +69,19 @@ class LoadScene(SceneBuilder):
 
     def draw_buttons(self):
         self.btn_select.set_custom_coordinates((
-            int((app_utils.BOARD_WIDTH - self.btn_select.get_rect().width * .5) * .98),
-            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_select.get_rect().height * .5)))
+            int((DisplaySettings.get_size_by_key()[0] - self.btn_select.get_rect().width * .5) * .98),
+            int(self.file_container.bottom + DisplaySettings.get_size_by_key()[
+                1] * 0.015 + self.btn_select.get_rect().height * .5)))
         self.btn_delete.set_custom_coordinates((
-            int(self.btn_select.get_rect().left - (app_utils.BOARD_WIDTH * .005 + self.btn_delete.get_rect().width * .5)),
-            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_delete.get_rect().height * .5)))
+            int(self.btn_select.get_rect().left - (
+                    DisplaySettings.get_size_by_key()[0] * .005 + self.btn_delete.get_rect().width * .5)),
+            int(self.file_container.bottom + DisplaySettings.get_size_by_key()[
+                1] * 0.015 + self.btn_delete.get_rect().height * .5)))
         self.btn_back.set_custom_coordinates((
-            int(self.btn_delete.get_rect().left - (app_utils.BOARD_WIDTH * .005 + self.btn_back.get_rect().width * .5)),
-            int(self.file_container.bottom + app_utils.BOARD_HEGHT * 0.015 + self.btn_back.get_rect().height * .5)))
+            int(self.btn_delete.get_rect().left - (
+                    DisplaySettings.get_size_by_key()[0] * .005 + self.btn_back.get_rect().width * .5)),
+            int(self.file_container.bottom + DisplaySettings.get_size_by_key()[
+                1] * 0.015 + self.btn_back.get_rect().height * .5)))
         pg.draw.rect(self.display, self.btn_select.color,
                      self.btn_select.get_rect(), 0)
         self.display.blit(self.btn_select.get_text(),

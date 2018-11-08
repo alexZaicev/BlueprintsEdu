@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from utils import app_utils
+from utils.app_utils import DisplaySettings
 import pygame as pg
 from utils.gui_utils import Themes
 from gui.buttons.apply_button import ApplyButton
@@ -12,11 +12,13 @@ class Form(ABC):
         self.display = display
         self.visible = False
         if size is None:
-            self.size = (int(app_utils.BOARD_WIDTH * 0.45), int(app_utils.BOARD_HEGHT * .75))
+            self.size = (
+                int(DisplaySettings.get_size_by_key()[0] * 0.45), int(DisplaySettings.get_size_by_key()[1] * .75))
         else:
             self.size = size
         if coords is None:
-            self.coords = (int(app_utils.BOARD_WIDTH * .95 - self.size[0]), int(app_utils.BOARD_HEGHT * .2))
+            self.coords = (int(DisplaySettings.get_size_by_key()[0] * .95 - self.size[0]),
+                           int(DisplaySettings.get_size_by_key()[1] * .2))
         else:
             self.coords = coords
         self.btn_apply = ApplyButton(0)
@@ -27,7 +29,11 @@ class Form(ABC):
 
     @abstractmethod
     def draw_form(self):
+        self.update_form()
         if self.visible:
+            self.btn_apply.set_custom_coordinates(
+                (int((self.coords[0] + self.size[0]) - self.btn_apply.get_rect().width * .53),
+                 int((self.coords[1] + self.size[1]) - self.btn_apply.get_rect().height * .6)))
             w = self.btn_apply.get_rect().width
             self.btn_apply.update_button(Themes.DEFAULT_THEME.get("panel_background"))
             if self.btn_apply.get_rect().width != w:
@@ -42,6 +48,19 @@ class Form(ABC):
 
     def get_rect(self):
         return pg.Rect(self.coords, self.size)
+
+    @abstractmethod
+    def update_form(self, coords=None, size=None):
+        if coords is None:
+            self.coords = (int(DisplaySettings.get_size_by_key()[0] * .95 - self.size[0]),
+                           int(DisplaySettings.get_size_by_key()[1] * .2))
+        else:
+            self.coords = coords
+        if size is None:
+            self.size = (
+                int(DisplaySettings.get_size_by_key()[0] * 0.45), int(DisplaySettings.get_size_by_key()[1] * .75))
+        else:
+            self.size = size
 
     @abstractmethod
     def check_form_events(self, event):
