@@ -138,6 +138,7 @@ class ControlPanelForm(Form):
         pass
 
     def draw_sprite_data(self, data, pos, font, banner, margin):
+        s = pos = pos + 1
         if len(self.__bp.get_blueprint().attributes) > 0:
             self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
                       (int(self.get_rect().left + self.get_rect().width * .08),
@@ -149,6 +150,44 @@ class ControlPanelForm(Form):
                           (int(self.get_rect().left + self.get_rect().width * .12),
                            int(banner.bottom * 1.1 + pos * margin)))
                 pos += 1
+
+            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+            s = pos = pos + 1
+        if len(self.__bp.get_blueprint().functions) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().functions:
+                self.blit(font, "{}()".format(bp.name), None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
+            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+
+    def draw_character_data(self, data, pos, font, banner, margin):
+        s = pos = pos + 1
+        if len(self.__bp.get_blueprint().attributes) > 0:
+            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            for bp in self.__bp.get_blueprint().attributes:
+                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
+                          None,
+                          (int(self.get_rect().left + self.get_rect().width * .12),
+                           int(banner.bottom * 1.1 + pos * margin)))
+                pos += 1
+
+            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+
+            s = pos = pos + 1
         if len(self.__bp.get_blueprint().functions) > 0:
             self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
                       (int(self.get_rect().left + self.get_rect().width * .08),
@@ -160,28 +199,11 @@ class ControlPanelForm(Form):
                            int(banner.bottom * 1.1 + pos * margin)))
                 pos += 1
 
-    def draw_character_data(self, data, pos, font, banner, margin):
-        if len(self.__bp.get_blueprint().attributes) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().attributes:
-                self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
-                          None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
-        if len(self.__bp.get_blueprint().functions) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().functions:
-                self.blit(font, "{}()".format(bp.name), None,
-                          (int(self.get_rect().left + self.get_rect().width * .12),
-                           int(banner.bottom * 1.1 + pos * margin)))
-                pos += 1
+            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+
+            s = pos = pos + 1
         if len(self.__bp.get_blueprint().sprites) > 0:
             self.blit(font, "{}".format(StringUtils.get_string("ID_SPRITES")), None,
                       (int(self.get_rect().left + self.get_rect().width * .08),
@@ -192,6 +214,10 @@ class ControlPanelForm(Form):
                           (int(self.get_rect().left + self.get_rect().width * .12),
                            int(banner.bottom * 1.1 + pos * margin)))
                 pos += 1
+
+            r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
+                        (int(self.get_rect().width * .90), int((pos - s) * margin)))
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
     def check_form_events(self, event):
 
