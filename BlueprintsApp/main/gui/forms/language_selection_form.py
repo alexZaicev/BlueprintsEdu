@@ -21,13 +21,6 @@ class LanguageSelectionForm(Form):
         self.__is_drop_down_pressed = False
         self.__selected = False
 
-    def get_icon(self, menu):
-        img = pg.image.load(Images.DROP_DOWN)
-        img_rect = img.get_rect()
-        img_rect.midright = (
-            int(menu.right - app_utils.BOARD_WIDTH * .01), int(menu.center[1]))
-        return img, img_rect
-
     def draw_form(self):
         super().draw_form()
         if self.visible:
@@ -40,7 +33,9 @@ class LanguageSelectionForm(Form):
             self.lang_select = pg.Rect(
                 (0, int(rect_txt.bottom * 1.2)), (int(self.size[0] * .85), int(self.size[1] * .12)))
             self.lang_select.centerx = self.get_rect().centerx
-            img = self.get_icon(self.lang_select)
+            img = Images.get_icon(Images.DROP_DOWN)
+            img[1].midright = (
+                int(self.lang_select.right - app_utils.BOARD_WIDTH * .01), int(self.lang_select.center[1]))
             self.btn_drop_down = img[1]
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), self.lang_select, 0)
             self.display.blit(img[0], img[1])

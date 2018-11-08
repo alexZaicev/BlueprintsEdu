@@ -282,6 +282,12 @@ class Images(Utils):
     UNDO = ROOT_PATH + "undo.png"
     DROP_DOWN = ROOT_PATH + "drop-down.png"
 
+    @classmethod
+    def get_icon(cls, image):
+        img = pg.image.load(image)
+        img_rect = img.get_rect()
+        return img, img_rect
+
 
 class GameApi(Utils):
     APIS = [
