@@ -6,10 +6,10 @@ import shutil
 from project import Project
 import json
 from blueprint_manager import BlueprintManager
+from security_manager import SecurityManager
 
 
 class ProjectManager(object):
-
     LOGGER = logger_utils.get_logger(__name__)
     PATH = logger_utils.ROOT_PATH + "BlueprintsApp\projects\\"
     PROJECT_FILE_EXTENSION = ".blue"
@@ -48,10 +48,11 @@ class ProjectManager(object):
         api = ""
         bps, bp_conns = None, None
         try:
-            fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name,
+            fname = "{}{}\{}{}".format(ProjectManager.PATH, project_name, project_name.lower(),
                                        ProjectManager.PROJECT_FILE_EXTENSION)
-            with open(fname, "r") as file:
-                content = json.load(file)
+            with open(fname, "rb") as file:
+                dt = SecurityManager.decode_data(file.read())
+                content = json.loads(dt)
                 if project_name == content.get("PROJECT_NAME"):
                     api = content.get("PROJECT_API")
                     bp_conns = content.get("CONNECTIONS")
@@ -92,8 +93,10 @@ class ProjectManager(object):
                 ProjectManager.LOGGER.error(
                     "Cannot override already existing project [{}]".format(data.get("PROJECT_NAME")))
 
-            with open("{}\{}{}".format(path, data.get("PROJECT_NAME"), ProjectManager.PROJECT_FILE_EXTENSION), "w+") as file:
-                json.dump(d, file)
+            with open("{}\{}{}".format(path, data.get("PROJECT_NAME").lower(), ProjectManager.PROJECT_FILE_EXTENSION),
+                      "wb+") as file:
+                dt = SecurityManager.encode_data(json.dumps(d))
+                file.write(dt)
         except Exception as ex:
             ProjectManager.LOGGER.error("Failed to create project directory [{}]".format(str(ex)))
 
@@ -122,8 +125,10 @@ class ProjectManager(object):
                     fs.append("{}\{}".format(directory, f))
         content = list()
         for f in fs:
-            with open(f, "r") as c:
-                content.append(json.load(c))
+            with open(f, "rb") as c:
+                dt = c.read()
+                dt = SecurityManager.decode_data(dt)
+                content.append(json.loads(dt))
         return content
 
     @classmethod
@@ -138,15 +143,17 @@ class ProjectManager(object):
         r["CONNECTIONS"] = bp_conns_content
 
         f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],
-                                    project_name[0], ProjectManager.PROJECT_FILE_EXTENSION)
-        with open(f_name, "w+") as f:
-            json.dump(r, f)
+                                    project_name[0].lower(), ProjectManager.PROJECT_FILE_EXTENSION)
+        with open(f_name, "wb+") as f:
+            r = json.dumps(r)
+            f.write(SecurityManager.encode_data(r))
         # BLUEPRINT DATA
         for k, v in bp_content.items():
             f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],
-                                        k, ProjectManager.BLUEPRINT_FILE_EXTENSION)
-            with open(f_name, "w+") as f:
-                f.write(v)
+                                        k.lower(), ProjectManager.BLUEPRINT_FILE_EXTENSION)
+            with open(f_name, "wb+") as f:
+                e_data = SecurityManager.encode_data(v)
+                f.write(e_data)
 
     @classmethod
     def delete_project(cls, directory):
