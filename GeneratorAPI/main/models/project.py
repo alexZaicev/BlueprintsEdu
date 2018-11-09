@@ -1,8 +1,5 @@
 from models.entity import Entity
-from models.attribute_blueprint import AttributeBlueprint
-from models.sprite_blueprint import SpriteBlueprint
-from models.function_blueprint import FunctionBlueprint
-from models.character_blueprint import CharacterBlueprint
+from models.blueprint import *
 
 
 class ProjectModel(Entity):
