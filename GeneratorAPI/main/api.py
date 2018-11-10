@@ -6,19 +6,26 @@
 from flask import Blueprint
 from flask_restful import Api
 
+from resources.authentication import *
 from resources.info import *
 from resources.python import *
 from utils.enums.status import Status
 
+
 api_general = Blueprint("general", __name__)
 api_python = Blueprint("python", __name__)
+api_auth = Blueprint("auth", __name__)
 
 general = Api(api_general)
 python_generator = Api(api_python)
+auth = Api(api_auth)
 
 routes = ["", "/", "/help"]
 # GENERAL
 general.add_resource(Help, *routes)
+
+# AUTHENTICATION
+auth.add_resource(Login, "/login")
 
 # PYTHON SPECIFIC
 python_generator.add_resource(Info, *routes)

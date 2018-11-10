@@ -1,14 +1,14 @@
-from flask_restful import Resource, request
+import flask_restful
 
 from models.entity import Entity
+from utils import logger_utils
 from utils.enums.status import Status
 from utils.managers.project_manager import ProjectManager
-from utils import logger_utils
 
 LOGGER = logger_utils.get_logger(__name__)
 
 
-class Info(Resource):
+class Info(flask_restful.Resource):
 
     def get(self):
         r = dict()
@@ -18,7 +18,7 @@ class Info(Resource):
         return e.to_dict()
 
 
-class Generate(Resource):
+class Generate(flask_restful.Resource):
 
     def get(self, name):
         """Description: GET generate python project from registered project
@@ -29,7 +29,7 @@ class Generate(Resource):
         pass
 
 
-class Project(Resource):
+class Project(flask_restful.Resource):
 
     def get(self, name=None):
         """Description: GET single project by name or all registered projects
@@ -54,7 +54,7 @@ class Project(Resource):
         :return: Registration status
         """
         e = Entity()
-        data = request.get_json()
+        data = flask_restful.request.get_json()
         p = ProjectManager.create_project(data)
         e.status = ProjectManager.add_project(p)
         return e.to_dict()
@@ -67,11 +67,11 @@ class Project(Resource):
         """
         e = Entity()
         p = ProjectManager.get_project(name)
-        e.status = ProjectManager.update_project(p, request.get_json())
+        e.status = ProjectManager.update_project(p, flask_restful.request.get_json())
         return e.to_dict()
 
 
-class DownloadProject(Resource):
+class DownloadProject(flask_restful.Resource):
 
     def get(self, name):
         """Description: GET download generated project files as zip archive
