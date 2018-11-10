@@ -2,7 +2,6 @@ from utils.enums.enum import Enum
 
 
 class Status(Enum):
-
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
     GENERATION_FAILED = "GENERATION_FAILED"
@@ -15,4 +14,3 @@ class Status(Enum):
     NOT_FOUND = "NOT_FOUND"
     INVALID_DATA = "INVALID_DATA"
     BAD_REQUEST = "BAD_REQUEST"
-

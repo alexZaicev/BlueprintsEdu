@@ -5,6 +5,7 @@
 
 from flask import Blueprint
 from flask_restful import Api
+
 from resources.info import *
 from resources.python import *
 from utils.enums.status import Status
@@ -24,7 +25,6 @@ python_generator.add_resource(Info, *routes)
 routes = ["/project", "/project/<string:name>"]
 python_generator.add_resource(Project, *routes)
 python_generator.add_resource(Generate, "/generate/<string:name>")
-
 
 """
 Description: API error handling

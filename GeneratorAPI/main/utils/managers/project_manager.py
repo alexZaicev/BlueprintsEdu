@@ -1,10 +1,30 @@
-from utils.managers.manager import Manager
-from utils.enums.status import Status
 from models.project import ProjectModel
+from utils.enums.status import Status
+from utils.managers.blueprint_manager import BlueprintManager
+from utils.managers.manager import Manager
 
 
 class ProjectManager(Manager):
     PROJECTS = list()
+
+    @classmethod
+    def create_project(cls, data):
+        r = ProjectModel()
+        r.name, r.api = data.get("NAME"), data.get("API")
+        a, f, s, c = list(), list(), list(), list()
+        for b in data.get("ATTRIBUTES"):
+            a.append(BlueprintManager.call_parser(b))
+        for b in data.get("FUNCTIONS"):
+            f.append(BlueprintManager.call_parser(b))
+        for b in data.get("SPRITES"):
+            s.append(BlueprintManager.call_parser(b))
+        for b in data.get("CHARACTERS"):
+            c.append(BlueprintManager.call_parser(b))
+        r.attributes = a
+        r.functions = f
+        r.sprites = s
+        r.characters = s
+        return r
 
     @classmethod
     def add_project(cls, project):
@@ -44,11 +64,11 @@ class ProjectManager(Manager):
         project.characters.clear()
         # UPDATE DATA
         for b in data.get("ATTRIBUTES"):
-            project.add_attribute(b)
+            project.add_attribute(BlueprintManager.call_parser(b))
         for b in data.get("FUNCTIONS"):
-            project.add_function(b)
+            project.add_function(BlueprintManager.call_parser(b))
         for b in data.get("SPRITES"):
-            project.add_sprite(b)
+            project.add_sprite(BlueprintManager.call_parser(b))
         for b in data.get("CHARACTERS"):
-            project.add_character(b)
+            project.add_character(BlueprintManager.call_parser(b))
         return s

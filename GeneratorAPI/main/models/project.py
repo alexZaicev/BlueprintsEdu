@@ -1,11 +1,10 @@
-from models.entity import Entity
 from models.blueprint import *
 
 
-class ProjectModel(Entity):
+class ProjectModel(object):
 
-    def __init__(self, name="Undefined_Project", api="undefined", characters=None, attributes=None, functions=None, sprites=None):
-        Entity.__init__(self, project=name, api=api)
+    def __init__(self, name="Undefined_Project", api="undefined", characters=None, attributes=None, functions=None,
+                 sprites=None):
         self.name = name
         self.api = api
         self.attributes = list()
@@ -69,7 +68,10 @@ class ProjectModel(Entity):
             raise AttributeError("Invalid character blueprint type provided: {}".format(str(type(cb))[8:-2]))
 
     def to_dict(self):
-        d = super().to_dict()
+        d = {
+            "NAME": self.name,
+            "API": self.api
+        }
         a, f, s = list(), list(), list()
         for b in self.attributes:
             a.append(b.to_dict())
@@ -81,4 +83,3 @@ class ProjectModel(Entity):
         d["FUNCTIONS"] = f
         d["SPRITES"] = s
         return d
-

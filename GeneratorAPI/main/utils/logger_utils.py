@@ -15,7 +15,7 @@ if not os.path.exists(PATH):
     except OSError as ex:
         raise Exception("Failed to create log directory")
 
-logging.basicConfig(filename=(PATH+LOG_FILENAME+datetime.today().strftime('%Y%m%d')+LOG_FILE_EXT),
+logging.basicConfig(filename=(PATH + LOG_FILENAME + datetime.today().strftime('%Y%m%d') + LOG_FILE_EXT),
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 

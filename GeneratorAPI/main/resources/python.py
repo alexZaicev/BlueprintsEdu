@@ -1,7 +1,11 @@
 from flask_restful import Resource, request
-from utils.managers.project_manager import ProjectManager
-from models.project import ProjectModel
+
 from models.entity import Entity
+from utils.enums.status import Status
+from utils.managers.project_manager import ProjectManager
+from utils import logger_utils
+
+LOGGER = logger_utils.get_logger(__name__)
 
 
 class Info(Resource):
@@ -10,7 +14,8 @@ class Info(Resource):
         r = dict()
         r["/api/python"] = "GET: General API information containing python specific calls"
         r["/api/python/generate"] = "POST: Python code generator from blueprint json strings"
-        return r
+        e = Entity(status=Status.SUCCESS, data=r)
+        return e.to_dict()
 
 
 class Generate(Resource):
@@ -39,7 +44,9 @@ class Project(Resource):
         else:
             r = ProjectManager.get_project(name)
             r = r.to_dict()
-        return r
+
+        e = Entity(status=Status.SUCCESS, data=r)
+        return e.to_dict()
 
     def post(self):
         """Description: POST register project
@@ -48,10 +55,7 @@ class Project(Resource):
         """
         e = Entity()
         data = request.get_json()
-        a, c, f, s = data.get("ATTRIBUTES"), data.get("CHARACTERS"), data.get("FUNCTIONS"), data.get("SPRITES")
-        p = ProjectModel(name=data.get("NAME"), api=data.get("API"), attributes=a, characters=c, functions=f, sprites=s)
-        e.project = p.name
-        e.api = p.api
+        p = ProjectManager.create_project(data)
         e.status = ProjectManager.add_project(p)
         return e.to_dict()
 
@@ -64,8 +68,6 @@ class Project(Resource):
         e = Entity()
         p = ProjectManager.get_project(name)
         e.status = ProjectManager.update_project(p, request.get_json())
-        e.project = p.name
-        e.api = p.api
         return e.to_dict()
 
 
