@@ -28,3 +28,15 @@ class SpriteBlueprint(Blueprint):
     def clear_connections(self):
         self.attributes.clear()
         self.functions.clear()
+
+    def to_dict(self):
+        r = super().to_dict()
+        d = list()
+        for att in self.attributes:
+            d.append(att.to_dict())
+        r["ATTRIBUTES"] = d
+        d.clear()
+        for func in self.functions:
+            d.append(func.to_dict())
+        r["FUNCTIONS"] = d
+        return r

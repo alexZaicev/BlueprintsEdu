@@ -55,3 +55,4 @@ class AttributeBlueprint(Blueprint):
 
     def update_displayed_data(self, text):
         super().update_displayed_data(text)
+

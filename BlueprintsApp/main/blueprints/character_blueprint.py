@@ -42,3 +42,19 @@ class CharacterBlueprint(Blueprint):
         self.attributes.clear()
         self.functions.clear()
         self.sprites.clear()
+
+    def to_dict(self):
+        r = super().to_dict()
+        d = list()
+        for att in self.attributes:
+            d.append(att.to_dict())
+        r["ATTRIBUTES"] = d
+        d.clear()
+        for func in self.functions:
+            d.append(func.to_dict())
+        r["FUNCTIONS"] = d
+        d.clear()
+        for sp in self.sprites:
+            d.append(sp.to_dict())
+        r["SPRITES"] = d
+        return r

@@ -27,3 +27,11 @@ class AttributeBlueprint(Blueprint):
 
     def set_value(self, value):
         self.__value = value
+
+    def to_dict(self):
+        r = super().to_dict()
+        r["DATA"] = {
+            "TYPE": self.__data_type,
+            "VALUE": self.__value
+        }
+        return r

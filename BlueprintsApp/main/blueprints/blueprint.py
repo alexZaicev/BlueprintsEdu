@@ -37,3 +37,10 @@ class Blueprint(ABC):
 
     def get_type(self):
         return self.__type
+
+    @abstractmethod
+    def to_dict(self):
+        return {
+            "NAME": self.name,
+            "TYPE": self.__type
+        }

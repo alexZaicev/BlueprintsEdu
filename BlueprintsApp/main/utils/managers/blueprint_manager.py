@@ -52,6 +52,9 @@ class BlueprintManager(Manager):
         """Description: Function analyses and creates JSON-format .bp files from
         blueprint connections.
         """
+        ##################
+        # TODO RE-IMPLEMENT METHOD WITH USING BLUEPRINT TO_DICT METHOD
+        #################
         data = dict()
         conns = list()
         size = DisplaySettings.get_size_by_key()
