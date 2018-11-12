@@ -1,0 +1,9 @@
+from characters import Character
+
+
+class CarCharacters(Characters):
+
+    <<< generated code variable >>>
+
+    def __init__(self, data):
+        self.data = data

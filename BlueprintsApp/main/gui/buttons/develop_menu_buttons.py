@@ -206,16 +206,26 @@ class GenerateButton(Button):
         json_obj = CommsUtils.build_project_model(project.get("PROJECT")[0], project.get("PROJECT")[1],
                                                   project.get("CHARACTERS"), project.get("ATTRIBUTES"),
                                                   project.get("FUNCTIONS"), project.get("SPRITES"))
+        all_good = True
         try:
             if form.generated:
                 r = CommsUtils.put("/python/project/{}".format(project.get("PROJECT")[0]), json_obj)
                 if r.get("STATUS") == Status.SUCCESS:
                     LOGGER.debug("Project content updated")
+                else:
+                    all_good = False
             else:
                 r = CommsUtils.post("/python/project", json_obj)
                 if r.get("STATUS") == Status.PROJECT_REGISTERED:
                     form.generated = True
                     LOGGER.debug("Project registered")
+                else:
+                    all_good = False
+
+            if all_good:
+                r = CommsUtils.get("/python/generate/{}".format(project.get("PROJECT")[0]))
+                if r.get("STATUS") == Status.SUCCESS:
+                    LOGGER.debug("Code generation successful")
         except AttributeError as ex:
             LOGGER.error("Something went wrong while trying to access response object: {}".format(str(ex)))
 

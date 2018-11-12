@@ -117,7 +117,6 @@ class ProjectManager(Manager):
 
     @classmethod
     def get_project_files(cls, directory):
-        # TODO implement security decoding
         fs = list()
         for root, dirs, files in os.walk(directory):
             for f in files:
@@ -133,7 +132,6 @@ class ProjectManager(Manager):
 
     @classmethod
     def save_project(cls, project_name, bp_data, bp_conns, generated):
-        # TODO implement security encoding
         bp_content, bp_conns_content = BlueprintManager.parse_blueprints(bp_data, bp_conns)
         ProjectManager.LOGGER.debug("BP content: {}".format(bp_content))
         ProjectManager.LOGGER.debug("BPS connections: {}".format(bp_conns_content))

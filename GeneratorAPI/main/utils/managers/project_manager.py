@@ -23,7 +23,7 @@ class ProjectManager(Manager):
         r.attributes = a
         r.functions = f
         r.sprites = s
-        r.characters = s
+        r.characters = c
         return r
 
     @classmethod
@@ -42,14 +42,11 @@ class ProjectManager(Manager):
 
     @classmethod
     def get_project(cls, name):
-        r = ProjectModel()
+        r = None
         for p in ProjectManager.PROJECTS:
             if name == p.name:
                 r = p
-                r.status = Status.SUCCESS
                 break
-        else:
-            r.status = Status.NOT_FOUND
         return r
 
     @classmethod

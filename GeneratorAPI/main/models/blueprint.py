@@ -14,6 +14,9 @@ class Blueprint(object):
             "TYPE": self.type
         }
 
+    def __str__(self):
+        return "{} = {}".format(self.name, str(None))
+
 
 class AttributeBlueprint(Blueprint):
 
@@ -30,6 +33,12 @@ class AttributeBlueprint(Blueprint):
             "VALUE": self.value
         }
         return r
+
+    def __str__(self):
+        if self.data_type == "string" or self.data_type == "char":
+            return "{} = '{}'".format(self.name, self.value)
+        else:
+            return "{} = {}".format(self.name, self.value)
 
 
 class CharacterBlueprint(Blueprint):
