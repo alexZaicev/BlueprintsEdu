@@ -43,6 +43,7 @@ class DevelopmentScene(SceneBuilder):
                                              (int(DisplaySettings.get_size_by_key()[0] * .265),
                                               int(DisplaySettings.get_size_by_key()[1] * .945)))
         self.__bp_panel = BlueprintControlForm(self.__cont_panel, self.display, self.__project,
+                                               project.get("GENERATED"),
                                                (int(self.__cont_panel.get_rect().right +
                                                     DisplaySettings.get_size_by_key()[0] * .005),
                                                 int(self.btn_file.get_rect().bottom * 1.05)),

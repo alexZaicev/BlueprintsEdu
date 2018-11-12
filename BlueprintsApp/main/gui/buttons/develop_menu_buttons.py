@@ -1,8 +1,12 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
-from utils.enums import status
+from utils.enums.status import Status
 from utils import scene_utils
+from utils.comms_utils import CommsUtils
+from utils import logger_utils
+
+LOGGER = logger_utils.get_logger(__name__)
 
 
 class AddAttrButton(Button):
@@ -145,7 +149,7 @@ class SaveExitButton(Button):
         super().on_click(board)
         if form is not None:
             form.save_project()
-        board.app_status = status.EXIT
+        board.app_status = Status.EXIT
 
     def update_button(self, text=None, color=Themes.DEFAULT_THEME.get("button")):
         if text is None:
@@ -198,9 +202,22 @@ class GenerateButton(Button):
 
     def on_click(self, board, form=None):
         super().on_click(board)
-        # TODO prepare data file for transfer
-        # TODO transfer data
-        # TODO receive data, inform user
+        project = form.get_project_dict()
+        json_obj = CommsUtils.build_project_model(project.get("PROJECT")[0], project.get("PROJECT")[1],
+                                                  project.get("CHARACTERS"), project.get("ATTRIBUTES"),
+                                                  project.get("FUNCTIONS"), project.get("SPRITES"))
+        try:
+            if form.generated:
+                r = CommsUtils.put("/python/project/{}".format(project.get("PROJECT")[0]), json_obj)
+                if r.get("STATUS") == Status.SUCCESS:
+                    LOGGER.debug("Project content updated")
+            else:
+                r = CommsUtils.post("/python/project", json_obj)
+                if r.get("STATUS") == Status.PROJECT_REGISTERED:
+                    form.generated = True
+                    LOGGER.debug("Project registered")
+        except AttributeError as ex:
+            LOGGER.error("Something went wrong while trying to access response object: {}".format(str(ex)))
 
 
 class GenerateRunButton(Button):

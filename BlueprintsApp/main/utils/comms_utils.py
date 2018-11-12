@@ -6,10 +6,10 @@ from utils import logger_utils
 
 
 class CommsUtils(Utils):
-    HOST = "127.0.0.1"
+    HOST = "http://127.0.0.1"
     PORT = 8001
     ROOT = '/api'
-    ROOT_PATH = "{}{}{}".format(HOST, PORT, ROOT)
+    ROOT_PATH = "{}:{}{}".format(HOST, PORT, ROOT)
     __LOGGER = logger_utils.get_logger(__name__)
 
     @classmethod
@@ -23,7 +23,7 @@ class CommsUtils(Utils):
         r = requests.get("{}{}".format(CommsUtils.ROOT_PATH, path))
         if r.status_code == HTTPStatus.OK:
             try:
-                data = json.loads(r.json())
+                data = r.json()
             except ValueError as ex:
                 CommsUtils.__LOGGER.error(
                     "Error occurred while trying to decode JSON response: {}".format(str(ex)))
@@ -41,10 +41,10 @@ class CommsUtils(Utils):
         :return: None - if error occurred OR dictionary of the parsed JSON response
         """
         data = None
-        r = requests.post("{}{}".format(CommsUtils.ROOT_PATH, path), data=data_send)
+        r = requests.post("{}{}".format(CommsUtils.ROOT_PATH, path), json=data_send)
         if r.status_code == HTTPStatus.OK:
             try:
-                data = json.loads(r.json())
+                data = r.json()
             except ValueError as ex:
                 CommsUtils.__LOGGER.error(
                     "Error occurred while trying to decode JSON response: {}".format(str(ex)))
@@ -63,10 +63,10 @@ class CommsUtils(Utils):
         :return: None - if error occurred OR dictionary of the parsed JSON response
         """
         data = None
-        r = requests.put("{}{}".format(CommsUtils.ROOT_PATH, path), data=data_send)
+        r = requests.put("{}{}".format(CommsUtils.ROOT_PATH, path), json=data_send)
         if r.status_code == HTTPStatus.OK:
             try:
-                data = json.loads(r.json())
+                data = r.json()
             except ValueError as ex:
                 CommsUtils.__LOGGER.error(
                     "Error occurred while trying to decode JSON response: {}".format(str(ex)))

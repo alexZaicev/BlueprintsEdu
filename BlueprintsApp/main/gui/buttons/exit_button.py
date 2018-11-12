@@ -1,6 +1,6 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
-from utils.enums import status
+from utils.enums.status import Status
 from utils.gui_utils import Themes
 
 
@@ -10,7 +10,7 @@ class ExitButton(Button):
         Button.__init__(self, StringUtils.get_string("ID_EXIT"), pos)
 
     def on_click(self, board, form=None):
-        board.app_status = status.EXIT
+        board.app_status = Status.EXIT
         super().on_click(board)
 
     def update_button(self, color=Themes.DEFAULT_THEME.get("button")):

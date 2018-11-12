@@ -4,6 +4,7 @@ from models.entity import Entity
 from utils import logger_utils
 from utils.enums.status import Status
 from utils.managers.project_manager import ProjectManager
+import json
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -54,7 +55,7 @@ class Project(flask_restful.Resource):
         :return: Registration status
         """
         e = Entity()
-        data = flask_restful.request.get_json()
+        data = json.loads(flask_restful.request.get_json())
         p = ProjectManager.create_project(data)
         e.status = ProjectManager.add_project(p)
         return e.to_dict()
@@ -67,7 +68,7 @@ class Project(flask_restful.Resource):
         """
         e = Entity()
         p = ProjectManager.get_project(name)
-        e.status = ProjectManager.update_project(p, flask_restful.request.get_json())
+        e.status = ProjectManager.update_project(p, json.loads(flask_restful.request.get_json()))
         return e.to_dict()
 
 

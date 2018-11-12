@@ -49,11 +49,11 @@ class CharacterBlueprint(Blueprint):
         for att in self.attributes:
             d.append(att.to_dict())
         r["ATTRIBUTES"] = d
-        d.clear()
+        d = list()
         for func in self.functions:
             d.append(func.to_dict())
         r["FUNCTIONS"] = d
-        d.clear()
+        d = list()
         for sp in self.sprites:
             d.append(sp.to_dict())
         r["SPRITES"] = d

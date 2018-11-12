@@ -52,6 +52,7 @@ class ProjectManager(Manager):
                 content = json.loads(dt)
                 if project_name == content.get("PROJECT_NAME"):
                     api = content.get("PROJECT_API")
+                    generated = content.get("GENERATED")
                     bp_conns = content.get("CONNECTIONS")
                     bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
                     ProjectManager.LOGGER.debug(bp_conns)
@@ -65,6 +66,7 @@ class ProjectManager(Manager):
         return {
             "PROJECT_NAME": project_name,
             "PROJECT_API": api,
+            "GENERATED": generated,
             "CONNECTIONS": bp_conns,
             "BLUEPRINTS": bps
         }
@@ -75,6 +77,7 @@ class ProjectManager(Manager):
         d = dict()
         d["PROJECT_NAME"] = data.get("PROJECT_NAME")
         d["PROJECT_API"] = data.get("PROJECT_API")
+        d["GENERATED"] = False
         d["CONNECTIONS"] = list()
         try:
             if not os.path.exists(ProjectManager.PATH):
@@ -129,7 +132,7 @@ class ProjectManager(Manager):
         return content
 
     @classmethod
-    def save_project(cls, project_name, bp_data, bp_conns):
+    def save_project(cls, project_name, bp_data, bp_conns, generated):
         # TODO implement security encoding
         bp_content, bp_conns_content = BlueprintManager.parse_blueprints(bp_data, bp_conns)
         ProjectManager.LOGGER.debug("BP content: {}".format(bp_content))
@@ -137,6 +140,7 @@ class ProjectManager(Manager):
         # PROJECT FILE
         r = dict()
         r["PROJECT_NAME"], r["PROJECT_API"] = project_name
+        r["GENERATED"] = generated
         r["CONNECTIONS"] = bp_conns_content
 
         f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],
