@@ -1,7 +1,7 @@
 from utils import logger_utils
 from board import Board
 import os
-from config_manager import ConfigManager
+from utils.managers.config_manager import ConfigManager
 
 os.path.join(os.path.split(__file__)[0], "resources")
 os.environ['SDL_VIDEO_CENTERED'] = '1'

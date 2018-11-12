@@ -5,19 +5,16 @@ import datetime
 import shutil
 from project import Project
 import json
-from blueprint_manager import BlueprintManager
-from security_manager import SecurityManager
+from utils.managers.blueprint_manager import BlueprintManager
+from utils.managers.security_manager import SecurityManager
+from utils.managers.manager import Manager
 
 
-class ProjectManager(object):
+class ProjectManager(Manager):
     LOGGER = logger_utils.get_logger(__name__)
     PATH = logger_utils.ROOT_PATH + "BlueprintsApp\projects\\"
     PROJECT_FILE_EXTENSION = ".blue"
     BLUEPRINT_FILE_EXTENSION = ".bp"
-
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def get_projects(cls):

@@ -1,6 +1,6 @@
 from gui.buttons.button import Button
 from utils.string_utils import StringUtils
-from project_manager import ProjectManager
+from utils.managers.project_manager import ProjectManager
 from utils.gui_utils import Themes
 
 

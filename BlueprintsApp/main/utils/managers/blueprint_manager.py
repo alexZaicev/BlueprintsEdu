@@ -15,14 +15,11 @@ from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from utils.app_utils import DisplaySettings
+from utils.managers.manager import Manager
 
 
-class BlueprintManager(object):
+class BlueprintManager(Manager):
     __LOGGER = logger_utils.get_logger(__name__)
-
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def generate_connections(cls, content, bps):

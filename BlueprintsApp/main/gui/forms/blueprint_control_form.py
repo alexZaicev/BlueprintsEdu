@@ -8,8 +8,8 @@ from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.blueprint import Blueprint
-from project_manager import ProjectManager
-from blueprint_manager import BlueprintManager
+from utils.managers.project_manager import ProjectManager
+from utils.managers.blueprint_manager import BlueprintManager
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB

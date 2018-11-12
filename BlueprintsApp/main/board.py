@@ -3,7 +3,7 @@ from utils import app_utils
 import pygame as pg
 from utils.enums import status
 from utils import scene_utils
-from config_manager import ConfigManager
+from utils.managers.config_manager import ConfigManager
 from utils.app_utils import DisplaySettings
 
 
