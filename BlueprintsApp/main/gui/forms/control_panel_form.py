@@ -352,6 +352,10 @@ class ControlPanelForm(Form):
                     if ls[0].collidepoint(event.pos) == 1:
                         self.__bp.set_data(2, ls[3])
                         self.__bp.reset_selection()
+                        if self.__bp.get_blueprint().get_data_type() == 'none':
+                            self.__bp.get_blueprint().set_value(StringUtils.get_string("ID_NONE"))
+                        else:
+                            self.__bp.get_blueprint().set_value("")
                         break
 
     def __character_events(self, event):
@@ -441,7 +445,5 @@ class ControlPanelForm(Form):
                 __write_str(dt)
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.CHAR:
                 self.__bp.set_data(index, c)
-            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.LIST:
-                __write_str(dt)
         else:
             __write_str(dt)

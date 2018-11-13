@@ -1,19 +1,20 @@
-from gui.forms.form import Form
-from utils.gui_utils import Themes
-from utils import logger_utils
 import pygame as pg
 from pygame.locals import *
+
+from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from blueprints.blueprint import Blueprint
+from blueprints.character_blueprint import CharacterBlueprint as CB
+from blueprints.function_blueprint import FunctionBlueprint as FB
+from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
-from blueprints.blueprint import Blueprint
-from utils.managers.project_manager import ProjectManager
+from gui.forms.form import Form
+from utils import logger_utils
+from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
-from blueprints.attribute_blueprint import AttributeBlueprint as AB
-from blueprints.function_blueprint import FunctionBlueprint as FB
-from blueprints.sprite_blueprint import SpriteBlueprint as SB
-from blueprints.character_blueprint import CharacterBlueprint as CB
+from utils.managers.project_manager import ProjectManager
 
 
 class BlueprintControlForm(Form):
@@ -25,7 +26,7 @@ class BlueprintControlForm(Form):
         self.__logger = logger_utils.get_logger(__name__)
         self.__bps = list()
         self.__bps_connections = list()
-        self.generated = generated    # TODO load that from project file
+        self.generated = generated
 
     def update_form(self, coords=None, size=None):
         super().update_form(coords, size)
@@ -248,29 +249,28 @@ class BlueprintControlForm(Form):
                 if len(bp.get_blueprint().attributes) > 0:
                     for b in bp.get_blueprint().attributes:
                         if isinstance(b, AB):
-                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                            self.__bps_connections.append([bp, self.find_blueprint(b)])
                 if len(bp.get_blueprint().functions) > 0:
                     for b in bp.get_blueprint().functions:
                         if isinstance(b, FB):
-                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                            self.__bps_connections.append([bp, self.find_blueprint(b)])
                 if len(bp.get_blueprint().sprites) > 0:
                     for b in bp.get_blueprint().sprites:
                         if isinstance(b, SB):
-                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                            self.__bps_connections.append([bp, self.find_blueprint(b)])
             elif isinstance(bp, SpriteBlueprint):
                 if len(bp.get_blueprint().attributes) > 0:
                     for b in bp.get_blueprint().attributes:
                         if isinstance(b, AB):
-                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                            self.__bps_connections.append([bp, self.find_blueprint(b)])
                 if len(bp.get_blueprint().functions) > 0:
                     for b in bp.get_blueprint().functions:
                         if isinstance(b, FB):
-                            self.__bps_connections.append([bp, self.find_blueprint(b.name, b.get_type())])
+                            self.__bps_connections.append([bp, self.find_blueprint(b)])
 
-    def find_blueprint(self, name, bp_type):
+    def find_blueprint(self, blueprint):
         r = None
         for bp in self.__bps:
-            if bp.get_blueprint().name == name and \
-                    bp.get_blueprint().get_type() == bp_type:
+            if bp.get_blueprint() == blueprint:
                 r = bp
         return r
