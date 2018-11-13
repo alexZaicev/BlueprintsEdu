@@ -2,7 +2,7 @@ from utils.generators.generator import Generator
 from utils.enums.status import Status
 from utils.managers.template_manager import TemplateManager
 from utils import logger_utils
-import os
+import os, shutil
 
 
 class PythonGenerator(Generator):
@@ -11,6 +11,9 @@ class PythonGenerator(Generator):
     @classmethod
     def generate(cls, project):
         s = Status.SUCCESS
+
+        PythonGenerator.initialize_directory(project.name)
+
         temps = TemplateManager.get_templates(project.api)
 
         # CHARACTER DATA
@@ -33,6 +36,17 @@ class PythonGenerator(Generator):
                 PythonGenerator.save_generated_content(project.name, k, content)
 
         return s
+
+    @classmethod
+    def initialize_directory(cls, project):
+        path = "{}{}\\".format(TemplateManager.ROOT_PATH, "out")
+        if not os.path.exists(path):
+            os.mkdir(path)
+        else:
+            path = "{}{}\\".format(path, project)
+            if os.path.exists(path):
+                shutil.rmtree(path=path, ignore_errors=True)
+            os.mkdir(path)
 
     @classmethod
     def generate_board(cls, project, content):
@@ -90,15 +104,6 @@ class PythonGenerator(Generator):
 
     @classmethod
     def save_generated_content(cls, project_name, file, content):
-        path = "{}{}\\".format(TemplateManager.ROOT_PATH, "out")
-        if not os.path.exists(path):
-            os.mkdir(path)
-        path = "{}{}\\".format(path, project_name)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        else:
-            # CLEAR GENERATED FOLDER
-            os.rmdir(path)
-            os.mkdir(path)
+        path = "{}{}\\{}\\".format(TemplateManager.ROOT_PATH, "out", project_name)
         with open("{}{}.py".format(path, file), "w+") as f:
             f.write(content)
