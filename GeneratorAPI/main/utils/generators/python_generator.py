@@ -85,7 +85,7 @@ class PythonGenerator(Generator):
             content = PythonGenerator.remove_tag((content[:i] + data + content[i:]),
                                                  tag)
         except ValueError as ex:
-            pass
+            PythonGenerator.__LOGGER("Tag [{}] not found to insert data".format(tag))
         return content
 
     @classmethod
@@ -95,6 +95,10 @@ class PythonGenerator(Generator):
             os.mkdir(path)
         path = "{}{}\\".format(path, project_name)
         if not os.path.exists(path):
+            os.mkdir(path)
+        else:
+            # CLEAR GENERATED FOLDER
+            os.rmdir(path)
             os.mkdir(path)
         with open("{}{}.py".format(path, file), "w+") as f:
             f.write(content)
