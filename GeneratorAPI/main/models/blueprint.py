@@ -73,6 +73,9 @@ class CharacterBlueprint(Blueprint):
         r["SPRITES"] = lb
         return r
 
+    def __str__(self):
+        return "{}Character".format(self.name)
+
 
 class FunctionBlueprint(Blueprint):
 

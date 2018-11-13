@@ -217,7 +217,7 @@ class GenerateButton(Button):
             else:
                 r = CommsUtils.post("/python/project", json_obj)
                 if r.get("STATUS") == Status.PROJECT_REGISTERED:
-                    form.generated = True
+                    # form.generated = True
                     LOGGER.debug("Project registered")
                 else:
                     all_good = False

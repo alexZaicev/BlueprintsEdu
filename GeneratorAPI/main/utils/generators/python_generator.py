@@ -9,44 +9,53 @@ class PythonGenerator(Generator):
 
     __LOGGER = logger_utils.get_logger(__name__)
 
-    DEFINITIONS = {
-        "GENERATOR_OPEN": "<<<",
-        "GENERATOR_CLOSE": ">>>",
-        "GENERATOR": "generated code",
-        "ATTRIBUTE": "variable",
-        "FUNCTION": "function",
-        "CHARACTER": "class character",
-        "SPRITE": "class sprite"
-    }
-
-    ATTR_GEN = "{} {} {} {}".format(DEFINITIONS.get("GENERATOR_OPEN"),
-                                    DEFINITIONS.get("GENERATOR"),
-                                    DEFINITIONS.get("ATTRIBUTE"),
-                                    DEFINITIONS.get("GENERATOR_CLOSE"))
-
     @classmethod
     def generate(cls, project):
         r = Status.SUCCESS
         temps = TemplateManager.get_templates(project.api)
         for k, v in temps.items():
             content = TemplateManager.read_template(v)
+            file = k
             PythonGenerator.__LOGGER.debug(content)
             # CHARACTER DATA
-            for char in project.characters:
-                for att in char.attributes:
-                    try:
-                        i = content.index(PythonGenerator.ATTR_GEN)
-                        code = str(att) + "\n\t"
-                        content = content[:i] + code + content[i:]
-                    except ValueError as ex:
-                        PythonGenerator.__LOGGER.debug("No attribute generator tag found in file [{}]".format(k))
             try:
-                i = content.index(PythonGenerator.ATTR_GEN)
-                content = content[:i] + content[i + len(PythonGenerator.ATTR_GEN):]
-                PythonGenerator.save_generated_content(project.name, k, content)
+                content, file = PythonGenerator.generate_character(project, content, file)
             except ValueError as ex:
-                pass
+                PythonGenerator.__LOGGER.debug("No character data generated to file [{}]".format(file))
+            PythonGenerator.save_generated_content(project.name, file, content)
         return r
+
+    @classmethod
+    def generate_character(cls, project, content, file):
+        if file == 'custom_character':
+            for ch in project.characters:
+                file = "{}_character".format(ch.name.lower())
+                # CHANGE CHARACTER CLASS
+                try:
+                    i = content.index(Generator.CHARACTER_CLASS)
+                    code = str(ch)
+                    content = PythonGenerator.remove_tag((content[:i] + code + content[i:]), Generator.CHARACTER_CLASS)
+                except ValueError as ex:
+                    pass
+                # ATTRIBUTE GENERATION
+                for att in ch.attributes:
+                    try:
+                        i = content.index(Generator.CHARACTER_ATTR)
+                        code = "self.{}\n\t".format(str(att).lower())
+                        content = PythonGenerator.remove_tag((content[:i] + code + content[i:]),
+                                                             Generator.CHARACTER_ATTR)
+                    except ValueError as ex:
+                        pass
+        return content, file
+
+    @classmethod
+    def remove_tag(cls, content, tag):
+        try:
+            i = content.index(tag)
+            content = content[:i] + content[i + len(tag):]
+        except ValueError as ex:
+            PythonGenerator.__LOGGER.debug("No tag found to remove [{}]".format(tag))
+        return content
 
     @classmethod
     def save_generated_content(cls, project_name, file, content):
