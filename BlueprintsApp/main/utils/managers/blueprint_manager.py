@@ -15,14 +15,11 @@ from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from utils.app_utils import DisplaySettings
+from utils.managers.manager import Manager
 
 
-class BlueprintManager(object):
+class BlueprintManager(Manager):
     __LOGGER = logger_utils.get_logger(__name__)
-
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def generate_connections(cls, content, bps):
@@ -55,6 +52,9 @@ class BlueprintManager(object):
         """Description: Function analyses and creates JSON-format .bp files from
         blueprint connections.
         """
+        ##################
+        # TODO RE-IMPLEMENT METHOD WITH USING BLUEPRINT TO_DICT METHOD
+        #################
         data = dict()
         conns = list()
         size = DisplaySettings.get_size_by_key()
@@ -157,6 +157,9 @@ class BlueprintManager(object):
     @classmethod
     def parse_character(cls, data):
         bp = BlueprintManager.get_general_data(data)
+        bp["POSITION"] = list(data.pos)
+        bp["SIZE"] = list(data.size)
+        bp["ALIVE"] = data.alive
         d = dict()
         for att in data.attributes:
             d[att.name] = att.get_type()
@@ -220,7 +223,7 @@ class BlueprintManager(object):
     @classmethod
     def reverse_parse_character(cls, panel, data):
         d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
-        bp = CB(name=d.get("NAME"))
+        bp = CB(name=d.get("NAME"), pos=d.get("POSITION"), size=d.get("SIZE"), alive=d.get("ALIVE"))
         for k, v in d.get("ATTRIBUTES").items():
             bp.attributes.append({k: v})
         for k, v in d.get("FUNCTIONS").items():

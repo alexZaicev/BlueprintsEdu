@@ -70,7 +70,15 @@ class StringUtils(Utils):
         "ID_CLEAR_CONNECTIONS": "Clear Connections",
         "ID_GENERATE": "Generate",
         "ID_GENERATE_AND_RUN": "Generate and Run",
-        "ID_DISPLAY": "Display"
+        "ID_DISPLAY": "Display",
+        "ID_LIST": "List",
+        "ID_POS_X": "Position X",
+        "ID_POS_Y": "Position Y",
+        "ID_WIDTH": "Width",
+        "ID_HEIGHT": "Height",
+        "ID_FALSE": "False",
+        "ID_TRUE": "True",
+        "ID_ALIVE": "Alive"
     }
 
     RUSSIAN_DICT = {

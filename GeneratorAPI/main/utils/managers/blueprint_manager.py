@@ -65,6 +65,5 @@ class BlueprintManager(Manager):
         for d in data.get("SPRITES"):
             s.append(BlueprintManager.parse_sprite(d))
         r = CharacterBlueprint(
-            data.get("NAME"), data.get("TYPE"), a, f, s
-        )
+            data.get("NAME"), data.get("TYPE"), data.get("POSITION"), data.get("SIZE"), data.get("ALIVE"), a, f, s)
         return r

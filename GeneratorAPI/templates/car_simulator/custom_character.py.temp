@@ -1,0 +1,18 @@
+import pygame as pg
+from character import Character
+
+
+class <<< generated code class character >>>(Character):
+
+    def __init__(self, pos, size, alive=True):
+        Character.__init__(self, pos, size, alive)
+		<<< generated code character variable >>>
+
+    def get_rect(self):
+        return pg.Rect(self.pos, self.size)
+
+    def draw(self, display):
+        pass
+
+    def events_handler(self, event):
+        pass

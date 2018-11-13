@@ -5,19 +5,16 @@ import datetime
 import shutil
 from project import Project
 import json
-from blueprint_manager import BlueprintManager
-from security_manager import SecurityManager
+from utils.managers.blueprint_manager import BlueprintManager
+from utils.managers.security_manager import SecurityManager
+from utils.managers.manager import Manager
 
 
-class ProjectManager(object):
+class ProjectManager(Manager):
     LOGGER = logger_utils.get_logger(__name__)
     PATH = logger_utils.ROOT_PATH + "BlueprintsApp\projects\\"
     PROJECT_FILE_EXTENSION = ".blue"
     BLUEPRINT_FILE_EXTENSION = ".bp"
-
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def get_projects(cls):
@@ -55,6 +52,7 @@ class ProjectManager(object):
                 content = json.loads(dt)
                 if project_name == content.get("PROJECT_NAME"):
                     api = content.get("PROJECT_API")
+                    generated = content.get("GENERATED")
                     bp_conns = content.get("CONNECTIONS")
                     bps = ProjectManager.get_project_files("{}{}".format(ProjectManager.PATH, project_name))
                     ProjectManager.LOGGER.debug(bp_conns)
@@ -68,6 +66,7 @@ class ProjectManager(object):
         return {
             "PROJECT_NAME": project_name,
             "PROJECT_API": api,
+            "GENERATED": generated,
             "CONNECTIONS": bp_conns,
             "BLUEPRINTS": bps
         }
@@ -78,6 +77,7 @@ class ProjectManager(object):
         d = dict()
         d["PROJECT_NAME"] = data.get("PROJECT_NAME")
         d["PROJECT_API"] = data.get("PROJECT_API")
+        d["GENERATED"] = False
         d["CONNECTIONS"] = list()
         try:
             if not os.path.exists(ProjectManager.PATH):
@@ -117,7 +117,6 @@ class ProjectManager(object):
 
     @classmethod
     def get_project_files(cls, directory):
-        # TODO implement security decoding
         fs = list()
         for root, dirs, files in os.walk(directory):
             for f in files:
@@ -132,14 +131,14 @@ class ProjectManager(object):
         return content
 
     @classmethod
-    def save_project(cls, project_name, bp_data, bp_conns):
-        # TODO implement security encoding
+    def save_project(cls, project_name, bp_data, bp_conns, generated):
         bp_content, bp_conns_content = BlueprintManager.parse_blueprints(bp_data, bp_conns)
         ProjectManager.LOGGER.debug("BP content: {}".format(bp_content))
         ProjectManager.LOGGER.debug("BPS connections: {}".format(bp_conns_content))
         # PROJECT FILE
         r = dict()
         r["PROJECT_NAME"], r["PROJECT_API"] = project_name
+        r["GENERATED"] = generated
         r["CONNECTIONS"] = bp_conns_content
 
         f_name = "{}{}\{}{}".format(ProjectManager.PATH, project_name[0],

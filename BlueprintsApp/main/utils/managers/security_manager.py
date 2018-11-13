@@ -1,17 +1,14 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from utils import logger_utils
+from utils.managers.manager import Manager
 
 
-class SecurityManager(object):
+class SecurityManager(Manager):
 
     CIPHER = b"CB*(GH&V09IKdsf4"
     IV = b"0000000000000000"
     __LOGGER = logger_utils.get_logger(__name__)
-
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def encode_data(cls, data):

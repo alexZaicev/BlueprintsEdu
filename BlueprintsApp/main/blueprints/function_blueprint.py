@@ -9,4 +9,9 @@ class FunctionBlueprint(Blueprint):
             code = dict()
         self.code = code
 
+    def to_dict(self):
+        r = super().to_dict()
+        r["CODE"] = self.code
+        return r
+
 

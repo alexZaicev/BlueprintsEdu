@@ -8,22 +8,24 @@ from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.blueprint import Blueprint
-from project_manager import ProjectManager
-from blueprint_manager import BlueprintManager
+from utils.managers.project_manager import ProjectManager
+from utils.managers.blueprint_manager import BlueprintManager
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
+from blueprints.character_blueprint import CharacterBlueprint as CB
 
 
 class BlueprintControlForm(Form):
 
-    def __init__(self, control_panel, display, project_info, coords=None, size=None):
+    def __init__(self, control_panel, display, project_info, generated, coords=None, size=None):
         Form.__init__(self, display, coords, size)
         self.__project_info = project_info
         self.__cont_panel = control_panel
         self.__logger = logger_utils.get_logger(__name__)
         self.__bps = list()
         self.__bps_connections = list()
+        self.generated = generated    # TODO load that from project file
 
     def update_form(self, coords=None, size=None):
         super().update_form(coords, size)
@@ -141,12 +143,31 @@ class BlueprintControlForm(Form):
             d.append([r.topleft, r.size])
 
             data.append(d)
-        ProjectManager.save_project(self.__project_info, data, self.__bps_connections)
+        ProjectManager.save_project(self.__project_info, data, self.__bps_connections, self.generated)
 
     def load_project(self, bp_conn, bps):
         self.__bps = BlueprintManager.reverse_parse_blueprints(self.get_rect(), bps)
         self.__logger.debug(self.__bps)
         self.__bps_connections = BlueprintManager.generate_connections(bp_conn, self.__bps)
+
+    def get_project_dict(self):
+        r = dict()
+        r["PROJECT"] = self.__project_info
+        a, c, f, s = list(), list(), list(), list()
+        for bp in self.__bps:
+            if isinstance(bp.get_blueprint(), AB):
+                a.append(bp.get_blueprint())
+            elif isinstance(bp.get_blueprint(), FB):
+                f.append(bp.get_blueprint())
+            elif isinstance(bp.get_blueprint(), SB):
+                s.append(bp.get_blueprint())
+            elif isinstance(bp.get_blueprint(), CB):
+                c.append(bp.get_blueprint())
+        r["ATTRIBUTES"] = a
+        r["FUNCTIONS"] = f
+        r["CHARACTERS"] = c
+        r["SPRITES"] = s
+        return r
 
     def clear_connections(self):
         self.__bps_connections.clear()

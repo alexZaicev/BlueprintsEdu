@@ -7,6 +7,7 @@ from blueprints.blueprint import Blueprint
 from pygame.locals import *
 from utils.app_utils import Events
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
+from gui.blueprints.character_blueprint import CharacterBlueprint
 from blueprints import attribute_blueprint
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.function_blueprint import FunctionBlueprint as FB
@@ -48,7 +49,7 @@ class ControlPanelForm(Form):
         self.display.blit(txt, rect_txt)
         self.display_data(rect_txt)
 
-    def draw_data_type_selection(self):
+    def draw_attribute_data_type_selection(self):
         self.__bp.data_type_selection.clear()
         pos = 1
         for t in AttributeBlueprint.DATA_TYPE:
@@ -64,6 +65,25 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.data_type_selection.append([r, txt, rt, t])
         for s in self.__bp.data_type_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
+    def draw_character_state_selection(self):
+        self.__bp.state_selection.clear()
+        pos = 1
+        for t in CharacterBlueprint.STATES:
+            r = pg.Rect((self.__bp.state_pressed[1].left, int(
+                self.__bp.state_pressed[1].top + self.__bp.state_pressed[1].height * pos)),
+                        self.__bp.state_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(CharacterBlueprint.STATES.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.state_selection.append([r, txt, rt, t])
+        for s in self.__bp.state_selection:
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
@@ -127,13 +147,14 @@ class ControlPanelForm(Form):
             if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
                 # DATA TYPE DROP DOWN
                 if self.__bp.data_type_pressed[0]:
-                    self.draw_data_type_selection()
+                    self.draw_attribute_data_type_selection()
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
                 pass
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                 pass
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
-                pass
+                if self.__bp.state_pressed[0]:
+                    self.draw_character_state_selection()
 
     def draw_attribute_data(self, data, pos, font, banner, margin):
         self.blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), data.get(2),
@@ -185,6 +206,30 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
     def draw_character_data(self, data, pos, font, banner, margin):
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_POS_X")), str(data[2]),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin))
+                  )
+        s = pos = pos + 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_POS_Y")), str(data[3]),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin))
+                  )
+        s = pos = pos + 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data[4]),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin))
+                  )
+        s = pos = pos + 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_HEIGHT")), str(data[5]),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin))
+                  )
+        s = pos = pos + 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_ALIVE")), str(data[6]),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin))
+                  )
         s = pos = pos + 1
         if len(self.__bp.get_blueprint().attributes) > 0:
             self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
@@ -251,9 +296,11 @@ class ControlPanelForm(Form):
                         if ta.collidepoint(event.pos) == 1:
                             self.boarder_rect = ta
                             found = True
-                            if self.__tas.index(ta) == 2:
+                            if self.__tas.index(ta) == 2 and isinstance(self.__bp, AttributeBlueprint):
                                 # DATA TYPE SELECTION
                                 self.__bp.data_type_pressed = True, ta
+                            elif self.__tas.index(ta) == 6 and isinstance(self.__bp, CharacterBlueprint):
+                                self.__bp.state_pressed = True, ta
                             break
                     else:  # if break then not reachable
                         self.__bp.reset_selection()
@@ -323,6 +370,13 @@ class ControlPanelForm(Form):
                         self.__tas.clear()
                         self.ta_populated = False
                         self.boarder_rect = None
+        elif event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                for ls in self.__bp.state_selection:
+                    if ls[0].collidepoint(event.pos) == 1:
+                        self.__bp.set_data(6, ls[3])
+                        self.__bp.reset_selection()
+                        break
 
     def __sprite_events(self, event):
         if event.type == KEYDOWN:
@@ -368,7 +422,7 @@ class ControlPanelForm(Form):
         dt = str(self.__bp.get_data().get(index))
         if dt is None:
             dt = ""
-        if index == 3:  # value index
+        if index == 3 and isinstance(self.__bp, AttributeBlueprint):  # value index
             if self.__bp.get_blueprint().get_data_type() == attribute_blueprint.NONE:
                 self.__bp.set_data(index, StringUtils.get_string("ID_NONE"))
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.INT:
@@ -380,12 +434,14 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.FLOAT:
                 dt += c
                 if self.float_try_parse(dt)[0]:
-                    self.__bp.set_data(index, float(dt))
+                    self.__bp.set_data(index, dt)
                 else:
-                    self.__bp.set_data(index, "")
+                    self.__bp.set_data(index, dt[:-1])
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.STRING:
                 __write_str(dt)
             elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.CHAR:
                 self.__bp.set_data(index, c)
+            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.LIST:
+                __write_str(dt)
         else:
             __write_str(dt)

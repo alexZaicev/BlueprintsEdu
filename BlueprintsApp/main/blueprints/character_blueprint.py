@@ -3,14 +3,21 @@ from blueprints.blueprint import Blueprint
 
 class CharacterBlueprint(Blueprint):
 
-    def __init__(self, name=None, attributes=None, functions=None, sprites=None):
+    def __init__(self, name=None, pos=None, size=None, alive=True, attributes=None, functions=None, sprites=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("CHARACTER"), name=name)
+        if pos is None:
+            pos = (0, 0)
+        if size is None:
+            size = (0, 0)
         if functions is None:
             functions = list()
         if attributes is None:
             attributes = list()
         if sprites is None:
             sprites = list()
+        self.pos = pos
+        self.size = size
+        self.alive = alive
         self.attributes = attributes  # DATA RELATED TO CHARACTER
         self.functions = functions
         self.sprites = sprites
@@ -42,3 +49,22 @@ class CharacterBlueprint(Blueprint):
         self.attributes.clear()
         self.functions.clear()
         self.sprites.clear()
+
+    def to_dict(self):
+        r = super().to_dict()
+        r["POSITION"] = self.pos
+        r["SIZE"] = self.size
+        r["ALIVE"] = self.alive
+        d = list()
+        for att in self.attributes:
+            d.append(att.to_dict())
+        r["ATTRIBUTES"] = d
+        d = list()
+        for func in self.functions:
+            d.append(func.to_dict())
+        r["FUNCTIONS"] = d
+        d = list()
+        for sp in self.sprites:
+            d.append(sp.to_dict())
+        r["SPRITES"] = d
+        return r

@@ -5,7 +5,7 @@ from pygame.locals import *
 from gui.buttons.select_button import SelectButton
 from gui.buttons.delete_button import DeleteButton
 from utils.string_utils import StringUtils
-from project_manager import ProjectManager
+from utils.managers.project_manager import ProjectManager
 from utils.gui_utils import Themes
 from gui.buttons.back_button import BackButton
 from utils.app_utils import DisplaySettings

@@ -5,9 +5,10 @@ from utils import app_utils
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
 from utils.app_utils import DisplaySettings
+from utils.managers.manager import Manager
 
 
-class ConfigManager(object):
+class ConfigManager(Manager):
 
     LOGGER = logger_utils.get_logger(__name__)
     DEFAULT_CONFIG = {
@@ -24,9 +25,6 @@ class ConfigManager(object):
     ROOT_PATH = logger_utils.ROOT_PATH + "BlueprintsApp\\"
     CONFIG_PATH = ROOT_PATH + CONFIG_FILE_NAME
 
-    def __init__(self):
-        object.__init__(self)
-        raise TypeError("Cannot instantiate static managers")
 
     @classmethod
     def set_configurations(cls):

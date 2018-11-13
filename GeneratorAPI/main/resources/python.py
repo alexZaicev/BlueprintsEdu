@@ -4,6 +4,8 @@ from models.entity import Entity
 from utils import logger_utils
 from utils.enums.status import Status
 from utils.managers.project_manager import ProjectManager
+from utils.generators.python_generator import PythonGenerator
+import json
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -11,6 +13,10 @@ LOGGER = logger_utils.get_logger(__name__)
 class Info(flask_restful.Resource):
 
     def get(self):
+        """Description: Helper GET call to list all Python specific API calls in Generator
+
+        :return: Dictionary with path and description values
+        """
         r = dict()
         r["/api/python"] = "GET: General API information containing python specific calls"
         r["/api/python/generate"] = "POST: Python code generator from blueprint json strings"
@@ -26,7 +32,13 @@ class Generate(flask_restful.Resource):
         :param name: Project name to generate from
         :return: Entity object with request status
         """
-        pass
+        p = ProjectManager.get_project(name)
+        e = Entity()
+        if p is not None:
+            e.status = PythonGenerator.generate(p)
+        else:
+            e.status = Status.GENERATION_FAILED
+        return e.to_dict()
 
 
 class Project(flask_restful.Resource):
@@ -54,7 +66,10 @@ class Project(flask_restful.Resource):
         :return: Registration status
         """
         e = Entity()
-        data = flask_restful.request.get_json()
+        if isinstance(flask_restful.request.get_json(), str):
+            data = json.loads(flask_restful.request.get_json())
+        elif isinstance(flask_restful.request.get_json(), dict):
+            data = flask_restful.request.get_json()
         p = ProjectManager.create_project(data)
         e.status = ProjectManager.add_project(p)
         return e.to_dict()
@@ -67,7 +82,11 @@ class Project(flask_restful.Resource):
         """
         e = Entity()
         p = ProjectManager.get_project(name)
-        e.status = ProjectManager.update_project(p, flask_restful.request.get_json())
+        if isinstance(flask_restful.request.get_json(), str):
+            data = json.loads(flask_restful.request.get_json())
+        elif isinstance(flask_restful.request.get_json(), dict):
+            data = flask_restful.request.get_json()
+        e.status = ProjectManager.update_project(p, data)
         return e.to_dict()
 
 
