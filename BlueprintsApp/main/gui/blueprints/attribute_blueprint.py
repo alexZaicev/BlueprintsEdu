@@ -14,7 +14,8 @@ class AttributeBlueprint(Blueprint):
         "int": "ID_INTEGER",
         "string": "ID_STRING",
         "char": "ID_CHARACTER",
-        "float": "ID_FLOAT"
+        "float": "ID_FLOAT",
+        "list": "ID_LIST"
     }
 
     def __init__(self, panel):

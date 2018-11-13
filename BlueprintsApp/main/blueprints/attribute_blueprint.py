@@ -6,6 +6,7 @@ INT = "int"
 FLOAT = "float"
 STRING = "string"
 CHAR = "char"
+LIST = "list"
 
 
 class AttributeBlueprint(Blueprint):

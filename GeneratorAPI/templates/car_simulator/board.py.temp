@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 from utils import *
+<<< generated code import >>>
 
 
 class Board(object):
@@ -16,12 +17,14 @@ class Board(object):
         self.sprites = self.init_sprites()
 
     def init_characters(self):
-        # GENERATOR TAGS REQUIRED
-        return list()
+		result = list()
+        <<< generated code initialize characters >>>
+        return result
 
     def init_sprites(self):
-        # GENERATOR TAGS REQUIRED
-        return list()
+		result = list()
+        <<< generated code initialize sprites >>>
+        return result
 
     def start(self):
         while self.running:

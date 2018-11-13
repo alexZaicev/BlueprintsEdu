@@ -36,15 +36,25 @@ class AttributeBlueprint(Blueprint):
 
     def __str__(self):
         if self.data_type == "string" or self.data_type == "char":
-            return "{} = '{}'".format(self.name, self.value)
+            return "{} = '{}'".format(self.name.lower(), self.value)
         else:
-            return "{} = {}".format(self.name, self.value)
+            return "{} = {}".format(self.name.lower(), self.value)
 
 
 class CharacterBlueprint(Blueprint):
 
-    def __init__(self, name=Status.NONE, b_type=Status.NONE, attributes=None, functions=None, sprites=None):
+    def __init__(self, name=Status.NONE, b_type=Status.NONE, pos=None, size=None, alive=True, attributes=None, functions=None,
+                 sprites=None):
         Blueprint.__init__(self, name, b_type)
+        if pos is None:
+            self.pos = (0, 0)
+        else:
+            self.pos = pos
+        if size is None:
+            self.size = (0, 0)
+        else:
+            self.size = size
+        self.alive = alive
         if attributes is None:
             self.attributes = list()
         else:
@@ -60,6 +70,9 @@ class CharacterBlueprint(Blueprint):
 
     def to_dict(self):
         r = super().to_dict()
+        r["POSITION"] = self.pos
+        r["SIZE"] = self.size
+        r["ALIVE"] = self.alive
         lb = list()
         for b in self.attributes:
             lb.append(b.to_dict())

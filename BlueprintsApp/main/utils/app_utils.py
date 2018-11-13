@@ -151,7 +151,10 @@ class Events(Utils):
             else:
                 return "z"
         elif key == K_0 or key == K_KP0:
-            return "0"
+            if Events.UPPERCASE and key == K_0:
+                return ")"
+            else:
+                return "0"
         elif key == K_1 or key == K_KP1:
             return "1"
         elif key == K_2 or key == K_KP2:
@@ -169,7 +172,10 @@ class Events(Utils):
         elif key == K_8 or key == K_KP8:
             return "8"
         elif key == K_9 or key == K_KP9:
-            return "9"
+            if Events.UPPERCASE and key == K_9:
+                return "("
+            else:
+                return "9"
         elif key == K_DELETE:
             return Events.SPECIAL_KEYS.get("DELETE")
         elif key == K_BACKSPACE:
@@ -182,6 +188,10 @@ class Events(Utils):
                 Events.UPPERCASE = True
             elif event_type == KEYUP:
                 Events.UPPERCASE = False
+        elif key == K_KP_PERIOD:
+            return "."
+        elif key == K_COMMA:
+            return ","
         else:
             return Events.SPECIAL_KEYS.get("UNREGISTERED")
 

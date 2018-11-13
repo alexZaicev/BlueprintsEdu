@@ -157,6 +157,9 @@ class BlueprintManager(Manager):
     @classmethod
     def parse_character(cls, data):
         bp = BlueprintManager.get_general_data(data)
+        bp["POSITION"] = list(data.pos)
+        bp["SIZE"] = list(data.size)
+        bp["ALIVE"] = data.alive
         d = dict()
         for att in data.attributes:
             d[att.name] = att.get_type()
@@ -220,7 +223,7 @@ class BlueprintManager(Manager):
     @classmethod
     def reverse_parse_character(cls, panel, data):
         d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
-        bp = CB(name=d.get("NAME"))
+        bp = CB(name=d.get("NAME"), pos=d.get("POSITION"), size=d.get("SIZE"), alive=d.get("ALIVE"))
         for k, v in d.get("ATTRIBUTES").items():
             bp.attributes.append({k: v})
         for k, v in d.get("FUNCTIONS").items():

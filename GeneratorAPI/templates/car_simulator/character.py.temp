@@ -3,7 +3,7 @@ import pygame as pg
 
 class Character(object):
 
-    def __init__(self, pos, size, alive=True):
+    def __init__(self, pos, size, alive):
         self.pos = pos
         self.size = size
         self.alive = alive
