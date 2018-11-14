@@ -1,11 +1,14 @@
+import json
+
 import flask_restful
+from flask import send_file
 
 from models.entity import Entity
 from utils import logger_utils
 from utils.enums.status import Status
-from utils.managers.project_manager import ProjectManager
 from utils.generators.python_generator import PythonGenerator
-import json
+from utils.managers.download_manager import DownloadManager
+from utils.managers.project_manager import ProjectManager
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -86,16 +89,22 @@ class Project(flask_restful.Resource):
             data = json.loads(flask_restful.request.get_json())
         elif isinstance(flask_restful.request.get_json(), dict):
             data = flask_restful.request.get_json()
+        else:
+            data = dict()
         e.status = ProjectManager.update_project(p, data)
         return e.to_dict()
 
 
 class DownloadProject(flask_restful.Resource):
 
-    def get(self, name):
+    def get(self, name, compression):
         """Description: GET download generated project files as zip archive
 
         :param name: Name of the generated project
-        :return: Project Zip archive
+        :param compression: Archive compression type: zip or tar
+        :return: Project archive of archive type passed in
         """
-        return None
+        archive_path = DownloadManager.get_project_archive(name, compression)
+        if archive_path is not None:
+            return send_file(filename_or_fp=archive_path, attachment_filename="{}.{}".format(name, compression),
+                             as_attachment=True)

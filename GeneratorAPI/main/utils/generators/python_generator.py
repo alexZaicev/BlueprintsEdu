@@ -1,8 +1,10 @@
-from utils.generators.generator import Generator
-from utils.enums.status import Status
-from utils.managers.template_manager import TemplateManager
+import os
+import shutil
+
 from utils import logger_utils
-import os, shutil
+from utils.enums.status import Status
+from utils.generators.generator import Generator
+from utils.managers.template_manager import TemplateManager
 
 
 class PythonGenerator(Generator):
@@ -104,6 +106,6 @@ class PythonGenerator(Generator):
 
     @classmethod
     def save_generated_content(cls, project_name, file, content):
-        path = "{}{}\\{}\\".format(TemplateManager.ROOT_PATH, "out", project_name)
+        path = "{}{}\\{}\\{}\\".format(TemplateManager.ROOT_PATH, "out", "src", project_name)
         with open("{}{}.py".format(path, file), "w+") as f:
             f.write(content)

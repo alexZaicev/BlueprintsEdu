@@ -32,6 +32,7 @@ python_generator.add_resource(Info, *routes)
 routes = ["/project", "/project/<string:name>"]
 python_generator.add_resource(Project, *routes)
 python_generator.add_resource(Generate, "/generate/<string:name>")
+python_generator.add_resource(DownloadProject, "/download/<string:name>/<string:compression>")
 
 """
 Description: API error handling
@@ -44,7 +45,7 @@ def handle_type_error(error):
     return str({
         "message": Status.INVALID_API_CALL,
         "error": str(error)
-    }), 404
+    }), 400
 
 
 @api_general.errorhandler(AttributeError)
@@ -54,3 +55,14 @@ def handle_type_error(error):
         "message": Status.BAD_REQUEST,
         "error": str(error)
     }), 400
+
+
+@api_general.errorhandler(FileNotFoundError)
+@api_python.errorhandler(FileNotFoundError)
+def handle_file_not_found_error(error):
+    return str(
+        {
+            "message": Status.DOWNLOAD_FAILED,
+            "error": str(error)
+        }
+    ), 404
