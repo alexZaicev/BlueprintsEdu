@@ -73,6 +73,8 @@ class Project(flask_restful.Resource):
             data = json.loads(flask_restful.request.get_json())
         elif isinstance(flask_restful.request.get_json(), dict):
             data = flask_restful.request.get_json()
+        else:
+            data = dict()
         p = ProjectManager.create_project(data)
         e.status = ProjectManager.add_project(p)
         return e.to_dict()
