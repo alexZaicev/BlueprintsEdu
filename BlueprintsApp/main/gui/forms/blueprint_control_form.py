@@ -15,6 +15,7 @@ from utils import logger_utils
 from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
 from utils.managers.project_manager import ProjectManager
+from utils.managers.execution_manager import ExecutionManager
 
 
 class BlueprintControlForm(Form):
@@ -169,6 +170,10 @@ class BlueprintControlForm(Form):
         r["CHARACTERS"] = c
         r["SPRITES"] = s
         return r
+
+    def execute_project(self):
+        ExecutionManager.execute_program(self.__project_info[0], "app")
+        self.__logger.info("Project`s [{}] app.py started".format(self.__project_info[0]))
 
     def clear_connections(self):
         self.__bps_connections.clear()

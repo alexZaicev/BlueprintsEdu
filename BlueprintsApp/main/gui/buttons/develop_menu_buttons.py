@@ -5,6 +5,7 @@ from utils.enums.status import Status
 from utils import scene_utils
 from utils.comms_utils import CommsUtils
 from utils import logger_utils
+from utils.managers.execution_manager import ExecutionManager
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -104,6 +105,8 @@ class RunButton(Button):
 
     def on_click(self, board, form=None):
         super().on_click(board)
+        if form is not None:
+            form.execute_project()
 
     def update_button(self, text=None, color=Themes.DEFAULT_THEME.get("button")):
         if text is None:
@@ -272,6 +275,9 @@ class GenerateRunButton(Button):
                     r = CommsUtils.download_project(project.get("PROJECT")[0])
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
+                        ExecutionManager.execute_program(project.get("PROJECT")[0], "app")
         except AttributeError as ex:
             LOGGER.error("Something went wrong while trying to access response object: {}".format(str(ex)))
+
+
 

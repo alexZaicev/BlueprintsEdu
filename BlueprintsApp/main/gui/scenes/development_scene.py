@@ -94,17 +94,17 @@ class DevelopmentScene(SceneBuilder):
 
         save = SaveButton()
         save.set_custom_size(DevelopmentScene.BTN_SIZE)
-        save.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .003), close.get_rect().bottom))
+        save.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .006), close.get_rect().bottom))
         save.color = Themes.DEFAULT_THEME.get("menu_background")
 
         sae = SaveExitButton()
         sae.set_custom_size(DevelopmentScene.BTN_SIZE)
-        sae.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .001), save.get_rect().bottom))
+        sae.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), save.get_rect().bottom))
         sae.color = Themes.DEFAULT_THEME.get("menu_background")
 
         ex = ExitButton()
         ex.set_custom_size(DevelopmentScene.BTN_SIZE)
-        ex.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), sae.get_rect().bottom))
+        ex.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .008), sae.get_rect().bottom))
         ex.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([close, save, sae, ex])
@@ -154,7 +154,7 @@ class DevelopmentScene(SceneBuilder):
 
         gen = GenerateButton()
         gen.set_custom_size(DevelopmentScene.BTN_SIZE)
-        gen.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
+        gen.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .004), r.bottom))
         gen.color = Themes.DEFAULT_THEME.get("menu_background")
 
         gen_run = GenerateRunButton()
@@ -162,7 +162,12 @@ class DevelopmentScene(SceneBuilder):
         gen_run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), gen.get_rect().bottom))
         gen_run.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([gen, gen_run])
+        run = RunButton()
+        run.set_custom_size(DevelopmentScene.BTN_SIZE)
+        run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .009), gen_run.get_rect().bottom))
+        run.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        result.extend([gen, gen_run, run])
         return result
 
     # ----------------END----------------
