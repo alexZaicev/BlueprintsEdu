@@ -18,3 +18,5 @@ class Status(Enum):
     EXIT = "EXIT"
     STARTED = "STARTED"
     SAVE = "SAVE"
+    DOWNLOAD_FAILED = "DOWNLOAD_FAILED"
+

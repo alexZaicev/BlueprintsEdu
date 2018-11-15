@@ -13,9 +13,7 @@ class PythonGenerator(Generator):
     @classmethod
     def generate(cls, project):
         s = Status.SUCCESS
-
         PythonGenerator.initialize_directory(project.name)
-
         temps = TemplateManager.get_templates(project.api)
 
         # CHARACTER DATA
@@ -44,11 +42,15 @@ class PythonGenerator(Generator):
         path = "{}{}\\".format(TemplateManager.ROOT_PATH, "out")
         if not os.path.exists(path):
             os.mkdir(path)
-        else:
-            path = "{}{}\\".format(path, project)
-            if os.path.exists(path):
-                shutil.rmtree(path=path, ignore_errors=True)
+        path = "{}{}".format(path, project)
+        if os.path.exists(path):
+            shutil.rmtree(path=path, ignore_errors=True)
             os.mkdir(path)
+            os.mkdir("{}\\src".format(path))
+            os.mkdir("{}\\src\\{}\\".format(path, project))
+        else:
+            os.mkdir(path)
+            os.mkdir("{}src\\{}\\".format(path, project))
 
     @classmethod
     def generate_board(cls, project, content):
@@ -106,6 +108,7 @@ class PythonGenerator(Generator):
 
     @classmethod
     def save_generated_content(cls, project_name, file, content):
-        path = "{}{}\\{}\\{}\\".format(TemplateManager.ROOT_PATH, "out", "src", project_name)
-        with open("{}{}.py".format(path, file), "w+") as f:
+        path = "{}{}\\{}\\{}\\{}\\".format(TemplateManager.ROOT_PATH, "out", project_name, "src", project_name)
+        f_path = "{}{}.py".format(path, file)
+        with open(f_path, "w+") as f:
             f.write(content)

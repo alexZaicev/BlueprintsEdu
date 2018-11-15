@@ -3,7 +3,12 @@ import requests
 from http import HTTPStatus
 import json
 from utils import logger_utils
-
+import platform
+from utils.managers.project_manager import ProjectManager
+import os
+from utils.enums.status import Status
+import zipfile
+import shutil
 
 class CommsUtils(Utils):
     HOST = "http://127.0.0.1"
@@ -120,3 +125,39 @@ class CommsUtils(Utils):
                 ls.append(s.to_dict())
             r["SPRITES"] = ls
         return json.dumps(r)
+
+    @classmethod
+    def download_project(cls, name):
+        s = Status.DOWNLOAD_FAILED
+        compressions = {
+            "Darwin": "",
+            "Windows": "zip",
+            "Linux": "tar"
+        }
+        ext = compressions.get(platform.system())
+        path = "{}/python/download/{}/{}".format(CommsUtils.ROOT_PATH, name, ext)
+        resp = requests.get(path, allow_redirects=True)
+        if resp.status_code == HTTPStatus.OK:
+            out_path = "{}{}\\out".format(ProjectManager.PATH, name)
+            zip_path = "{}\\{}.{}".format(out_path, name, ext)
+            if not os.path.exists(out_path):
+                os.mkdir(out_path)
+            else:
+                if os.path.exists(zip_path):
+                    os.remove(zip_path)
+
+            if os.path.exists("{}{}".format(ProjectManager.PATH, name)):
+                with open(zip_path, "wb+") as f:
+                    f.write(resp.content)
+                zip_file = zipfile.ZipFile(zip_path, "r")
+                zip_file.extractall(path="{}{}\\out\\".format(ProjectManager.PATH, name))
+                zip_file.close()
+
+                os.remove(zip_path)
+
+                s = Status.SUCCESS
+            else:
+                CommsUtils.__LOGGER.error("Project [{}] directory does not exists".format(name))
+        else:
+            CommsUtils.__LOGGER.error("Failed to download project [{}] from [{}]".format(name, path))
+        return s
