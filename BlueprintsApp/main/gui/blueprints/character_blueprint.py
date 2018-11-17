@@ -52,7 +52,10 @@ class CharacterBlueprint(Blueprint):
             t[1] = int(data)
             self.get_blueprint().size = t
         elif index == 6:
-            self.get_blueprint().alive = data
+            if data == "False":
+                self.get_blueprint().alive = False
+            elif data == "True":
+                self.get_blueprint().alive = True
         super().set_data(index, data)
         self.update_displayed_data(self.font.render(self.get_blueprint().name,
                                                     True, Themes.DEFAULT_THEME.get("font")))

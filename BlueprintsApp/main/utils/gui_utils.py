@@ -50,6 +50,7 @@ class Themes(Utils):
         "text_area_text": Colors.BLACK,
         "menu_background": Colors.DARK_GREY,
         "idle_blueprint": Colors.VAMPIRE_GREY,
+        "active_blueprint": Colors.SILVER,
         "enabled_blueprint": Colors.SLATE_GREY,
         "connection_line": Colors.RED
     }

@@ -39,10 +39,20 @@ class BlueprintControlForm(Form):
         self.draw_connections()
         if len(self.__bps) > 0:
             for bp in self.__bps:
-                if not bp.focused:
-                    pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("idle_blueprint"), bp.get_rect(), 0)
+                if bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+                    # CHARACTER ALIVE STATE COLOR IDENTIFICATION
+                    if not bp.focused:
+                        if bp.get_blueprint().alive:
+                            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("active_blueprint"), bp.get_rect(), 0)
+                        else:
+                            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("idle_blueprint"), bp.get_rect(), 0)
+                    else:
+                        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("enabled_blueprint"), bp.get_rect(), 0)
                 else:
-                    pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("enabled_blueprint"), bp.get_rect(), 0)
+                    if not bp.focused:
+                        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("idle_blueprint"), bp.get_rect(), 0)
+                    else:
+                        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("enabled_blueprint"), bp.get_rect(), 0)
                 self.display.blit(bp.get_text(), bp.get_text_rect())
                 if bp.is_hovered():
                     pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), bp.get_rect(), 2)
