@@ -13,6 +13,10 @@ class GeneratorError(Exception):
     """Description: Special error definition for generator exceptions"""
 
 
+class ResponseParsingError(Exception):
+    """Description: Special error definition for JSON parsing exceptions"""
+
+
 class Events(Utils):
     SPECIAL_KEYS = {
         "DELETE": "DEL",

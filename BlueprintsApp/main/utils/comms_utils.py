@@ -29,12 +29,7 @@ class CommsUtils(Utils):
         data = None
         r = requests.get("{}{}".format(CommsUtils.ROOT_PATH, path))
         if r.status_code == HTTPStatus.OK:
-            try:
-                data = r.json()
-            except ValueError as ex:
-                CommsUtils.__LOGGER.error(
-                    "Error occurred while trying to decode JSON response: {}".format(str(ex)))
-                CommsUtils.__LOGGER.debug("RECEIVED DATA: {}".format(data))
+            data = r.json()
         else:
             CommsUtils.__LOGGER.error("Something went wrong while making request to the API: {}".format(r.status_code))
         return data
@@ -50,12 +45,7 @@ class CommsUtils(Utils):
         data = None
         r = requests.post("{}{}".format(CommsUtils.ROOT_PATH, path), json=data_send)
         if r.status_code == HTTPStatus.OK:
-            try:
-                data = r.json()
-            except ValueError as ex:
-                CommsUtils.__LOGGER.error(
-                    "Error occurred while trying to decode JSON response: {}".format(str(ex)))
-                CommsUtils.__LOGGER.debug("RECEIVED DATA: {}".format(data))
+            data = r.json()
         else:
             CommsUtils.__LOGGER.error("Something went wrong while making request to the API: {}".format(r.status_code))
 
@@ -73,12 +63,7 @@ class CommsUtils(Utils):
         data = None
         r = requests.put("{}{}".format(CommsUtils.ROOT_PATH, path), json=data_send)
         if r.status_code == HTTPStatus.OK:
-            try:
-                data = r.json()
-            except ValueError as ex:
-                CommsUtils.__LOGGER.error(
-                    "Error occurred while trying to decode JSON response: {}".format(str(ex)))
-                CommsUtils.__LOGGER.debug("RECEIVED DATA: {}".format(data))
+            data = r.json()
         else:
             CommsUtils.__LOGGER.error(
                 "Something went wrong while making request to the API: {}".format(r.status_code))

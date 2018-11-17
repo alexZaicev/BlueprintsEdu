@@ -1,12 +1,14 @@
+from requests import RequestException
+
 from gui.buttons.button import Button
-from utils.string_utils import StringUtils
-from utils.gui_utils import Themes
-from utils.enums.status import Status
+from utils import app_utils
+from utils import logger_utils
 from utils import scene_utils
 from utils.comms_utils import CommsUtils
-from utils import logger_utils
+from utils.enums.status import Status
+from utils.gui_utils import Themes
 from utils.managers.execution_manager import ExecutionManager
-from utils.app_utils import GeneratorError
+from utils.string_utils import StringUtils
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -233,8 +235,10 @@ class GenerateButton(Button):
                     r = CommsUtils.download_project(project.get("PROJECT")[0])
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
-        except Exception:
-            raise GeneratorError("Error occurred while trying to generate project")
+        except ValueError:
+            raise app_utils.ResponseParsingError("Failed to parse generator response")
+        except RequestException:
+            raise app_utils.GeneratorError("Failed to generate project code")
 
 
 class GenerateRunButton(Button):
@@ -276,7 +280,7 @@ class GenerateRunButton(Button):
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
                         ExecutionManager.execute_program(project.get("PROJECT")[0], "app")
-        except Exception:
-            raise GeneratorError("Error occurred while trying to generate project")
-
-
+        except ValueError:
+            raise app_utils.ResponseParsingError("Failed to parse generator response")
+        except RequestException:
+            raise app_utils.GeneratorError("Failed to generate project code")
