@@ -17,6 +17,10 @@ class ResponseParsingError(Exception):
     """Description: Special error definition for JSON parsing exceptions"""
 
 
+class DownloadError(Exception):
+    """Description: Special error definition to project download exception"""
+
+
 class Events(Utils):
     SPECIAL_KEYS = {
         "DELETE": "DEL",

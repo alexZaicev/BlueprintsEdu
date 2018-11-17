@@ -7,6 +7,7 @@ from http import HTTPStatus
 import requests
 
 from utils import logger_utils
+from utils.app_utils import DownloadError
 from utils.enums.status import Status
 from utils.managers.project_manager import ProjectManager
 from utils.utils import Utils
@@ -116,7 +117,6 @@ class CommsUtils(Utils):
 
     @classmethod
     def download_project(cls, name):
-        s = Status.DOWNLOAD_FAILED
         compressions = {
             "Darwin": "",
             "Windows": "zip",
@@ -142,10 +142,10 @@ class CommsUtils(Utils):
                 zip_file.close()
 
                 os.remove(zip_path)
-
-                s = Status.SUCCESS
             else:
                 CommsUtils.__LOGGER.error("Project [{}] directory does not exists".format(name))
+                raise FileNotFoundError("Failed to save generated source code")
         else:
             CommsUtils.__LOGGER.error("Failed to download project [{}] from [{}]".format(name, path))
-        return s
+            raise DownloadError("Failed to download project [{}]".format(name))
+        return Status.SUCCESS

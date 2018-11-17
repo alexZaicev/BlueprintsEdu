@@ -329,7 +329,7 @@ class DevelopmentScene(SceneBuilder):
                     if btn.get_rect().collidepoint(pos):
                         try:
                             btn.on_click(board, self.__bp_panel)
-                        except app_utils.GeneratorError as ex:
+                        except Exception as ex:
                             self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
 
         def __check_settings_menu_press():
