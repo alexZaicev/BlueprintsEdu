@@ -1,14 +1,16 @@
-from utils.utils import Utils
-import requests
-from http import HTTPStatus
 import json
-from utils import logger_utils
-import platform
-from utils.managers.project_manager import ProjectManager
 import os
-from utils.enums.status import Status
+import platform
 import zipfile
-import shutil
+from http import HTTPStatus
+
+import requests
+
+from utils import logger_utils
+from utils.enums.status import Status
+from utils.managers.project_manager import ProjectManager
+from utils.utils import Utils
+
 
 class CommsUtils(Utils):
     HOST = "http://127.0.0.1"
@@ -56,6 +58,7 @@ class CommsUtils(Utils):
                 CommsUtils.__LOGGER.debug("RECEIVED DATA: {}".format(data))
         else:
             CommsUtils.__LOGGER.error("Something went wrong while making request to the API: {}".format(r.status_code))
+
         return data
 
     @classmethod

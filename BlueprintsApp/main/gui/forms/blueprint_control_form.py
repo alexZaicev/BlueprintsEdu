@@ -11,6 +11,7 @@ from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from gui.forms.form import Form
+from gui.popup import Popup
 from utils import logger_utils
 from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
@@ -28,6 +29,7 @@ class BlueprintControlForm(Form):
         self.__bps = list()
         self.__bps_connections = list()
         self.generated = generated
+        self.popup = None
 
     def update_form(self, coords=None, size=None):
         super().update_form(coords, size)
@@ -57,6 +59,8 @@ class BlueprintControlForm(Form):
                 if bp.is_hovered():
                     pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), bp.get_rect(), 2)
                 self.draw_blueprint_data(bp)
+        if self.popup is not None:
+            self.popup.draw(self.display)
 
     def draw_blueprint_data(self, blueprint):
         func_calls = {
@@ -214,8 +218,11 @@ class BlueprintControlForm(Form):
         return r
 
     def execute_project(self):
-        ExecutionManager.execute_program(self.__project_info[0], "app")
-        self.__logger.info("Project`s [{}] app.py started".format(self.__project_info[0]))
+        try:
+            ExecutionManager.execute_program(self.__project_info[0], "app")
+            self.__logger.info("Project`s [{}] app.py started".format(self.__project_info[0]))
+        except FileNotFoundError as ex:
+            self.popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
 
     def clear_connections(self):
         self.__bps_connections.clear()

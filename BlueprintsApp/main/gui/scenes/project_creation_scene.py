@@ -1,15 +1,16 @@
-from gui.scenes.scene_builder import SceneBuilder
-from utils import logger_utils
-from utils.string_utils import StringUtils
 import pygame as pg
 from pygame.locals import *
-from utils.app_utils import Images, Events
+
 from gui.buttons.cancel_button import CancelButton
 from gui.buttons.create_button import CreateButton
-from utils.app_utils import GameApi
 from gui.popup import Popup
-from utils.gui_utils import Themes
+from gui.scenes.scene_builder import SceneBuilder
+from utils import logger_utils
 from utils.app_utils import DisplaySettings
+from utils.app_utils import GameApi
+from utils.app_utils import Images, Events
+from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class ProjectCreationScene(SceneBuilder):
@@ -28,13 +29,6 @@ class ProjectCreationScene(SceneBuilder):
         self.__menu_content = []
         self.__menu_counter = 0
         self.__popup = None
-
-    def get_icon(self, menu):
-        img = pg.image.load(Images.DROP_DOWN)
-        img_rect = img.get_rect()
-        img_rect.midright = (
-            int(menu.right - DisplaySettings.get_size_by_key()[0] * .01), int(menu.center[1]))
-        return (img, img_rect)
 
     def draw_scene(self):
         # PREPARE DATA
@@ -69,7 +63,11 @@ class ProjectCreationScene(SceneBuilder):
             self.__api, True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_select = txt_select.get_rect()
         rect_select.center = self.api_select.center
-        self.btn_drop_down = self.get_icon(self.api_select)
+        # self.btn_drop_down = self.get_icon(self.api_select)
+        img = Images.get_icon(Images.DROP_DOWN)
+        img[1].midright = (int(self.api_select.right - DisplaySettings.get_size_by_key()[0] * .01),
+                           int(self.api_select.center[1]))
+        self.btn_drop_down = img
         # DISPLAY
         self.display.fill(Themes.DEFAULT_THEME.get("front_screen"))
         self.display.blit(txt_title, rect_title)
@@ -149,10 +147,13 @@ class ProjectCreationScene(SceneBuilder):
 
     def check_button_pressed(self, event, board, pos):
         if self.btn_create.get_rect().collidepoint(pos) == 1 and self.validate_project_info():
-            self.btn_create.on_click(board, {
-                "PROJECT_NAME": self.__project_name,
-                "PROJECT_API": self.__api
-            })
+            try:
+                self.btn_create.on_click(board, {
+                    "PROJECT_NAME": self.__project_name,
+                    "PROJECT_API": self.__api
+                })
+            except FileExistsError as ex:
+                self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
         elif self.btn_cancel.get_rect().collidepoint(pos) == 1:
             self.btn_cancel.on_click(board)
         elif self.btn_drop_down[1].collidepoint(pos) == 1:

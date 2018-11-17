@@ -1,13 +1,14 @@
-from utils import logger_utils
-import os
-import time
 import datetime
-import shutil
-from project import Project
 import json
+import os
+import shutil
+import time
+
+from project import Project
+from utils import logger_utils
 from utils.managers.blueprint_manager import BlueprintManager
-from utils.managers.security_manager import SecurityManager
 from utils.managers.manager import Manager
+from utils.managers.security_manager import SecurityManager
 
 
 class ProjectManager(Manager):
@@ -37,7 +38,7 @@ class ProjectManager(Manager):
                 result.append(Project(directory, str(datetime.datetime.strptime(
                     t, "%a %b %d %H:%M:%S %Y"))))
         else:
-            ProjectManager.LOGGER.info("No saved projects exists")
+            raise FileNotFoundError("No saved projects exists")
         return result
 
     @classmethod
@@ -73,32 +74,27 @@ class ProjectManager(Manager):
 
     @classmethod
     def create_project(cls, data):
-        # TODO don't allow to create with already existing project name OR override the existing one
         d = dict()
         d["PROJECT_NAME"] = data.get("PROJECT_NAME")
         d["PROJECT_API"] = data.get("PROJECT_API")
         d["GENERATED"] = False
         d["CONNECTIONS"] = list()
-        try:
-            if not os.path.exists(ProjectManager.PATH):
-                ProjectManager.LOGGER.warning("Unable to find projects directory...")
-                ProjectManager.LOGGER.info("Creating new projects directory...")
-                os.mkdir(ProjectManager.PATH)
 
-            path = "{}{}".format(ProjectManager.PATH, data.get("PROJECT_NAME"))
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # TODO don`t allow user to continue
-                ProjectManager.LOGGER.error(
-                    "Cannot override already existing project [{}]".format(data.get("PROJECT_NAME")))
+        if not os.path.exists(ProjectManager.PATH):
+            ProjectManager.LOGGER.warning("Unable to find projects directory...")
+            ProjectManager.LOGGER.info("Creating new projects directory...")
+            os.mkdir(ProjectManager.PATH)
 
-            with open("{}\{}{}".format(path, data.get("PROJECT_NAME").lower(), ProjectManager.PROJECT_FILE_EXTENSION),
-                      "wb+") as file:
-                dt = SecurityManager.encode_data(json.dumps(d))
-                file.write(dt)
-        except Exception as ex:
-            ProjectManager.LOGGER.error("Failed to create project directory [{}]".format(str(ex)))
+        path = "{}{}".format(ProjectManager.PATH, data.get("PROJECT_NAME"))
+        if not os.path.exists(path):
+            os.mkdir(path)
+        else:
+            raise FileExistsError("Cannot override already existing project [{}]".format(data.get("PROJECT_NAME")))
+
+        with open("{}\{}{}".format(path, data.get("PROJECT_NAME").lower(), ProjectManager.PROJECT_FILE_EXTENSION),
+                  "wb+") as file:
+            dt = SecurityManager.encode_data(json.dumps(d))
+            file.write(dt)
 
     @classmethod
     def is_valid_project(cls, dir):

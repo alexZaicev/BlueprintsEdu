@@ -6,6 +6,7 @@ from utils import scene_utils
 from utils.comms_utils import CommsUtils
 from utils import logger_utils
 from utils.managers.execution_manager import ExecutionManager
+from utils.app_utils import GeneratorError
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -232,8 +233,8 @@ class GenerateButton(Button):
                     r = CommsUtils.download_project(project.get("PROJECT")[0])
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
-        except AttributeError as ex:
-            LOGGER.error("Something went wrong while trying to access response object: {}".format(str(ex)))
+        except Exception:
+            raise GeneratorError("Error occurred while trying to generate project")
 
 
 class GenerateRunButton(Button):
@@ -267,7 +268,6 @@ class GenerateRunButton(Button):
                     LOGGER.debug("Project registered")
                 else:
                     all_good = False
-
             if all_good:
                 r = CommsUtils.get("/python/generate/{}".format(project.get("PROJECT")[0]))
                 if r.get("STATUS") == Status.SUCCESS:
@@ -276,8 +276,7 @@ class GenerateRunButton(Button):
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
                         ExecutionManager.execute_program(project.get("PROJECT")[0], "app")
-        except AttributeError as ex:
-            LOGGER.error("Something went wrong while trying to access response object: {}".format(str(ex)))
-
+        except Exception:
+            raise GeneratorError("Error occurred while trying to generate project")
 
 

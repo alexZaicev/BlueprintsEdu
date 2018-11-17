@@ -9,6 +9,7 @@ from pygame.locals import *
 from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
 from utils.app_utils import DisplaySettings
+from gui.popup import Popup
 
 
 class WelcomeScene(SceneBuilder):
@@ -22,6 +23,7 @@ class WelcomeScene(SceneBuilder):
         self.btn_load.color = Themes.DEFAULT_THEME.get("front_screen")
         self.btn_conf = ConfigurationButton(0)
         self.btn_conf.color = Themes.DEFAULT_THEME.get("front_screen")
+        self.__popup = None
 
     def draw_buttons(self):
         # PREPARE BUTTON RECTANGLES
@@ -53,18 +55,25 @@ class WelcomeScene(SceneBuilder):
         self.display.blit(txt_sub_banner, rect_sub_banner)
         self.draw_buttons()
         self.check_button_hover()
+        if self.__popup is not None:
+            self.__popup.draw(self.display)
         super().draw_scene()
 
     def check_events(self, event, board):
         super().check_events(event, board)
-        if event.type == MOUSEBUTTONDOWN:
-            self.check_button_press(pg.mouse.get_pos(), board)
+        if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+            self.__popup = None
+            if event.type == MOUSEBUTTONDOWN:
+                self.check_button_press(pg.mouse.get_pos(), board)
 
     def check_button_press(self, pos, board):
         if self.btn_new.get_rect().collidepoint(pos) == 1:
             self.btn_new.on_click(board)
         elif self.btn_load.get_rect().collidepoint(pos) == 1:
-            self.btn_load.on_click(board)
+            try:
+                self.btn_load.on_click(board)
+            except FileNotFoundError as ex:
+                self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
         elif self.btn_conf.get_rect().collidepoint(pos) == 1:
             self.btn_conf.on_click(board)
 

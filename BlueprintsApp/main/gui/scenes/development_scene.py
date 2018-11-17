@@ -8,6 +8,7 @@ from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
 from gui.buttons.develop_menu_buttons import *
 from utils.app_utils import DisplaySettings
+from gui.popup import Popup
 
 
 class DevelopmentScene(SceneBuilder):
@@ -35,7 +36,8 @@ class DevelopmentScene(SceneBuilder):
         self.__settings_menu_content = self.__init_settings_menu()
         self.__run_menu_content = self.__init_run_menu()
         self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
-        self.__btn_settings_pressed = False, False, False, False
+            self.__btn_settings_pressed = False, False, False, False
+        self.__popup = None
 
         self.__cont_panel = ControlPanelForm(self.display,
                                              (int(DisplaySettings.get_size_by_key()[0] * .005),
@@ -243,6 +245,8 @@ class DevelopmentScene(SceneBuilder):
         self.__cont_panel.draw_form()
         self.__bp_panel.draw_form()
         self.draw_drop_down()
+        if self.__popup is not None:
+            self.__popup.draw(self.display)
         super().draw_scene()
 
     def check_button_hover(self):
@@ -323,7 +327,10 @@ class DevelopmentScene(SceneBuilder):
             if self.__btn_run_pressed:
                 for btn in self.__run_menu_content:
                     if btn.get_rect().collidepoint(pos):
-                        btn.on_click(board, self.__bp_panel)
+                        try:
+                            btn.on_click(board, self.__bp_panel)
+                        except app_utils.GeneratorError as ex:
+                            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
 
         def __check_settings_menu_press():
             if self.__btn_settings_pressed:
@@ -331,37 +338,40 @@ class DevelopmentScene(SceneBuilder):
                     if btn.get_rect().collidepoint(pos):
                         btn.on_click(board, self.__bp_panel)
 
-        if event.type == MOUSEBUTTONDOWN:
-            pos = pg.mouse.get_pos()
-            if self.btn_file.get_rect().collidepoint(pos):
-                if self.__btn_file_pressed:
-                    __reset_btn_menu()
+        if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+            self.__popup = None
+            self.__bp_panel.popup = None
+            if event.type == MOUSEBUTTONDOWN:
+                pos = pg.mouse.get_pos()
+                if self.btn_file.get_rect().collidepoint(pos):
+                    if self.__btn_file_pressed:
+                        __reset_btn_menu()
+                    else:
+                        __reset_btn_menu()
+                        self.__btn_file_pressed = True
+                elif self.btn_edit.get_rect().collidepoint(pos):
+                    if self.__btn_edit_pressed:
+                        __reset_btn_menu()
+                    else:
+                        __reset_btn_menu()
+                        self.__btn_edit_pressed = True
+                elif self.btn_run.get_rect().collidepoint(pos):
+                    if self.__btn_run_pressed:
+                        __reset_btn_menu()
+                    else:
+                        __reset_btn_menu()
+                        self.__btn_run_pressed = True
+                elif self.btn_settings.get_rect().collidepoint(pos):
+                    if self.__btn_settings_pressed:
+                        __reset_btn_menu()
+                    else:
+                        __reset_btn_menu()
+                        self.__btn_settings_pressed = True
                 else:
+                    __check_file_menu_press()
+                    __check_edit_menu_press()
+                    __check_run_menu_press()
+                    __check_settings_menu_press()
                     __reset_btn_menu()
-                    self.__btn_file_pressed = True
-            elif self.btn_edit.get_rect().collidepoint(pos):
-                if self.__btn_edit_pressed:
-                    __reset_btn_menu()
-                else:
-                    __reset_btn_menu()
-                    self.__btn_edit_pressed = True
-            elif self.btn_run.get_rect().collidepoint(pos):
-                if self.__btn_run_pressed:
-                    __reset_btn_menu()
-                else:
-                    __reset_btn_menu()
-                    self.__btn_run_pressed = True
-            elif self.btn_settings.get_rect().collidepoint(pos):
-                if self.__btn_settings_pressed:
-                    __reset_btn_menu()
-                else:
-                    __reset_btn_menu()
-                    self.__btn_settings_pressed = True
-            else:
-                __check_file_menu_press()
-                __check_edit_menu_press()
-                __check_run_menu_press()
-                __check_settings_menu_press()
-                __reset_btn_menu()
         self.__cont_panel.check_form_events(event)
         self.__bp_panel.check_form_events(event)

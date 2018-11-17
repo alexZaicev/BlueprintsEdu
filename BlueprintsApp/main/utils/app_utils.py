@@ -9,6 +9,10 @@ CAPTION = "BlueprintEdu V1.0"
 FPS = 90
 
 
+class GeneratorError(Exception):
+    """Description: Special error definition for generator exceptions"""
+
+
 class Events(Utils):
     SPECIAL_KEYS = {
         "DELETE": "DEL",
@@ -200,7 +204,12 @@ class DisplaySettings(Utils):
 
     SCREEN_SIZES = {
         "800x600": [800, 600],
-        "1024x720": [1024, 720]
+        "1024x720": [1024, 720],
+        "1024x768": [1024, 768],
+        "1280x720": [1280, 720],
+        "1280x800": [1280, 800],
+        "1280x960": [1280, 960],
+        "1280x1024": [1280, 1024]
     }
 
     DEFAULT_SCREEN_SIZE = SCREEN_SIZES.get("800x600")
