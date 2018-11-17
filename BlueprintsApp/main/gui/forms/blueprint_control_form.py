@@ -14,8 +14,8 @@ from gui.forms.form import Form
 from utils import logger_utils
 from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
-from utils.managers.project_manager import ProjectManager
 from utils.managers.execution_manager import ExecutionManager
+from utils.managers.project_manager import ProjectManager
 
 
 class BlueprintControlForm(Form):
@@ -46,6 +46,38 @@ class BlueprintControlForm(Form):
                 self.display.blit(bp.get_text(), bp.get_text_rect())
                 if bp.is_hovered():
                     pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), bp.get_rect(), 2)
+                self.draw_blueprint_data(bp)
+
+    def draw_blueprint_data(self, blueprint):
+        func_calls = {
+            Blueprint.TYPES.get("FUNCTION"): self.draw_function_data,
+            Blueprint.TYPES.get("SPRITE"): self.draw_sprite_data,
+            Blueprint.TYPES.get("CHARACTER"): self.draw_character_data,
+            Blueprint.TYPES.get("ATTRIBUTE"): self.draw_attribute_data,
+        }
+        bp_type = blueprint.get_blueprint().get_type()
+        try:
+            func_calls[bp_type](blueprint)
+        except KeyError:
+            self.__logger.error("Unknown blueprint type [{}]".format(bp_type))
+
+    def draw_attribute_data(self, blueprint):
+        bp_data = blueprint.get_blueprint()
+        txt = blueprint.font.render("{} :: {}".format(bp_data.get_data_type(), bp_data.get_value()), True,
+                                    Themes.DEFAULT_THEME.get("font"))
+        rect_txt = txt.get_rect()
+        rect_txt.centerx = blueprint.get_rect().centerx
+        rect_txt.centery = int(blueprint.get_rect().centery + blueprint.get_rect().height * .2)
+        self.display.blit(txt, rect_txt)
+
+    def draw_character_data(self, blueprint):
+        pass
+
+    def draw_sprite_data(self, blueprint):
+        pass
+
+    def draw_function_data(self, blueprint):
+        pass
 
     def draw_connections(self):
         self.update_connections()
