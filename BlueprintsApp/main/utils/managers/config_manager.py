@@ -1,22 +1,22 @@
-import os
 import json
-from utils import logger_utils
+import os
+
 from utils import app_utils
-from utils.gui_utils import Themes
-from utils.string_utils import StringUtils
+from utils import logger_utils
 from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
 from utils.managers.manager import Manager
+from utils.string_utils import StringUtils
 
 
 class ConfigManager(Manager):
-
     LOGGER = logger_utils.get_logger(__name__)
     DEFAULT_CONFIG = {
         "SIZE":
-        {
-            "WIDTH": 800,
-            "HEIGHT": 600
-        },
+            {
+                "WIDTH": 800,
+                "HEIGHT": 600
+            },
         "LANGUAGE": "ID_ENGLISH",
         "THEME": "ST_1"
     }
@@ -24,7 +24,6 @@ class ConfigManager(Manager):
     CONFIG_FILE_NAME = "app.config"
     ROOT_PATH = logger_utils.ROOT_PATH + "BlueprintsApp\\"
     CONFIG_PATH = ROOT_PATH + CONFIG_FILE_NAME
-
 
     @classmethod
     def set_configurations(cls):
@@ -48,8 +47,7 @@ class ConfigManager(Manager):
                 cfgs["screen"] = [cfg["DEFAULT"]["SIZE"]["WIDTH"], cfg["DEFAULT"]["SIZE"]["HEIGHT"]]
                 cfgs["lang"] = cfg["DEFAULT"]["LANGUAGE"]
                 cfgs["theme"] = cfg["DEFAULT"]["THEME"]
-        app_utils.BOARD_WIDTH = cfgs.get("screen")[0]  # SCREEN SETTINGS
-        app_utils.BOARD_HEGHT = cfgs.get("screen")[1]
+        DisplaySettings.set_size_by_key(DisplaySettings.get_size_name(cfgs.get("screen")))
         StringUtils.set_language(cfgs.get("lang"))  # LANGUAGE
         Themes.set_theme(cfgs.get("theme"))  # THEME
 

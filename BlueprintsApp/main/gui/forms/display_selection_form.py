@@ -104,7 +104,7 @@ class DisplaySelectionForm(Form):
             if self.__is_drop_down_pressed:
                 if event.button == 4:
                     self.__size_counter -= 1
-                elif event.button == 5 and len(Themes.THEMES) > 3:
+                elif event.button == 5 and len(DisplaySettings.SCREEN_SIZES) > 3:
                     self.__size_counter += 1
                 if self.__size_counter < 0:
                     self.__size_counter = 0
