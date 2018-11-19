@@ -284,3 +284,18 @@ class GenerateRunButton(Button):
             raise app_utils.ResponseParsingError("Failed to parse generator response")
         except RequestException:
             raise app_utils.GeneratorError("Failed to generate project code")
+
+
+class RemoveButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_REMOVE"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_REMOVE")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        form.remove_blueprint()

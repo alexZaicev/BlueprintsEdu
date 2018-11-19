@@ -78,7 +78,8 @@ class StringUtils(Utils):
         "ID_HEIGHT": "Height",
         "ID_FALSE": "False",
         "ID_TRUE": "True",
-        "ID_ALIVE": "Alive"
+        "ID_ALIVE": "Alive",
+        "ID_REMOVE": "Remove"
     }
 
     RUSSIAN_DICT = {

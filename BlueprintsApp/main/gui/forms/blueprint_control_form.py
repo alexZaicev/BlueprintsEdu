@@ -96,9 +96,10 @@ class BlueprintControlForm(Form):
     def draw_connections(self):
         self.update_connections()
         for root, slave in self.__bps_connections:
-            c1 = root.get_rect().center
-            c2 = slave.get_rect().center
-            pg.draw.line(self.display, Themes.DEFAULT_THEME.get("connection_line"), c1, c2, 2)
+            if root is not None and slave is not None:
+                c1 = root.get_rect().center
+                c2 = slave.get_rect().center
+                pg.draw.line(self.display, Themes.DEFAULT_THEME.get("connection_line"), c1, c2, 2)
 
     def unfocus_blueprints(self):
         self.__cont_panel.set_blueprint(None)
@@ -296,29 +297,60 @@ class BlueprintControlForm(Form):
         if pare is not None:
             self.__bps_connections.remove(pare)
 
+    def remove_blueprint(self):
+        """Description: Method removes focused blueprint and connections associated with it"""
+        bp = None
+        for temp in self.__bps:
+            if temp.focused:
+                bp = temp
+                break
+        # remove connections
+        conns = [[root, slave] for root, slave in self.__bps_connections if bp == root or bp == slave]
+        for conn in conns:
+            self.__bps_connections.remove(conn)
+        # finally remove blueprint
+        self.__bps.remove(bp)
+        # clear character and sprite connections
+        for temp in self.__bps:
+            root, slave = bp.get_blueprint(), temp.get_blueprint()
+
+            if isinstance(temp, CharacterBlueprint):
+                if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
+                    slave.attributes.remove(root)
+                elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
+                    slave.functions.remove(root)
+                elif isinstance(bp, SpriteBlueprint) and (root in slave.sprites):
+                    slave.sprites.remove(root)
+            elif isinstance(temp, SpriteBlueprint):
+                if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
+                    slave.attributes.remove(root)
+                elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
+                    slave.functions.remove(root)
+
     def update_connections(self):
         self.__bps_connections.clear()
         for bp in self.__bps:
+            root = bp.get_blueprint()
             if isinstance(bp, CharacterBlueprint):
-                if len(bp.get_blueprint().attributes) > 0:
-                    for b in bp.get_blueprint().attributes:
+                if len(root.attributes) > 0:
+                    for b in root.attributes:
                         if isinstance(b, AB):
                             self.__bps_connections.append([bp, self.find_blueprint(b)])
-                if len(bp.get_blueprint().functions) > 0:
-                    for b in bp.get_blueprint().functions:
+                if len(root.functions) > 0:
+                    for b in root.functions:
                         if isinstance(b, FB):
                             self.__bps_connections.append([bp, self.find_blueprint(b)])
-                if len(bp.get_blueprint().sprites) > 0:
-                    for b in bp.get_blueprint().sprites:
+                if len(root.sprites) > 0:
+                    for b in root.sprites:
                         if isinstance(b, SB):
                             self.__bps_connections.append([bp, self.find_blueprint(b)])
             elif isinstance(bp, SpriteBlueprint):
-                if len(bp.get_blueprint().attributes) > 0:
-                    for b in bp.get_blueprint().attributes:
+                if len(root.attributes) > 0:
+                    for b in root.attributes:
                         if isinstance(b, AB):
                             self.__bps_connections.append([bp, self.find_blueprint(b)])
-                if len(bp.get_blueprint().functions) > 0:
-                    for b in bp.get_blueprint().functions:
+                if len(root.functions) > 0:
+                    for b in root.functions:
                         if isinstance(b, FB):
                             self.__bps_connections.append([bp, self.find_blueprint(b)])
 

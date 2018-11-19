@@ -140,7 +140,12 @@ class DevelopmentScene(SceneBuilder):
         clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_sprite.get_rect().bottom))
         clear.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([add_attr, add_char, add_func, add_sprite, clear])
+        remove = RemoveButton()
+        remove.set_custom_size(DevelopmentScene.BTN_SIZE)
+        remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), clear.get_rect().bottom))
+        remove.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        result.extend([add_attr, add_char, add_func, add_sprite, clear, remove])
         return result
 
     def __init_settings_menu(self):
