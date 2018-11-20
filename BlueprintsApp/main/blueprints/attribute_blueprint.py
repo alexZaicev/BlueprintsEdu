@@ -1,17 +1,10 @@
 from blueprints.blueprint import Blueprint
 from utils import logger_utils
 
-NONE = "none"
-INT = "int"
-FLOAT = "float"
-STRING = "string"
-CHAR = "char"
-LIST = "list"
-
 
 class AttributeBlueprint(Blueprint):
 
-    def __init__(self, data_type=NONE, value=None, name=None):
+    def __init__(self, data_type="none", value=None, name=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("ATTRIBUTE"), name=name)
         self.__logger = logger_utils.get_logger(__name__)
         self.__data_type = data_type

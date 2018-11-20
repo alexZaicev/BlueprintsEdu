@@ -125,27 +125,37 @@ class DevelopmentScene(SceneBuilder):
         add_char.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_attr.get_rect().bottom))
         add_char.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        add_func = AddFunctionButton()
-        add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
-        add_func.color = Themes.DEFAULT_THEME.get("menu_background")
+        # add_func = AddFunctionButton()
+        # add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
+        # add_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
+        # add_func.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        move_func = MoveFunctionButton()
+        move_func.set_custom_size(DevelopmentScene.BTN_SIZE)
+        move_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
+        move_func.color = Themes.DEFAULT_THEME.get("menu_background")
+
+        custom_func = CustomFunctionButton()
+        custom_func.set_custom_size(DevelopmentScene.BTN_SIZE)
+        custom_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), move_func.get_rect().bottom))
+        custom_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_sprite = AddSpriteButton()
         add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_sprite.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_func.get_rect().bottom))
+        add_sprite.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .004), custom_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
         clear = ClearConnectionsButton()
         clear.set_custom_size(DevelopmentScene.BTN_SIZE)
-        clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_sprite.get_rect().bottom))
+        clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .0008), add_sprite.get_rect().bottom))
         clear.color = Themes.DEFAULT_THEME.get("menu_background")
 
         remove = RemoveButton()
         remove.set_custom_size(DevelopmentScene.BTN_SIZE)
-        remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), clear.get_rect().bottom))
+        remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .006), clear.get_rect().bottom))
         remove.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([add_attr, add_char, add_func, add_sprite, clear, remove])
+        result.extend([add_attr, add_char, move_func, custom_func, add_sprite, clear, remove])
         return result
 
     def __init_settings_menu(self):

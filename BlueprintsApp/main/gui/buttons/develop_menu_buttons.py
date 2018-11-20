@@ -9,6 +9,7 @@ from utils.enums.status import Status
 from utils.gui_utils import Themes
 from utils.managers.execution_manager import ExecutionManager
 from utils.string_utils import StringUtils
+from gui.blueprints.function_blueprint import FunctionBlueprint
 
 LOGGER = logger_utils.get_logger(__name__)
 
@@ -299,3 +300,33 @@ class RemoveButton(Button):
     def on_click(self, board, form=None):
         super().on_click(board)
         form.remove_blueprint()
+
+
+class MoveFunctionButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_MOVE_FUNCTION"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_MOVE_FUNCTION")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        form.add_function(FunctionBlueprint.TYPE.get("MOVEMENT"))
+
+
+class CustomFunctionButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_CUSTOM_FUNCTION"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_CUSTOM_FUNCTION")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        form.add_function(FunctionBlueprint.TYPE.get("CUSTOM"))

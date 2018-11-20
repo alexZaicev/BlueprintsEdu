@@ -8,6 +8,10 @@ from blueprints.function_blueprint import FunctionBlueprint as FB
 class FunctionBlueprint(Blueprint):
 
     SIZE = [.25, .2]
+    TYPE = {
+        "MOVEMENT": "FUNC_M",
+        "CUSTOM": "FUNC_C"
+    }
 
     def __init__(self, panel):
         Blueprint.__init__(self, panel, FB())

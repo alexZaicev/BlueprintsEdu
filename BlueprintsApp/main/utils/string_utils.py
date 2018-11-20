@@ -79,7 +79,9 @@ class StringUtils(Utils):
         "ID_FALSE": "False",
         "ID_TRUE": "True",
         "ID_ALIVE": "Alive",
-        "ID_REMOVE": "Remove"
+        "ID_REMOVE": "Remove",
+        "ID_CUSTOM_FUNCTION": "Custom Function",
+        "ID_MOVE_FUNCTION": "Move Function"
     }
 
     RUSSIAN_DICT = {

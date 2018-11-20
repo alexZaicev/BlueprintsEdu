@@ -171,8 +171,9 @@ class BlueprintControlForm(Form):
         t = CharacterBlueprint(self.get_rect())
         self.__bps.append(t)
 
-    def add_function(self):
+    def add_function(self, fun_type):
         t = FunctionBlueprint(self.get_rect())
+        t.get_blueprint().func_type = fun_type
         self.__bps.append(t)
 
     def add_sprite(self):
