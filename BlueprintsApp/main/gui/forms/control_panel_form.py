@@ -8,6 +8,7 @@ from pygame.locals import *
 from utils.app_utils import Events
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
+from gui.blueprints.function_blueprint import FunctionBlueprint
 from blueprints import attribute_blueprint
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.function_blueprint import FunctionBlueprint as FB
@@ -87,6 +88,25 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
+    def draw_functions_type_selection(self):
+        self.__bp.type_selection.clear()
+        pos = 1
+        for t in FunctionBlueprint.TYPE:
+            r = pg.Rect((self.__bp.type_pressed[1].left, int(
+                self.__bp.type_pressed[1].top + self.__bp.type_pressed[1].height * pos)),
+                        self.__bp.type_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(FunctionBlueprint.TYPE.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.type_selection.append([r, txt, rt, t])
+        for s in self.__bp.type_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
     def blit(self, font, text, text2, coords, header=True):
         if text is not None:
             text = str(text)
@@ -149,7 +169,8 @@ class ControlPanelForm(Form):
                 if self.__bp.data_type_pressed[0]:
                     self.draw_attribute_data_type_selection()
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
-                pass
+                if self.__bp.type_pressed[0]:
+                    self.draw_functions_type_selection()
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                 pass
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
@@ -166,8 +187,10 @@ class ControlPanelForm(Form):
                    int(banner.bottom * 1.1 + pos * margin)))
 
     def draw_function_data(self, data, pos, font, banner, margin):
-        # TODO implement method
-        pass
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_FUNCTION")), data.get(2),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
 
     def draw_sprite_data(self, data, pos, font, banner, margin):
         s = pos = pos + 1
@@ -301,6 +324,8 @@ class ControlPanelForm(Form):
                                 self.__bp.data_type_pressed = True, ta
                             elif self.__tas.index(ta) == 6 and isinstance(self.__bp, CharacterBlueprint):
                                 self.__bp.state_pressed = True, ta
+                            elif self.__tas.index(ta) == 2 and isinstance(self.__bp, FunctionBlueprint):
+                                self.__bp.type_pressed = True, ta
                             break
                     else:  # if break then not reachable
                         self.__bp.reset_selection()
@@ -368,9 +393,9 @@ class ControlPanelForm(Form):
                     al.extend(self.__bp.get_blueprint().attributes)
                     al.extend(self.__bp.get_blueprint().functions)
                     al.extend(self.__bp.get_blueprint().sprites)
-                    i = self.__tas.index(self.boarder_rect) - 2  # 2 = INDEX OF NAME AND TYPE TextAreas
-                    if 0 <= i < len(al):
-                        self.__bp.get_blueprint().remove_connection(al[i])
+                    i = self.__tas.index(self.boarder_rect)
+                    if 6 < i < len(self.__tas):
+                        self.__bp.get_blueprint().remove_connection(al[i - 7])
                         self.__tas.clear()
                         self.ta_populated = False
                         self.boarder_rect = None
@@ -391,15 +416,21 @@ class ControlPanelForm(Form):
                     al = list()
                     al.extend(self.__bp.get_blueprint().attributes)
                     al.extend(self.__bp.get_blueprint().functions)
-                    i = self.__tas.index(self.boarder_rect) - 2  # 2 = INDEX OF NAME AND TYPE TextAreas
-                    if 0 <= i < len(al):
-                        self.__bp.get_blueprint().remove_connection(al[i])
+                    i = self.__tas.index(self.boarder_rect)
+                    if 1 < i < len(self.__tas):
+                        self.__bp.get_blueprint().remove_connection(al[i - 2])
                         self.__tas.clear()
                         self.ta_populated = False
                         self.boarder_rect = None
 
     def __function_event(self, event):
-        pass
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                for ls in self.__bp.type_selection:
+                    if ls[0].collidepoint(event.pos) == 1:
+                        self.__bp.set_data(2, ls[3])
+                        self.__bp.reset_selection()
+                        break
 
     def int_try_parse(self, num):
         try:
