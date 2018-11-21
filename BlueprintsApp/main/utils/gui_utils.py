@@ -29,9 +29,9 @@ class Themes(Utils):
     # THEME STYLE MAP
     DARK_KNIGHT_DICT = {
         "font": Colors.WHITE,
-        "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
-        "text_font_style": Fonts.SANSATION_REGULAR,
+        "button_font_style": Fonts.MICROSOFT_YAHEI,
+        "banner_font_style": Fonts.MICROSOFT_YAHEI,
+        "text_font_style": Fonts.MICROSOFT_YAHEI,
         "font_error": Colors.RANGE_RED,
         "background": Colors.BLACK,
         "button": Colors.LIGHT_GREY,

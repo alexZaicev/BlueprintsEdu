@@ -6,6 +6,8 @@ from utils.languages.german import GermanLanguage
 from utils.languages.french import FrenchLanguage
 from utils.languages.spanish import SpanishLanguage
 from utils.languages.norwegian import NorwegianLanguage
+from utils.languages.chineese import ChineseLanguage
+from utils.languages.italian import ItalianLanguage
 
 
 class StringUtils(Utils):
@@ -18,7 +20,9 @@ class StringUtils(Utils):
         ["ID_SPANISH", "Español"],
         ["ID_FRENCH", "Français"],
         ["ID_GERMAN", "Deutsche"],
-        ["ID_NORWEGIAN", "Norsk"]
+        ["ID_NORWEGIAN", "Norsk"],
+        ["ID_CHINESE", "中文"],
+        ["ID_ITALIAN", "Italiano"]
     ]
 
     DEFAULT_LANGUAGE = LANGUAGES[0][0]
@@ -37,6 +41,10 @@ class StringUtils(Utils):
             return GermanLanguage.WORD_TRANSLATIONS.get(word_id)
         elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[5][0]:
             return NorwegianLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[6][0]:
+            return ChineseLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[7][0]:
+            return ItalianLanguage.WORD_TRANSLATIONS.get(word_id)
 
     @classmethod
     def set_language(cls, lang_id):

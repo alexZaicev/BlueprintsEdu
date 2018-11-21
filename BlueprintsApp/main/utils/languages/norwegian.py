@@ -9,6 +9,7 @@ class NorwegianLanguage(Language):
         "ID_FRENCH": "Français",
         "ID_GERMAN": "Deutsche",
         "ID_NORWEGIAN": "Norsk",
+        "ID_CHINESE": "中文",
         "ID_NEW_PROJECT": "Nytt prosjekt",
         "ID_LOAD_PROJECT": "Laste prosjekt",
         "ID_CONFIGURATION": "Konfigurasjon",

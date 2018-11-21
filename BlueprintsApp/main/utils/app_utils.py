@@ -302,6 +302,7 @@ class Fonts(Utils):
     SANSATION_LIGHT = ROOT_PATH + "Sansation_Light.ttf"
     SANSATION_LIGHTITALIC = ROOT_PATH + "Sansation_LightItalic.ttf"
     SANSATION_REGULAR = ROOT_PATH + "Sansation_Regular.ttf"
+    MICROSOFT_YAHEI = ROOT_PATH + "Microsoft_YaHei.ttf"
 
 
 class Images(Utils):

@@ -9,6 +9,7 @@ class EnglishLanguage(Language):
         "ID_FRENCH": "Français",
         "ID_GERMAN": "Deutsche",
         "ID_NORWEGIAN": "Norsk",
+        "ID_CHINESE": "中文",
         "ID_NEW_PROJECT": "New Project",
         "ID_LOAD_PROJECT": "Load Project",
         "ID_CONFIGURATION": "Configuration",
