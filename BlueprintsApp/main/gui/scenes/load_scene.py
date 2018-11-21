@@ -9,6 +9,7 @@ from utils.managers.project_manager import ProjectManager
 from utils.gui_utils import Themes
 from gui.buttons.back_button import BackButton
 from utils.app_utils import DisplaySettings
+from utils import scene_utils
 
 
 class LoadScene(SceneBuilder):
@@ -112,12 +113,15 @@ class LoadScene(SceneBuilder):
             for f in self.files:
                 if f.pressed:
                     self.btn_delete.on_click(board, f.get_name())
-                    self.update_file_container()
+                    self.update_file_container(board)
         elif self.btn_back.get_rect().collidepoint(pos) == 1:
             self.btn_back.on_click(board)
 
-    def update_file_container(self):
-        self.files = ProjectManager.get_projects()
+    def update_file_container(self, board):
+        try:
+            self.files = ProjectManager.get_projects()
+        except FileNotFoundError:
+            board.set_scene(scene_utils.WELCOME_SCENE)
 
     def check_file_press(self, pos):
         for f in self.files:

@@ -314,7 +314,9 @@ class MoveFunctionButton(Button):
 
     def on_click(self, board, form=None):
         super().on_click(board)
-        form.add_function(FunctionBlueprint.TYPE.get("MOVEMENT"))
+        for key, value in FunctionBlueprint.TYPE.items():
+            if StringUtils.get_string("ID_MOVEMENT") == StringUtils.get_string(value):
+                form.add_function(key)
 
 
 class CustomFunctionButton(Button):
@@ -329,4 +331,6 @@ class CustomFunctionButton(Button):
 
     def on_click(self, board, form=None):
         super().on_click(board)
-        form.add_function(FunctionBlueprint.TYPE.get("CUSTOM"))
+        for key, value in FunctionBlueprint.TYPE.items():
+            if StringUtils.get_string("ID_CUSTOM") == StringUtils.get_string(value):
+                form.add_function(key)

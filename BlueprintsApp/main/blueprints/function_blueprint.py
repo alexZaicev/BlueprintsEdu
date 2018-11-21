@@ -13,7 +13,7 @@ class FunctionBlueprint(Blueprint):
     def to_dict(self):
         r = super().to_dict()
         r["CODE"] = self.code
-        r["TYPE"] = self.func_type
+        r["FUNCTION_TYPE"] = self.func_type
         return r
 
 

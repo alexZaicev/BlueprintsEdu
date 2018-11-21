@@ -36,8 +36,13 @@ class WelcomeScene(SceneBuilder):
 
     def draw_scene(self):
         # PREPARE DATA TO DISPLAY
+        height = .2
         font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
-                            int(DisplaySettings.get_size_by_key()[1] * .2))
+                            int(DisplaySettings.get_size_by_key()[1] * height))
+        while font.size(StringUtils.get_string("ID_WELCOME"))[0] >= DisplaySettings.get_size_by_key()[0]:
+            height -= .01
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
+                                int(DisplaySettings.get_size_by_key()[1] * height))
         txt_banner = font.render(StringUtils.get_string("ID_WELCOME"), True, Themes.DEFAULT_THEME.get("font"))
         font = pg.font.Font(Themes.DEFAULT_THEME.get("banner_font_style"),
                             int(DisplaySettings.get_size_by_key()[1] * .06))

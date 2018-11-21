@@ -1,5 +1,11 @@
 from utils.utils import Utils
 from utils import logger_utils
+from utils.languages.english import EnglishLanguage
+from utils.languages.russian import RussianLanguage
+from utils.languages.german import GermanLanguage
+from utils.languages.french import FrenchLanguage
+from utils.languages.spanish import SpanishLanguage
+from utils.languages.norwegian import NorwegianLanguage
 
 
 class StringUtils(Utils):
@@ -8,122 +14,29 @@ class StringUtils(Utils):
 
     LANGUAGES = [
         ["ID_ENGLISH", "English"],
-        ["ID_RUSSIAN", "Русский"]
+        ["ID_RUSSIAN", "Русский"],
+        ["ID_SPANISH", "Español"],
+        ["ID_FRENCH", "Français"],
+        ["ID_GERMAN", "Deutsche"],
+        ["ID_NORWEGIAN", "Norsk"]
     ]
 
-    # TODO load saved language from config file
     DEFAULT_LANGUAGE = LANGUAGES[0][0]
-
-    # LANGUAGE [ID - WORD] DICTIONARY
-    ENGLISH_DICT = {
-        "ID_ENGLISH": "English",
-        "ID_RUSSIAN": "Русский",
-        "ID_NEW_PROJECT": "New Project",
-        "ID_LOAD_PROJECT": "Load Project",
-        "ID_CONFIGURATION": "Configuration",
-        "ID_EXIT": "Exit",
-        "ID_SAVED_PROJECTS": "Saved Projects",
-        "ID_SELECT": "Select",
-        "ID_DELETE": "Delete",
-        "ID_WELCOME": "Welcome",
-        "ID_TITLE": "Title",
-        "ID_GAME_API": "Game API",
-        "ID_CANCEL": "Cancel",
-        "ID_CREATE": "Create",
-        "ID_THEME": "Theme",
-        "ID_LANGUAGE": "Language",
-        "ID_BACK": "Back",
-        "ID_APPLY": "Apply",
-        "ID_CAR_SIMULATOR": "Car Simulator",
-        "ID_DARK_KNIGHT": "Dark Knight",
-        "ID_DAY_LIGHT": "Day Light",
-        "ID_PRINCESS": "Princess",
-        "ID_FILE": "File",
-        "ID_RUN": "Run",
-        "ID_BUILD": "Build",
-        "ID_SETTINGS": "Settings",
-        "ID_SAVE": "Save",
-        "ID_CONTROL_PANEL": "Control Panel",
-        "ID_EDIT": "Edit",
-        "ID_ADD_ATTRIBUTE": "Add Attribute",
-        "ID_NAME": "Name",
-        "ID_TYPE": "Type",
-        "ID_ATTRIBUTE": "Attribute",
-        "ID_CHARACTER": "Character",
-        "ID_SPRITE": "Sprite",
-        "ID_FUNCTION": "Function",
-        "ID_ADD_CHARACTER": "Add Character",
-        "ID_ADD_FUNCTION": "Add Function",
-        "ID_ADD_SPRITE": "Add Sprite",
-        "ID_NONE": "None",
-        "ID_INTEGER": "Integer",
-        "ID_STRING": "String",
-        "ID_FLOAT": "Float",
-        "ID_DATA_TYPE": "Data Type",
-        "ID_VALUE": "Value",
-        "ID_UNKNOWN": "Unknown",
-        "ID_SAVE_AND_EXIT": "Save and Exit",
-        "ID_ATTRIBUTES": "Attributes",
-        "ID_FUNCTIONS": "Functions",
-        "ID_SPRITES": "Sprites",
-        "ID_CLOSE_PROJECT": "Close Project",
-        "ID_CLEAR_CONNECTIONS": "Clear Connections",
-        "ID_GENERATE": "Generate",
-        "ID_GENERATE_AND_RUN": "Generate and Run",
-        "ID_DISPLAY": "Display",
-        "ID_LIST": "List",
-        "ID_POS_X": "Position X",
-        "ID_POS_Y": "Position Y",
-        "ID_WIDTH": "Width",
-        "ID_HEIGHT": "Height",
-        "ID_FALSE": "False",
-        "ID_TRUE": "True",
-        "ID_ALIVE": "Alive",
-        "ID_REMOVE": "Remove",
-        "ID_CUSTOM_FUNCTION": "Custom Function",
-        "ID_MOVE_FUNCTION": "Move Function",
-        "ID_CUSTOM": "Custom",
-        "ID_MOVEMENT": "Movement"
-    }
-
-    RUSSIAN_DICT = {
-        "ID_ENGLISH": "Английский",
-        "ID_RUSSIAN": "Русский",
-        "ID_NEW_PROJECT": "Новый проект",
-        "ID_LOAD_PROJECT": "Загрузить проект",
-        "ID_CONFIGURATION": "Конфигурация",
-        "ID_EXIT": "Выход",
-        "ID_SAVED_PROJECTS": "Сохраненные проекты",
-        "ID_SELECT": "Выбрать",
-        "ID_DELETE": "Удалить",
-        "ID_WELCOME": "Добро пожаловать",
-        "ID_TITLE": "Название",
-        "ID_GAME_API": "Game API",
-        "ID_CANCEL": "Отмена",
-        "ID_CREATE": "Создать",
-        "ID_THEME": "Тема",
-        "ID_LANGUAGE": "Язык",
-        "ID_BACK": "Назад",
-        "ID_APPLY": "Применить",
-        "ID_CAR_SIMULATOR": "Симулятор автомобиля",
-        "ID_DARK_KNIGHT": "Темный рыцарь",
-        "ID_DAY_LIGHT": "Дневной свет",
-        "ID_PRINCESS": "Принцесса",
-        "ID_FILE": "Файл",
-        "ID_RUN": "Запустить",
-        "ID_BUILD": "Build",
-        "ID_SETTINGS": "Настройки",
-        "ID_SAVE": "Сохранить",
-        "ID_CONTROL_PANEL": "Панель управления",
-        "ID_EDIT": "Изменить"
-    }
 
     @classmethod
     def get_string(cls, word_id):
         if StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[0][0]:
-            return StringUtils.ENGLISH_DICT.get(word_id)
+            return EnglishLanguage.WORD_TRANSLATIONS.get(word_id)
         elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[1][0]:
-            return StringUtils.RUSSIAN_DICT.get(word_id)
+            return RussianLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[2][0]:
+            return SpanishLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[3][0]:
+            return FrenchLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[4][0]:
+            return GermanLanguage.WORD_TRANSLATIONS.get(word_id)
+        elif StringUtils.DEFAULT_LANGUAGE == StringUtils.LANGUAGES[5][0]:
+            return NorwegianLanguage.WORD_TRANSLATIONS.get(word_id)
 
     @classmethod
     def set_language(cls, lang_id):
