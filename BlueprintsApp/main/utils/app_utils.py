@@ -303,6 +303,7 @@ class Fonts(Utils):
     SANSATION_LIGHTITALIC = ROOT_PATH + "Sansation_LightItalic.ttf"
     SANSATION_REGULAR = ROOT_PATH + "Sansation_Regular.ttf"
     MICROSOFT_YAHEI = ROOT_PATH + "Microsoft_YaHei.ttf"
+    NOTO_SANS_CJK_MEDIUM = ROOT_PATH + "NotoSansCJKtc-Medium.otf"
 
 
 class Images(Utils):

@@ -9,7 +9,6 @@ from utils.app_utils import DisplaySettings
 class Button(ABC):
 
     def __init__(self, text, pos):
-        # TODO set button size according to the text object size
         font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"),
                             int(DisplaySettings.get_size_by_key()[1] * .045))
         self.logger = logger_utils.get_logger(__name__)
