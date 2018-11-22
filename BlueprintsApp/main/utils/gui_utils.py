@@ -56,13 +56,14 @@ class Themes(Utils):
     }
     DAY_LIGHT_DICT = {
         "font": Colors.BLACK,
-        "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
-        "text_font_style": Fonts.SANSATION_REGULAR,
+        "button_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
+        "banner_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
+        "text_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
         "font_error": Colors.RANGE_RED,
         "background": Colors.WHITE,
         "button": Colors.GAINSBORO,
         "panel_background": Colors.LIGHT_GREY,
+        "panel_disabled": Colors.NIGHT_GREY,
         "panel_front_light": Colors.LIGHT_CYAN,
         "panel_front_dark": Colors.LAVENDER,
         "line_separation": Colors.BLACK,
@@ -74,17 +75,22 @@ class Themes(Utils):
         "front_screen": Colors.SNOW,
         "text_area_background": Colors.PALE_TURQUOISE,
         "text_area_text": Colors.BLACK,
-        "menu_background": Colors.POWDER_BLUE
+        "menu_background": Colors.POWDER_BLUE,
+        "idle_blueprint": Colors.VAMPIRE_GREY,
+        "active_blueprint": Colors.SILVER,
+        "enabled_blueprint": Colors.SLATE_GREY,
+        "connection_line": Colors.RED
     }
     PRINCESS_DICT = {
         "font": Colors.WHITE,
-        "button_font_style": Fonts.SANSATION_BOLD,
-        "banner_font_style": Fonts.SANSATION_BOLDITALIC,
-        "text_font_style": Fonts.SANSATION_REGULAR,
+        "button_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
+        "banner_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
+        "text_font_style": Fonts.NOTO_SANS_CJK_MEDIUM,
         "font_error": Colors.RANGE_RED,
         "background": Colors.PINK,
         "button": Colors.MEDIUM_ORCHID,
         "panel_background": Colors.HOT_PINK,
+        "panel_disabled": Colors.NIGHT_GREY,
         "panel_front_light": Colors.PINK,
         "panel_front_dark": Colors.MEDIUM_ORCHID,
         "line_separation": Colors.PURPLE,
@@ -96,7 +102,11 @@ class Themes(Utils):
         "front_screen": Colors.DEEP_PINK,
         "text_area_background": Colors.PINK,
         "text_area_text": Colors.WHITE,
-        "menu_background": Colors.PURPLE
+        "menu_background": Colors.PURPLE,
+        "idle_blueprint": Colors.VAMPIRE_GREY,
+        "active_blueprint": Colors.SILVER,
+        "enabled_blueprint": Colors.SLATE_GREY,
+        "connection_line": Colors.RED
     }
 
     DEFAULT_THEME = DARK_KNIGHT_DICT
@@ -142,5 +152,5 @@ class Themes(Utils):
 # WIDGETS
 BUTTON_MARGIN = .005
 BUTTON_MENU_MARGIN = 0.005
-BUTTON_PRIMARY = (.32, .08)
+BUTTON_PRIMARY = (.24, .06)
 BUTTON_MENU = ()

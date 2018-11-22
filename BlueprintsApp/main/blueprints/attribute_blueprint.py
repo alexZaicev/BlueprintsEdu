@@ -4,6 +4,12 @@ from utils import logger_utils
 
 class AttributeBlueprint(Blueprint):
 
+    NONE = "none"
+    INT = "int"
+    FLOAT = "float"
+    STRING = "string"
+    CHAR = "char"
+
     def __init__(self, data_type="none", value=None, name=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("ATTRIBUTE"), name=name)
         self.__logger = logger_utils.get_logger(__name__)

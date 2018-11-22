@@ -45,20 +45,22 @@ class ProjectCreationScene(SceneBuilder):
         txt_api = font.render(StringUtils.get_string(
             "ID_GAME_API") + ":", True, Themes.DEFAULT_THEME.get("font"))
         rect_api = txt_api.get_rect()
-        rect_api.topleft = (int(int(DisplaySettings.get_size_by_key()[0] * .05)),
+        rect_api.topleft = (int(DisplaySettings.get_size_by_key()[0] * .05),
                             int(rect_title.top + rect_title.height + DisplaySettings.get_size_by_key()[1] * .1))
-        self.input = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), int(rect_title.top)),
+        self.input = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), 0),
                              (int(DisplaySettings.get_size_by_key()[0] * 0.6),
-                              int(DisplaySettings.get_size_by_key()[0] * .05)))
+                              int(rect_api.height * .8)))
+        self.input.centery = rect_title.centery
         font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"),
                             int(DisplaySettings.get_size_by_key()[0] * .03))
         txt_input = font.render(self.__project_name,
                                 True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_input = txt_input.get_rect()
         rect_input.center = self.input.center
-        self.api_select = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), int(rect_api.top)),
+        self.api_select = pg.Rect((int(rect_api.right + DisplaySettings.get_size_by_key()[0] * .05), 0),
                                   (int(DisplaySettings.get_size_by_key()[0] * 0.6),
-                                   int(DisplaySettings.get_size_by_key()[0] * .05)))
+                                   int(rect_api.height * .8)))
+        self.api_select.centery = rect_api.centery
         txt_select = font.render(
             self.__api, True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_select = txt_select.get_rect()

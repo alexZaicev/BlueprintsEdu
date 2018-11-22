@@ -9,7 +9,7 @@ from utils.app_utils import Events
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
-from blueprints import attribute_blueprint
+from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
@@ -358,7 +358,8 @@ class ControlPanelForm(Form):
                             self.__tas[i].topleft == self.boarder_rect.topleft
                         ][0]
                         if c == Events.SPECIAL_KEYS.get("DELETE"):
-                            self.__bp.set_data(index, "")
+                            if not isinstance(self.__bp, AttributeBlueprint) and self.__bp.get_data_type() != AB.NONE:
+                                self.__bp.set_data(index, "")
                         elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
                             dt = str(self.__bp.get_data().get(index))
                             if len(dt) > 0:
@@ -446,35 +447,45 @@ class ControlPanelForm(Form):
 
     def __set_str(self, index, c):
         """Description: Method validates control panel input and sets data to
-        the selected blueprint
+        the selected blueprint field
         """
 
         def __write_str(data):
             if len(data) < 15:
-                data += c
                 self.__bp.set_data(index, data)
 
         dt = str(self.__bp.get_data().get(index))
         if dt is None:
             dt = ""
-        if index == 3 and isinstance(self.__bp, AttributeBlueprint):  # value index
-            if self.__bp.get_blueprint().get_data_type() == attribute_blueprint.NONE:
-                self.__bp.set_data(index, StringUtils.get_string("ID_NONE"))
-            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.INT:
-                dt += c
-                if self.int_try_parse(dt)[0]:
-                    self.__bp.set_data(index, int(dt))
-                else:
-                    self.__bp.set_data(index, "")
-            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.FLOAT:
-                dt += c
-                if self.float_try_parse(dt)[0]:
-                    self.__bp.set_data(index, dt)
-                else:
-                    self.__bp.set_data(index, dt[:-1])
-            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.STRING:
+        dt += c
+        # check blueprint specific input
+        if isinstance(self.__bp, AttributeBlueprint):
+            if index == 3:
+                if self.__bp.get_blueprint().get_data_type() == AB.NONE:
+                    __write_str(StringUtils.get_string("ID_NONE"))
+                elif self.__bp.get_blueprint().get_data_type() == AB.INT:
+                    if self.int_try_parse(dt)[0]:
+                        __write_str(dt)
+                    else:
+                        __write_str(dt[:-1])
+                elif self.__bp.get_blueprint().get_data_type() == AB.FLOAT:
+                    if self.float_try_parse(dt)[0]:
+                        __write_str(dt)
+                    else:
+                        __write_str(dt[:-1])
+                elif self.__bp.get_blueprint().get_data_type() == AB.STRING:
+                    __write_str(dt)
+                elif self.__bp.get_blueprint().get_data_type() == AB.CHAR:
+                    __write_str(c)
+            else:
                 __write_str(dt)
-            elif self.__bp.get_blueprint().get_data_type() == attribute_blueprint.CHAR:
-                self.__bp.set_data(index, c)
-        else:
-            __write_str(dt)
+        elif isinstance(self.__bp, FunctionBlueprint):
+            pass
+        elif isinstance(self.__bp, CharacterBlueprint):
+            if  2 <= index <= 5:
+                if self.int_try_parse(dt)[0]:
+                    __write_str(dt)
+                else:
+                    __write_str(dt[:-1])
+        elif isinstance(self.__bp, SpriteBlueprint):
+            pass

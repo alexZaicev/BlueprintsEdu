@@ -9,6 +9,7 @@ from utils.gui_utils import Themes
 class AttributeBlueprint(Blueprint):
 
     SIZE = [.2, .1]
+
     DATA_TYPE = {
         "none": "ID_NONE",
         "int": "ID_INTEGER",

@@ -6,7 +6,7 @@ import pygame as pg
 CAPTION = "BlueprintEdu V1.0"
 
 # FRAMES PER SECOND
-FPS = 90
+FPS = 210
 
 
 class GeneratorError(Exception):
