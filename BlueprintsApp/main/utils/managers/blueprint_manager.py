@@ -139,6 +139,9 @@ class BlueprintManager(Manager):
     def parse_function(cls, data):
         bp = BlueprintManager.get_general_data(data)
         bp["FUNCTION_TYPE"] = data.func_type
+        bp["ORIENTATION"] = data.orientation
+        bp["DIRECTIONAL"] = data.directional
+        bp["KEY_PRESS"] = data.key_press
         bp["CODE"] = data.code
         return bp
 
@@ -189,7 +192,8 @@ class BlueprintManager(Manager):
     @classmethod
     def reverse_parse_function(cls, panel, data):
         d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
-        bp = FB(name=d.get("NAME"), func_type=d.get("FUNCTION_TYPE"))
+        bp = FB(name=d.get("NAME"), func_type=d.get("FUNCTION_TYPE"), orientation=d.get("ORIENTATION"),
+                directional=d.get("DIRECTIONAL"), key_press=d.get("KEY_PRESS"))
         bp_gui = FunctionBlueprint(panel)
         bp_gui.initialize(
             r[0], r[1],

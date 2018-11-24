@@ -75,5 +75,14 @@ class EnglishLanguage(Language):
         "ID_CUSTOM_FUNCTION": "Custom Function",
         "ID_MOVE_FUNCTION": "Move Function",
         "ID_CUSTOM": "Custom",
-        "ID_MOVEMENT": "Movement"
+        "ID_MOVEMENT": "Movement",
+        "ID_UP": "Up",
+        "ID_DOWN": "Down",
+        "ID_LEFT": "Left",
+        "ID_RIGHT": "Right",
+        "ID_ONE_CLICK_MOVE": "One Click Move",
+        "ID_CONTINUOUS_MOVE": "Continuous Move",
+        "ID_ORIENTATION": "Orientation",
+        "ID_DIRECTIONAL": "Directional",
+        "ID_ON_KEY_PRESS": "On Key Press"
     }

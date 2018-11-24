@@ -1,18 +1,19 @@
-from gui.forms.form import Form
-from utils.gui_utils import Themes
-from utils import logger_utils
 import pygame as pg
-from utils.string_utils import StringUtils
-from blueprints.blueprint import Blueprint
 from pygame.locals import *
-from utils.app_utils import Events
+
+from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from blueprints.blueprint import Blueprint
+from blueprints.function_blueprint import FunctionBlueprint as FB
+from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
-from blueprints.attribute_blueprint import AttributeBlueprint as AB
-from blueprints.function_blueprint import FunctionBlueprint as FB
-from blueprints.sprite_blueprint import SpriteBlueprint as SB
+from gui.forms.form import Form
+from utils import logger_utils
+from utils.app_utils import Events
+from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class ControlPanelForm(Form):
@@ -107,6 +108,63 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
+    def draw_functions_orientation_selection(self):
+        self.__bp.orient_selection.clear()
+        pos = 1
+        for t in FunctionBlueprint.ORIENTATION:
+            r = pg.Rect((self.__bp.orient_pressed[1].left, int(
+                self.__bp.orient_pressed[1].top + self.__bp.orient_pressed[1].height * pos)),
+                        self.__bp.orient_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(FunctionBlueprint.ORIENTATION.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.orient_selection.append([r, txt, rt, t])
+        for s in self.__bp.orient_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
+    def draw_functions_direction_selection(self):
+        self.__bp.direct_selection.clear()
+        pos = 1
+        for t in FunctionBlueprint.DIRECTIONAL:
+            r = pg.Rect((self.__bp.direct_pressed[1].left, int(
+                self.__bp.direct_pressed[1].top + self.__bp.direct_pressed[1].height * pos)),
+                        self.__bp.direct_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(FunctionBlueprint.DIRECTIONAL.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.direct_selection.append([r, txt, rt, t])
+        for s in self.__bp.direct_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
+    def draw_functions_key_press_selection(self):
+        self.__bp.keys_selection.clear()
+        pos = 1
+        for t in FunctionBlueprint.KEY_PRESSES:
+            r = pg.Rect((self.__bp.keys_pressed[1].left, int(
+                self.__bp.keys_pressed[1].top + self.__bp.keys_pressed[1].height * pos)),
+                        self.__bp.keys_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(FunctionBlueprint.KEY_PRESSES.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.keys_selection.append([r, txt, rt, t])
+        for s in self.__bp.keys_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
     def blit(self, font, text, text2, coords, header=True):
         if text is not None:
             text = str(text)
@@ -171,6 +229,12 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
                 if self.__bp.type_pressed[0]:
                     self.draw_functions_type_selection()
+                elif self.__bp.orient_pressed[0]:
+                    self.draw_functions_orientation_selection()
+                elif self.__bp.direct_pressed[0]:
+                    self.draw_functions_direction_selection()
+                elif self.__bp.keys_pressed[0]:
+                    self.draw_functions_key_press_selection()
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                 pass
             elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
@@ -191,6 +255,25 @@ class ControlPanelForm(Form):
                   (int(self.get_rect().left + self.get_rect().width * .05),
                    int(banner.bottom * 1.1 + pos * margin)))
         pos += 1
+
+        if StringUtils.get_string("ID_MOVEMENT") == StringUtils.get_string(
+                FunctionBlueprint.TYPE.get(self.__bp.get_blueprint().func_type)):
+            self.blit(font, "{}:".format(StringUtils.get_string("ID_ORIENTATION")), data.get(3),
+                      (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            self.blit(font, "{}:".format(StringUtils.get_string("ID_DIRECTIONAL")), data.get(4),
+                      (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+            self.blit(font, "{}:".format(StringUtils.get_string("ID_ON_KEY_PRESS")), data.get(5),
+                      (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)))
+            pos += 1
+        elif StringUtils.get_string("ID_CUSTOM") == StringUtils.get_string(
+                FunctionBlueprint.TYPE.get(self.__bp.get_blueprint().func_type)):
+            # TODO implement
+            pass
 
     def draw_sprite_data(self, data, pos, font, banner, margin):
         s = pos = pos + 1
@@ -324,8 +407,15 @@ class ControlPanelForm(Form):
                                 self.__bp.data_type_pressed = True, ta
                             elif self.__tas.index(ta) == 6 and isinstance(self.__bp, CharacterBlueprint):
                                 self.__bp.state_pressed = True, ta
-                            elif self.__tas.index(ta) == 2 and isinstance(self.__bp, FunctionBlueprint):
-                                self.__bp.type_pressed = True, ta
+                            elif isinstance(self.__bp, FunctionBlueprint):
+                                if self.__tas.index(ta) == 2:
+                                    self.__bp.type_pressed = True, ta
+                                elif self.__tas.index(ta) == 3:
+                                    self.__bp.orient_pressed = True, ta
+                                elif self.__tas.index(ta) == 4:
+                                    self.__bp.direct_pressed = True, ta
+                                elif self.__tas.index(ta) == 5:
+                                    self.__bp.keys_pressed = True, ta
                             break
                     else:  # if break then not reachable
                         self.__bp.reset_selection()
@@ -427,11 +517,30 @@ class ControlPanelForm(Form):
     def __function_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
-                for ls in self.__bp.type_selection:
-                    if ls[0].collidepoint(event.pos) == 1:
-                        self.__bp.set_data(2, ls[3])
-                        self.__bp.reset_selection()
-                        break
+                if self.__bp.type_pressed[0]:
+                    for ls in self.__bp.type_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(2, ls[3])
+                            self.__bp.reset_selection()
+                            break
+                elif self.__bp.orient_pressed[0]:
+                    for ls in self.__bp.orient_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(3, ls[3])
+                            self.__bp.reset_selection()
+                            break
+                elif self.__bp.direct_pressed[0]:
+                    for ls in self.__bp.direct_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(4, ls[3])
+                            self.__bp.reset_selection()
+                            break
+                elif self.__bp.keys_pressed[0]:
+                    for ls in self.__bp.keys_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(5, ls[3])
+                            self.__bp.reset_selection()
+                            break
 
     def int_try_parse(self, num):
         try:
@@ -482,7 +591,7 @@ class ControlPanelForm(Form):
         elif isinstance(self.__bp, FunctionBlueprint):
             pass
         elif isinstance(self.__bp, CharacterBlueprint):
-            if  2 <= index <= 5:
+            if 2 <= index <= 5:
                 if self.int_try_parse(dt)[0]:
                     __write_str(dt)
                 else:
