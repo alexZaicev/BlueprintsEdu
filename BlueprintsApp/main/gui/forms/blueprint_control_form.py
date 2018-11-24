@@ -327,6 +327,7 @@ class BlueprintControlForm(Form):
                     slave.attributes.remove(root)
                 elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
                     slave.functions.remove(root)
+        self.__cont_panel.set_blueprint(None)
 
     def update_connections(self):
         self.__bps_connections.clear()
