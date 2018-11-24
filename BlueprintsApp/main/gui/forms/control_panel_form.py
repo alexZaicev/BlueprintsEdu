@@ -397,7 +397,6 @@ class ControlPanelForm(Form):
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     found = False
-                    self.__bp.reset_selection()
                     for ta in self.__tas:
                         if ta.collidepoint(event.pos) == 1:
                             self.boarder_rect = ta
@@ -405,19 +404,33 @@ class ControlPanelForm(Form):
                             if self.__tas.index(ta) == 2 and isinstance(self.__bp, AttributeBlueprint):
                                 # DATA TYPE SELECTION
                                 self.__bp.data_type_pressed = True, ta
+                                break
                             elif self.__tas.index(ta) == 6 and isinstance(self.__bp, CharacterBlueprint):
                                 self.__bp.state_pressed = True, ta
+                                break
                             elif isinstance(self.__bp, FunctionBlueprint):
                                 if self.__tas.index(ta) == 2:
-                                    self.__bp.type_pressed = True, ta
+                                    if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
+                                            not self.__bp.keys_pressed[0]:
+                                        self.__bp.type_pressed = True, ta
+                                        break
                                 elif self.__tas.index(ta) == 3:
-                                    self.__bp.orient_pressed = True, ta
+                                    if not self.__bp.type_pressed[0] and not self.__bp.direct_pressed[0] and \
+                                            not self.__bp.keys_pressed[0]:
+                                        self.__bp.orient_pressed = True, ta
+                                        break
                                 elif self.__tas.index(ta) == 4:
-                                    self.__bp.direct_pressed = True, ta
+                                    if not self.__bp.orient_pressed[0] and not self.__bp.type_pressed[0] and \
+                                            not self.__bp.keys_pressed[0]:
+                                        self.__bp.direct_pressed = True, ta
+                                        break
                                 elif self.__tas.index(ta) == 5:
-                                    self.__bp.keys_pressed = True, ta
-                            break
-                    else:  # if break then not reachable
+                                    if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
+                                            not self.__bp.type_pressed[0]:
+                                        self.__bp.keys_pressed = True, ta
+                                        break
+                    else:
+                        # statement not reached if break
                         self.__bp.reset_selection()
                     if not found:
                         self.boarder_rect = None
@@ -521,25 +534,21 @@ class ControlPanelForm(Form):
                     for ls in self.__bp.type_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(2, ls[3])
-                            self.__bp.reset_selection()
                             break
                 elif self.__bp.orient_pressed[0]:
                     for ls in self.__bp.orient_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(3, ls[3])
-                            self.__bp.reset_selection()
                             break
                 elif self.__bp.direct_pressed[0]:
                     for ls in self.__bp.direct_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(4, ls[3])
-                            self.__bp.reset_selection()
                             break
                 elif self.__bp.keys_pressed[0]:
                     for ls in self.__bp.keys_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(5, ls[3])
-                            self.__bp.reset_selection()
                             break
 
     def int_try_parse(self, num):
