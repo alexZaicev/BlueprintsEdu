@@ -6,6 +6,11 @@ from random import randint
 
 class Blueprint(ABC):
 
+    CONDITIONAL_DICT = {
+        False: "ID_FALSE",
+        True: "ID_TRUE"
+    }
+
     def __init__(self, panel, blueprint):
         self.__panel = panel
         self.__blueprint = blueprint    # Blueprint game data type

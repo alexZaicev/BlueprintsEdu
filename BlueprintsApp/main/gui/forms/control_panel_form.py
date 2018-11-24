@@ -2,13 +2,14 @@ import pygame as pg
 from pygame.locals import *
 
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
-from blueprints.blueprint import Blueprint
+from blueprints.blueprint import Blueprint as BP
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
+from gui.blueprints.blueprint import Blueprint
 from gui.forms.form import Form
 from utils import logger_utils
 from utils.app_utils import Events
@@ -73,12 +74,12 @@ class ControlPanelForm(Form):
     def draw_character_state_selection(self):
         self.__bp.state_selection.clear()
         pos = 1
-        for t in CharacterBlueprint.STATES:
+        for t in Blueprint.CONDITIONAL_DICT:
             r = pg.Rect((self.__bp.state_pressed[1].left, int(
                 self.__bp.state_pressed[1].top + self.__bp.state_pressed[1].height * pos)),
                         self.__bp.state_pressed[1].size)
             font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
-            t = StringUtils.get_string(CharacterBlueprint.STATES.get(t))
+            t = StringUtils.get_string(Blueprint.CONDITIONAL_DICT.get(t))
             txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
             rt = txt.get_rect()
             rt.centery = r.centery
@@ -130,12 +131,12 @@ class ControlPanelForm(Form):
     def draw_functions_direction_selection(self):
         self.__bp.direct_selection.clear()
         pos = 1
-        for t in FunctionBlueprint.DIRECTIONAL:
+        for t in Blueprint.CONDITIONAL_DICT:
             r = pg.Rect((self.__bp.direct_pressed[1].left, int(
                 self.__bp.direct_pressed[1].top + self.__bp.direct_pressed[1].height * pos)),
                         self.__bp.direct_pressed[1].size)
             font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
-            t = StringUtils.get_string(FunctionBlueprint.DIRECTIONAL.get(t))
+            t = StringUtils.get_string(Blueprint.CONDITIONAL_DICT.get(t))
             txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
             rt = txt.get_rect()
             rt.centery = r.centery
@@ -206,27 +207,27 @@ class ControlPanelForm(Form):
                       (int(self.get_rect().left + self.get_rect().width * .05),
                        int(banner.bottom * 1.1 + margin)))
 
-            if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            if self.__bp.get_blueprint().get_type() == BP.TYPES.get("ATTRIBUTE"):
                 # ATTRIBUTE RELATED INFORMATION
                 self.draw_attribute_data(dt, pos, font, banner, margin)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
                 # FUNCTION RELATED INFORMATION
                 self.draw_function_data(dt, pos, font, banner, margin)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
                 # CHARACTER RELATED INFORMATION
                 self.draw_character_data(dt, pos, font, banner, margin)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
                 # SPRITE RELATED INFORMATION
                 self.draw_sprite_data(dt, pos, font, banner, margin)
             self.ta_populated = True
             if self.boarder_rect is not None:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
             # DRAW ACTION RELATED WIDGETS
-            if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            if self.__bp.get_blueprint().get_type() == BP.TYPES.get("ATTRIBUTE"):
                 # DATA TYPE DROP DOWN
                 if self.__bp.data_type_pressed[0]:
                     self.draw_attribute_data_type_selection()
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
                 if self.__bp.type_pressed[0]:
                     self.draw_functions_type_selection()
                 elif self.__bp.orient_pressed[0]:
@@ -235,9 +236,9 @@ class ControlPanelForm(Form):
                     self.draw_functions_direction_selection()
                 elif self.__bp.keys_pressed[0]:
                     self.draw_functions_key_press_selection()
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
                 pass
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
                 if self.__bp.state_pressed[0]:
                     self.draw_character_state_selection()
 
@@ -437,16 +438,16 @@ class ControlPanelForm(Form):
 
         super().check_form_events(event)
         if self.__bp is not None:
-            if self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("ATTRIBUTE"):
+            if self.__bp.get_blueprint().get_type() == BP.TYPES.get("ATTRIBUTE"):
                 # ATTRIBUTE specific events
                 self.__attribute_events(event)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
                 # CHARACTER specific events
                 self.__character_events(event)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
                 # SPRITE specific events
                 self.__sprite_events(event)
-            elif self.__bp.get_blueprint().get_type() == Blueprint.TYPES.get("FUNCTION"):
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
                 # FUNCTION specific events
                 self.__function_event(event)
 

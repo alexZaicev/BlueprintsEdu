@@ -16,6 +16,8 @@ from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
 from utils.app_utils import DisplaySettings
 from utils.managers.manager import Manager
+from blueprints.system_blueprint import SystemBlueprint as SYS_BP
+from gui.blueprints.system_blueprint import SystemBlueprint
 
 
 class BlueprintManager(Manager):
@@ -101,6 +103,7 @@ class BlueprintManager(Manager):
             Blueprint.TYPES.get("SPRITE"): BlueprintManager.parse_sprite,
             Blueprint.TYPES.get("CHARACTER"): BlueprintManager.parse_character,
             Blueprint.TYPES.get("ATTRIBUTE"): BlueprintManager.parse_attribute,
+            Blueprint.TYPES.get("SYSTEM"): BlueprintManager.parse_system
         }
         try:
             return func_calls[bp.get_type()](bp)
@@ -114,6 +117,7 @@ class BlueprintManager(Manager):
             Blueprint.TYPES.get("SPRITE"): BlueprintManager.reverse_parse_sprite,
             Blueprint.TYPES.get("CHARACTER"): BlueprintManager.reverse_parse_character,
             Blueprint.TYPES.get("ATTRIBUTE"): BlueprintManager.reverse_parse_attribute,
+            Blueprint.TYPES.get("SYSTEM"): BlueprintManager.reverse_parse_system
         }
         try:
             return func_calls[bp.get("BLUEPRINT").get("TYPE")](panel, bp)
@@ -177,6 +181,22 @@ class BlueprintManager(Manager):
             d[sp.name] = sp.get_type()
         bp["SPRITES"] = d
         return bp
+
+    @classmethod
+    def parse_system(cls, data):
+        bp = BlueprintManager.get_general_data(data)
+        return bp
+
+    @classmethod
+    def reverse_parse_system(cls, panel, data):
+        d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
+        bp = SYS_BP(name=d.get("NAME"))
+        bp_gui = SystemBlueprint(panel)
+        bp_gui.initialize(
+            r[0], r[1],
+            bp, panel
+        )
+        return bp_gui
 
     @classmethod
     def reverse_parse_attribute(cls, panel, data):

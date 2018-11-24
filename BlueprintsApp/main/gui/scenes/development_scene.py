@@ -1,14 +1,14 @@
-from gui.scenes.scene_builder import SceneBuilder
-from utils import logger_utils
 import pygame as pg
-from utils import app_utils, gui_utils
-from gui.forms.control_panel_form import ControlPanelForm
-from gui.forms.blueprint_control_form import BlueprintControlForm
-from gui.buttons.exit_button import ExitButton
 from pygame.locals import *
+
 from gui.buttons.develop_menu_buttons import *
-from utils.app_utils import DisplaySettings
+from gui.buttons.exit_button import ExitButton
+from gui.forms.blueprint_control_form import BlueprintControlForm
+from gui.forms.control_panel_form import ControlPanelForm
 from gui.popup import Popup
+from gui.scenes.scene_builder import SceneBuilder
+from utils import gui_utils
+from utils.app_utils import DisplaySettings
 
 
 class DevelopmentScene(SceneBuilder):
@@ -36,7 +36,7 @@ class DevelopmentScene(SceneBuilder):
         self.__settings_menu_content = self.__init_settings_menu()
         self.__run_menu_content = self.__init_run_menu()
         self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
-            self.__btn_settings_pressed = False, False, False, False
+        self.__btn_settings_pressed = False, False, False, False
         self.__popup = None
 
         self.__cont_panel = ControlPanelForm(self.display,
@@ -115,20 +115,21 @@ class DevelopmentScene(SceneBuilder):
     def __init_edit_menu(self):
         result = []
         r = self.btn_edit.get_rect()
+
+        add_syst = AddSystemButton()
+        add_syst.set_custom_size(DevelopmentScene.BTN_SIZE)
+        add_syst.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
+        add_syst.color = Themes.DEFAULT_THEME.get("menu_background")
+
         add_attr = AddAttrButton()
         add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_attr.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
+        add_attr.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_syst.get_rect().bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_char = AddCharacterButton()
         add_char.set_custom_size(DevelopmentScene.BTN_SIZE)
         add_char.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_attr.get_rect().bottom))
         add_char.color = Themes.DEFAULT_THEME.get("menu_background")
-
-        # add_func = AddFunctionButton()
-        # add_func.set_custom_size(DevelopmentScene.BTN_SIZE)
-        # add_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
-        # add_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         move_func = MoveFunctionButton()
         move_func.set_custom_size(DevelopmentScene.BTN_SIZE)
@@ -137,12 +138,14 @@ class DevelopmentScene(SceneBuilder):
 
         custom_func = CustomFunctionButton()
         custom_func.set_custom_size(DevelopmentScene.BTN_SIZE)
-        custom_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), move_func.get_rect().bottom))
+        custom_func.set_topleft(
+            (int(r.left + DisplaySettings.get_size_by_key()[0] * .002), move_func.get_rect().bottom))
         custom_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_sprite = AddSpriteButton()
         add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_sprite.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .004), custom_func.get_rect().bottom))
+        add_sprite.set_topleft(
+            (int(r.left + DisplaySettings.get_size_by_key()[0] * .004), custom_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
         clear = ClearConnectionsButton()
@@ -155,7 +158,8 @@ class DevelopmentScene(SceneBuilder):
         remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .006), clear.get_rect().bottom))
         remove.color = Themes.DEFAULT_THEME.get("menu_background")
 
-        result.extend([add_attr, add_char, move_func, custom_func, add_sprite, clear, remove])
+        result.extend([add_syst, add_attr, add_char, move_func,
+                       custom_func, add_sprite, clear, remove])
         return result
 
     def __init_settings_menu(self):

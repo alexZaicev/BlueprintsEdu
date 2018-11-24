@@ -22,11 +22,6 @@ class FunctionBlueprint(Blueprint):
         "ORIENT_RIGHT": "ID_RIGHT"
     }
 
-    DIRECTIONAL = {
-        False: "ID_FALSE",
-        True: "ID_TRUE"
-    }
-
     KEY_PRESSES = {
         "KEY_SINGLE": "ID_ONE_CLICK_MOVE",
         "KEY_CONTINUE": "ID_CONTINUOUS_MOVE"
@@ -48,11 +43,12 @@ class FunctionBlueprint(Blueprint):
 
     def get_data(self):
         data = super().get_data()
+        bp = self.get_blueprint()
         data[1] = StringUtils.get_string("ID_FUNCTION")
-        data[2] = StringUtils.get_string(FunctionBlueprint.TYPE.get(self.get_blueprint().func_type))
-        data[3] = StringUtils.get_string(FunctionBlueprint.ORIENTATION.get(self.get_blueprint().orientation))
-        data[4] = StringUtils.get_string(FunctionBlueprint.DIRECTIONAL.get(self.get_blueprint().directional))
-        data[5] = StringUtils.get_string(FunctionBlueprint.KEY_PRESSES.get(self.get_blueprint().key_press))
+        data[2] = StringUtils.get_string(FunctionBlueprint.TYPE.get(bp.func_type))
+        data[3] = StringUtils.get_string(FunctionBlueprint.ORIENTATION.get(bp.orientation))
+        data[4] = StringUtils.get_string(Blueprint.CONDITIONAL_DICT.get(bp.directional))
+        data[5] = StringUtils.get_string(FunctionBlueprint.KEY_PRESSES.get(bp.key_press))
         return data
 
     def set_data(self, index, data):
@@ -65,7 +61,7 @@ class FunctionBlueprint(Blueprint):
                 if data == StringUtils.get_string(value):
                     self.get_blueprint().orientation = key
         elif index == 4:
-            for key, value in FunctionBlueprint.DIRECTIONAL.items():
+            for key, value in Blueprint.CONDITIONAL_DICT.items():
                 if data == StringUtils.get_string(value):
                     self.get_blueprint().directional = key
         elif index == 5:

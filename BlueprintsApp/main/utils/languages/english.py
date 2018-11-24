@@ -76,6 +76,8 @@ class EnglishLanguage(Language):
         "ID_MOVE_FUNCTION": "Move Function",
         "ID_CUSTOM": "Custom",
         "ID_MOVEMENT": "Movement",
+
+
         "ID_UP": "Up",
         "ID_DOWN": "Down",
         "ID_LEFT": "Left",
@@ -84,5 +86,8 @@ class EnglishLanguage(Language):
         "ID_CONTINUOUS_MOVE": "Continuous Move",
         "ID_ORIENTATION": "Orientation",
         "ID_DIRECTIONAL": "Directional",
-        "ID_ON_KEY_PRESS": "On Key Press"
+        "ID_ON_KEY_PRESS": "On Key Press",
+        "ID_ADD_SYSTEM": "Add System",
+        "ID_ADD": "Add",
+        "ID_SYSTEM": "System"
     }

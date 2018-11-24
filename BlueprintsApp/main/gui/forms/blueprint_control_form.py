@@ -17,6 +17,7 @@ from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
 from utils.managers.execution_manager import ExecutionManager
 from utils.managers.project_manager import ProjectManager
+from gui.blueprints.system_blueprint import SystemBlueprint
 
 
 class BlueprintControlForm(Form):
@@ -68,6 +69,7 @@ class BlueprintControlForm(Form):
             Blueprint.TYPES.get("SPRITE"): self.draw_sprite_data,
             Blueprint.TYPES.get("CHARACTER"): self.draw_character_data,
             Blueprint.TYPES.get("ATTRIBUTE"): self.draw_attribute_data,
+            Blueprint.TYPES.get("SYSTEM"): self.draw_system_data
         }
         bp_type = blueprint.get_blueprint().get_type()
         try:
@@ -91,6 +93,9 @@ class BlueprintControlForm(Form):
         pass
 
     def draw_function_data(self, blueprint):
+        pass
+
+    def draw_system_data(self, blueprint):
         pass
 
     def draw_connections(self):
@@ -178,6 +183,10 @@ class BlueprintControlForm(Form):
 
     def add_sprite(self):
         t = SpriteBlueprint(self.get_rect())
+        self.__bps.append(t)
+
+    def add_system(self):
+        t = SystemBlueprint(self.get_rect())
         self.__bps.append(t)
 
     def save_project(self):

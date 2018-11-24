@@ -21,8 +21,9 @@ class Blueprint(ABC):
     TYPES = {
         "FUNCTION": "BT_0",
         "CHARACTER": "BT_1",
-        "SPRITE": "BT_2",  # IMAGE
-        "ATTRIBUTE": "BT_3"
+        "SPRITE": "BT_2",   # IMAGE
+        "ATTRIBUTE": "BT_3",
+        "SYSTEM": "BT_4"    # BOARD
     }
 
     NAME_COUNT = 1

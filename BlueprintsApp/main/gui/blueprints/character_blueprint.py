@@ -9,11 +9,6 @@ class CharacterBlueprint(Blueprint):
 
     SIZE = [.25, .2]
 
-    STATES = {
-        False: "ID_FALSE",
-        True: "ID_TRUE"
-    }
-
     def __init__(self, panel):
         Blueprint.__init__(self, panel, CB())
         self.set_custom_size(CharacterBlueprint.SIZE)
@@ -52,10 +47,9 @@ class CharacterBlueprint(Blueprint):
             t[1] = int(data)
             self.get_blueprint().size = t
         elif index == 6:
-            if data == "False":
-                self.get_blueprint().alive = False
-            elif data == "True":
-                self.get_blueprint().alive = True
+            for key, value in Blueprint.CONDITIONAL_DICT.items():
+                if data == StringUtils.get_string(value):
+                    self.get_blueprint().directional = key
         super().set_data(index, data)
         self.update_displayed_data(self.font.render(self.get_blueprint().name,
                                                     True, Themes.DEFAULT_THEME.get("font")))

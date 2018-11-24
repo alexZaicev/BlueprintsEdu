@@ -334,3 +334,18 @@ class CustomFunctionButton(Button):
         for key, value in FunctionBlueprint.TYPE.items():
             if StringUtils.get_string("ID_CUSTOM") == StringUtils.get_string(value):
                 form.add_function(key)
+
+
+class AddSystemButton(Button):
+
+    def __init__(self, pos=0):
+        Button.__init__(self, StringUtils.get_string("ID_ADD_SYSTEM"), pos)
+
+    def update_button(self, text, color):
+        if text is None:
+            text = StringUtils.get_string("ID_ADD_SYSTEM")
+        super().update_button(text, color)
+
+    def on_click(self, board, form=None):
+        super().on_click(board)
+        form.add_system()
