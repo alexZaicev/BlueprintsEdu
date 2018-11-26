@@ -5,7 +5,8 @@ from utils.string_utils import StringUtils
 
 class SystemBlueprint(Blueprint):
 
-    def __init__(self, name=StringUtils.get_string("ID_SYSTEM"), size=None, colors=None, music=False):
+    def __init__(self, name=StringUtils.get_string("ID_SYSTEM"), size=None, colors=None,
+                 music="DISABLED"):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("SYSTEM"), name=name)
         if size is None:
             size = (640, 480)

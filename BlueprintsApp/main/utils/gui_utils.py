@@ -35,6 +35,7 @@ class Themes(Utils):
         "font_error": Colors.RANGE_RED,
         "background": Colors.BLACK,
         "button": Colors.LIGHT_GREY,
+        "button_dark": Colors.VAMPIRE_GREY,
         "panel_disabled": Colors.NIGHT_GREY,
         "panel_background": Colors.GREY,
         "panel_front_light": Colors.SILVER,

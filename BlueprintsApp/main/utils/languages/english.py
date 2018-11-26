@@ -89,5 +89,10 @@ class EnglishLanguage(Language):
         "ID_ON_KEY_PRESS": "On Key Press",
         "ID_ADD_SYSTEM": "Add System",
         "ID_ADD": "Add",
-        "ID_SYSTEM": "System"
+        "ID_SYSTEM": "System",
+        "ID_ENABLED": "Enabled",
+        "ID_DISABLED": "Disabled",
+        "ID_MUSIC": "Music",
+        "ID_COLOR_ID": "Color ID",
+        "ID_COLORS": "Colors"
     }

@@ -6,10 +6,11 @@ from blueprints.blueprint import Blueprint as BP
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
+from gui.blueprints.blueprint import Blueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
-from gui.blueprints.blueprint import Blueprint
+from gui.blueprints.system_blueprint import SystemBlueprint
 from gui.forms.form import Form
 from utils import logger_utils
 from utils.app_utils import Events
@@ -166,6 +167,25 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
+    def draw_system_music_selection(self):
+        self.__bp.music_selection.clear()
+        pos = 1
+        for t in Blueprint.ENABLING_DICT:
+            r = pg.Rect((self.__bp.music_pressed[1].left, int(
+                self.__bp.music_pressed[1].top + self.__bp.music_pressed[1].height * pos)),
+                        self.__bp.music_pressed[1].size)
+            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+            t = StringUtils.get_string(Blueprint.ENABLING_DICT.get(t))
+            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rt = txt.get_rect()
+            rt.centery = r.centery
+            rt.left = r.left * 1.1
+            pos += 1
+            self.__bp.music_selection.append([r, txt, rt, t])
+        for s in self.__bp.music_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
     def blit(self, font, text, text2, coords, header=True):
         if text is not None:
             text = str(text)
@@ -219,6 +239,9 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
                 # SPRITE RELATED INFORMATION
                 self.draw_sprite_data(dt, pos, font, banner, margin)
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
+                # SYSTEM (BOARD) RELATED INFORMATION
+                self.draw_system_data(dt, pos, font, banner, margin)
             self.ta_populated = True
             if self.boarder_rect is not None:
                 pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
@@ -241,6 +264,90 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
                 if self.__bp.state_pressed[0]:
                     self.draw_character_state_selection()
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
+                if self.__bp.music_pressed[0]:
+                    self.draw_system_music_selection()
+
+    def draw_system_data(self, data, pos, font, banner, margin):
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data.get(2)),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_HEIGHT")), str(data.get(3)),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_MUSIC")), data.get(4),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_COLOR_ID")), data.get(5),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        # custom RBG input areas
+        size = list(font.size("000"))
+        size[0] *= 1.6
+        offset = self.get_rect().width * .02
+        # RED
+        txt = font.render("Red:", True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.topleft = (int(self.get_rect().left + self.get_rect().width * .05),
+                            int(banner.bottom * 1.1 + pos * margin))
+        self.display.blit(txt, rect_txt)
+        ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
+        if not self.ta_populated:
+            self.__tas.append(ta)
+        # BLUE
+        txt = font.render("Blue:", True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.topleft = (int(ta.right + ta.width * .4),
+                            int(banner.bottom * 1.1 + pos * margin))
+        self.display.blit(txt, rect_txt)
+        ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
+        if not self.ta_populated:
+            self.__tas.append(ta)
+        # GREEN
+        txt = font.render("Green:", True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.topleft = (int(ta.right + ta.width * .4),
+                            int(banner.bottom * 1.1 + pos * margin))
+        self.display.blit(txt, rect_txt)
+        ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
+        if not self.ta_populated:
+            self.__tas.append(ta)
+        for i in range(6, 9, 1):
+            txt = font.render(str(data.get(i)), True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rect_txt = txt.get_rect()
+            rect_txt.center = self.__tas[i].center
+            self.display.blit(txt, rect_txt)
+        pos += 1
+        # ADD BUTTON
+        txt = font.render(StringUtils.get_string("ID_ADD"), True, Themes.DEFAULT_THEME.get("font"))
+        size = font.size(StringUtils.get_string("ID_ADD"))
+        btn_add = pg.Rect((0, 0), (int(size[0] * 1.6), size[1]))
+        btn_add.topright = (ta.right, int(banner.bottom * 1.1 + pos * margin))
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("button_dark"), btn_add, 0)
+        rect_txt = txt.get_rect()
+        rect_txt.center = btn_add.center
+        self.display.blit(txt, rect_txt)
+        if not self.ta_populated:
+            self.__tas.append(btn_add)
+        pos += 1
+        # DRAW EXISTING COLORS
+        if len(self.__bp.get_blueprint().colors) > 0:
+            for k, v in self.__bp.get_blueprint().colors.items():
+                r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .03),
+                             int(banner.bottom * 1.1 + pos * margin + margin * .3)),
+                            (self.size[0] * .03, self.size[0] * .03))
+                pg.draw.rect(self.display, v, r, 0)
+                self.blit(font, "{}:".format(k), str(v),
+                          (int(self.get_rect().left + self.get_rect().width * .08),
+                           int(banner.bottom * 1.1 + pos * margin)), header=False)
+                pos += 1
 
     def draw_attribute_data(self, data, pos, font, banner, margin):
         self.blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), data.get(2),
@@ -430,6 +537,13 @@ class ControlPanelForm(Form):
                                             not self.__bp.type_pressed[0]:
                                         self.__bp.keys_pressed = True, ta
                                         break
+                            elif isinstance(self.__bp, SystemBlueprint):
+                                if self.__tas.index(ta) == 4:
+                                    self.__bp.music_pressed = True, ta
+                                    break
+                                elif self.__tas.index(ta) == 9:
+                                    self.__bp.add_color()
+                                    break
                     else:
                         # statement not reached if break
                         self.__bp.reset_selection()
@@ -450,6 +564,9 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
                 # FUNCTION specific events
                 self.__function_event(event)
+            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
+                # FUNCTION specific events
+                self.__system_event(event)
 
             __check_textarea_selection()
 
@@ -462,7 +579,10 @@ class ControlPanelForm(Form):
                             self.__tas[i].topleft == self.boarder_rect.topleft
                         ][0]
                         if c == Events.SPECIAL_KEYS.get("DELETE"):
-                            if not isinstance(self.__bp, AttributeBlueprint) and self.__bp.get_data_type() != AB.NONE:
+                            if isinstance(self.__bp, AttributeBlueprint):
+                                if self.__bp.get_blueprint().get_data_type() != AB.NONE:
+                                    self.__bp.set_data(index, "")
+                            else:
                                 self.__bp.set_data(index, "")
                         elif c == Events.SPECIAL_KEYS.get("BACKSPACE"):
                             dt = str(self.__bp.get_data().get(index))
@@ -474,6 +594,15 @@ class ControlPanelForm(Form):
                             pass
                         elif isinstance(c, str):
                             self.__set_str(index, c)
+
+    def __system_event(self, event):
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                for ls in self.__bp.music_selection:
+                    if ls[0].collidepoint(event.pos) == 1:
+                        self.__bp.set_data(4, ls[3])
+                        self.__bp.reset_selection()
+                        break
 
     def __attribute_events(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -554,13 +683,19 @@ class ControlPanelForm(Form):
 
     def int_try_parse(self, num):
         try:
-            return True, int(num)
+            if " " in num:
+                raise ValueError()
+            else:
+                return True, int(num)
         except ValueError as ex:
             return False, num
 
     def float_try_parse(self, num):
         try:
-            return True, float(num)
+            if " " in num:
+                raise ValueError()
+            else:
+                return True, float(num)
         except ValueError as ex:
             return False, num
 
@@ -608,3 +743,20 @@ class ControlPanelForm(Form):
                     __write_str(dt[:-1])
         elif isinstance(self.__bp, SpriteBlueprint):
             pass
+        elif isinstance(self.__bp, SystemBlueprint):
+            if index == 2 or index == 3 or 5 < index < 9:
+                if self.int_try_parse(dt)[0]:
+                    for c in dt:
+                        if c == "0":
+                            dt = dt[1:]
+                        else:
+                            break
+                    if 5 < index < 9:
+                        if len(dt) < 4 and int(dt) < 256:
+                            __write_str(dt)
+                    else:
+                        __write_str(dt)
+                else:
+                    __write_str(dt[:-1])
+            else:
+                __write_str(dt)

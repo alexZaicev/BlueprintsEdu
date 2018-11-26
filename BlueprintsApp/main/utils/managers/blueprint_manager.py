@@ -185,12 +185,15 @@ class BlueprintManager(Manager):
     @classmethod
     def parse_system(cls, data):
         bp = BlueprintManager.get_general_data(data)
+        bp["SIZE"] = list(data.size)
+        bp["MUSIC"] = data.music
+        bp["COLORS"] = data.colors
         return bp
 
     @classmethod
     def reverse_parse_system(cls, panel, data):
         d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
-        bp = SYS_BP(name=d.get("NAME"))
+        bp = SYS_BP(name=d.get("NAME"), size=d.get("SIZE"), music=d.get("MUSIC"), colors=d.get("COLORS"))
         bp_gui = SystemBlueprint(panel)
         bp_gui.initialize(
             r[0], r[1],

@@ -11,6 +11,11 @@ class Blueprint(ABC):
         True: "ID_TRUE"
     }
 
+    ENABLING_DICT = {
+        "ENABLED": "ID_ENABLED",
+        "DISABLED": "ID_DISABLED"
+    }
+
     def __init__(self, panel, blueprint):
         self.__panel = panel
         self.__blueprint = blueprint    # Blueprint game data type
