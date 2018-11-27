@@ -21,6 +21,10 @@ class DownloadError(Exception):
     """Description: Special error definition to project download exception"""
 
 
+class SystemBlueprintError(Exception):
+    """Description: Special error associated with system blueprint"""
+
+
 class Events(Utils):
     SPECIAL_KEYS = {
         "DELETE": "DEL",

@@ -2,12 +2,14 @@ import pygame as pg
 
 from blueprints.system_blueprint import SystemBlueprint as SB
 from gui.blueprints.blueprint import Blueprint
+from utils.app_utils import SystemBlueprintError
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
 
 
 class SystemBlueprint(Blueprint):
     SIZE = [.2, .15]
+    MAX_SCREEN_SIZE = (1280, 900)
 
     def __init__(self, panel):
         Blueprint.__init__(self, panel, SB())
@@ -62,13 +64,23 @@ class SystemBlueprint(Blueprint):
                 data = "0"
 
         if index == 2:
-            temp = list(self.get_blueprint().size)
-            temp[0] = data
-            self.get_blueprint().size = temp
+            if 0 <= int(data) <= SystemBlueprint.MAX_SCREEN_SIZE[0]:
+                temp = list(self.get_blueprint().size)
+                temp[0] = data
+                self.get_blueprint().size = temp
+            else:
+                raise SystemBlueprintError(
+                    "Input exceeds maximally allowed resolution {}x{}".format(SystemBlueprint.MAX_SCREEN_SIZE[0],
+                                                                              SystemBlueprint.MAX_SCREEN_SIZE[1]))
         elif index == 3:
-            temp = list(self.get_blueprint().size)
-            temp[1] = data
-            self.get_blueprint().size = temp
+            if 0 <= int(data) <= SystemBlueprint.MAX_SCREEN_SIZE[1]:
+                temp = list(self.get_blueprint().size)
+                temp[1] = data
+                self.get_blueprint().size = temp
+            else:
+                raise SystemBlueprintError(
+                    "Input exceeds maximally allowed resolution {}x{}".format(SystemBlueprint.MAX_SCREEN_SIZE[0],
+                                                                              SystemBlueprint.MAX_SCREEN_SIZE[1]))
         elif index == 4:
             for key, value in Blueprint.ENABLING_DICT.items():
                 if data == StringUtils.get_string(value):

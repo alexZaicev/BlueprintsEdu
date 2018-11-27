@@ -8,7 +8,7 @@ from gui.forms.control_panel_form import ControlPanelForm
 from gui.popup import Popup
 from gui.scenes.scene_builder import SceneBuilder
 from utils import gui_utils
-from utils.app_utils import DisplaySettings
+from utils.app_utils import DisplaySettings, SystemBlueprintError
 
 
 class DevelopmentScene(SceneBuilder):
@@ -392,5 +392,8 @@ class DevelopmentScene(SceneBuilder):
                     __check_run_menu_press()
                     __check_settings_menu_press()
                     __reset_btn_menu()
-        self.__cont_panel.check_form_events(event)
+        try:
+            self.__cont_panel.check_form_events(event)
+        except SystemBlueprintError as ex:
+            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
         self.__bp_panel.check_form_events(event)
