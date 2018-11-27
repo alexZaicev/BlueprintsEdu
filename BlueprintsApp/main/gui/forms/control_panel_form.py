@@ -606,6 +606,22 @@ class ControlPanelForm(Form):
                         self.__bp.set_data(4, ls[3])
                         self.__bp.reset_selection()
                         break
+        elif event.type == KEYDOWN:
+            c = Events.get_char(event.key, event_type=event.type)
+            if c == Events.SPECIAL_KEYS.get("DELETE"):
+                if self.ta_populated and self.boarder_rect is not None:
+                    i = self.__tas.index(self.boarder_rect) - 9
+                    if 0 < i < (len(self.__tas) - 9):
+                        j, key = 1, None
+                        for k, v in self.__bp.get_blueprint().colors.items():
+                            if j == i:
+                                key = k
+                                break
+                            else:
+                                j += 1
+                        self.__bp.get_blueprint().colors.pop(key)
+                        self.__tas.clear()
+                        self.ta_populated, self.boarder_rect = False, None
 
     def __attribute_events(self, event):
         if event.type == MOUSEBUTTONDOWN:

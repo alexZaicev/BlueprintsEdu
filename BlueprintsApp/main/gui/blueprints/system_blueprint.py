@@ -1,8 +1,9 @@
+import pygame as pg
+
 from blueprints.system_blueprint import SystemBlueprint as SB
 from gui.blueprints.blueprint import Blueprint
-from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
-import pygame as pg
+from utils.string_utils import StringUtils
 
 
 class SystemBlueprint(Blueprint):
@@ -30,8 +31,9 @@ class SystemBlueprint(Blueprint):
 
     def add_color(self):
         rgb = (int(self.red), int(self.green), int(self.blue))
-        if self.color_name not in self.get_blueprint().colors and \
-            rgb not in self.get_blueprint().colors.values():
+        if len(self.color_name) > 0 and \
+                self.color_name not in self.get_blueprint().colors and \
+                rgb not in self.get_blueprint().colors.values():
             self.get_blueprint().colors[self.color_name] = rgb
         # reset
         self.color_name = ""
@@ -85,6 +87,3 @@ class SystemBlueprint(Blueprint):
         super().set_data(index, data)
         self.update_displayed_data(self.font.render(self.get_blueprint().name,
                                                     True, Themes.DEFAULT_THEME.get("font")))
-
-
-
