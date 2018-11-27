@@ -10,14 +10,16 @@ from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
+from gui.blueprints.system_blueprint import SystemBlueprint
 from gui.forms.form import Form
 from gui.popup import Popup
 from utils import logger_utils
+from utils.app_utils import SystemBlueprintError, SpriteBlueprintError, FunctionBlueprintError, CharacterBlueprintError, \
+    AttributeBlueprintError
 from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
 from utils.managers.execution_manager import ExecutionManager
 from utils.managers.project_manager import ProjectManager
-from gui.blueprints.system_blueprint import SystemBlueprint
 
 
 class BlueprintControlForm(Form):
@@ -34,6 +36,20 @@ class BlueprintControlForm(Form):
 
     def update_form(self, coords=None, size=None):
         super().update_form(coords, size)
+
+    def check_system_exist(self):
+        for bp in self.__bps:
+            if isinstance(bp, SystemBlueprint):
+                return True
+        else:
+            return False
+
+    def get_system_blueprint(self):
+        for bp in self.__bps:
+            if isinstance(bp, SystemBlueprint):
+                return bp
+        else:
+            return None
 
     def draw_form(self):
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_disabled"), self.get_rect(), 0)
@@ -169,25 +185,42 @@ class BlueprintControlForm(Form):
         blueprint.set_topleft((left, top))
 
     def add_attribute(self):
-        t = AttributeBlueprint(self.get_rect())
-        self.__bps.append(t)
+        if self.check_system_exist():
+            t = AttributeBlueprint(self.get_rect())
+            self.__bps.append(t)
+        else:
+            raise AttributeBlueprintError("Project must include system representation")
 
     def add_character(self):
-        t = CharacterBlueprint(self.get_rect())
-        self.__bps.append(t)
+        if self.check_system_exist():
+            t = CharacterBlueprint(self.get_rect())
+            t.parent = self.get_system_blueprint()
+            self.__bps.append(t)
+        else:
+            raise CharacterBlueprintError("Project must include system representation")
 
     def add_function(self, fun_type):
-        t = FunctionBlueprint(self.get_rect())
-        t.get_blueprint().func_type = fun_type
-        self.__bps.append(t)
+        if self.check_system_exist():
+            t = FunctionBlueprint(self.get_rect())
+            t.get_blueprint().func_type = fun_type
+            self.__bps.append(t)
+        else:
+            raise FunctionBlueprintError("Project must include system representation")
 
     def add_sprite(self):
-        t = SpriteBlueprint(self.get_rect())
-        self.__bps.append(t)
+        if self.check_system_exist():
+            t = SpriteBlueprint(self.get_rect())
+            t.parent = self.get_system_blueprint()
+            self.__bps.append(t)
+        else:
+            raise SpriteBlueprintError("Project must include system representation")
 
     def add_system(self):
-        t = SystemBlueprint(self.get_rect())
-        self.__bps.append(t)
+        if not self.check_system_exist():
+            t = SystemBlueprint(self.get_rect())
+            self.__bps.append(t)
+        else:
+            raise SystemBlueprintError("Project must have only one instance of a system")
 
     def save_project(self):
         """Description: function prepares blueprints in the current development

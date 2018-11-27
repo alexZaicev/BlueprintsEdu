@@ -8,7 +8,7 @@ from gui.forms.control_panel_form import ControlPanelForm
 from gui.popup import Popup
 from gui.scenes.scene_builder import SceneBuilder
 from utils import gui_utils
-from utils.app_utils import DisplaySettings, SystemBlueprintError
+from utils.app_utils import DisplaySettings, SystemBlueprintError, BlueprintError
 
 
 class DevelopmentScene(SceneBuilder):
@@ -36,7 +36,7 @@ class DevelopmentScene(SceneBuilder):
         self.__settings_menu_content = self.__init_settings_menu()
         self.__run_menu_content = self.__init_run_menu()
         self.__btn_file_pressed, self.__btn_edit_pressed, self.__btn_run_pressed, \
-        self.__btn_settings_pressed = False, False, False, False
+            self.__btn_settings_pressed = False, False, False, False
         self.__popup = None
 
         self.__cont_panel = ControlPanelForm(self.display,
@@ -340,7 +340,10 @@ class DevelopmentScene(SceneBuilder):
             if self.__btn_edit_pressed:
                 for btn in self.__edit_menu_content:
                     if btn.get_rect().collidepoint(pos):
-                        btn.on_click(board, self.__bp_panel)
+                        try:
+                            btn.on_click(board, self.__bp_panel)
+                        except BlueprintError as ex:
+                            self.__popup = Popup(Popup.POP_STATES.get("ERROR"), str(ex))
 
         def __check_run_menu_press():
             if self.__btn_run_pressed:

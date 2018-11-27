@@ -40,7 +40,7 @@ class ControlPanelForm(Form):
 
     def draw_form(self):
         form_rect = self.get_rect()
-        if (self.__bp is not None) and self.__bp.focused:
+        if self.__bp is not None and self.__bp.focused:
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), form_rect, 0)
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), form_rect, 2)
         else:

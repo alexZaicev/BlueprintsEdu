@@ -21,8 +21,28 @@ class DownloadError(Exception):
     """Description: Special error definition to project download exception"""
 
 
-class SystemBlueprintError(Exception):
+class BlueprintError(Exception):
+    """Description: Special error definition to project blueprint exception"""
+
+
+class SystemBlueprintError(BlueprintError):
     """Description: Special error associated with system blueprint"""
+
+
+class AttributeBlueprintError(BlueprintError):
+    """Description: Special error associated with attribute blueprint"""
+
+
+class FunctionBlueprintError(BlueprintError):
+    """Description: Special error associated with function blueprint"""
+
+
+class CharacterBlueprintError(BlueprintError):
+    """Description: Special error associated with character blueprint"""
+
+
+class SpriteBlueprintError(BlueprintError):
+    """Description: Special error associated with sprite blueprint"""
 
 
 class Events(Utils):

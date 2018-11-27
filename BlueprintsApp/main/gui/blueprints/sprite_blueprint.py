@@ -11,6 +11,7 @@ class SpriteBlueprint(Blueprint):
 
     def __init__(self, panel):
         Blueprint.__init__(self, panel, SB())
+        self.parent = None
         self.set_custom_size(SpriteBlueprint.SIZE)
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
 
