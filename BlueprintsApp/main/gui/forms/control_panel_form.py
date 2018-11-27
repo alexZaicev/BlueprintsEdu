@@ -580,7 +580,10 @@ class ControlPanelForm(Form):
                         ][0]
                         if c == Events.SPECIAL_KEYS.get("DELETE"):
                             if isinstance(self.__bp, AttributeBlueprint):
-                                if self.__bp.get_blueprint().get_data_type() != AB.NONE:
+                                if index == 3:
+                                    if self.__bp.get_blueprint().get_data_type() != AB.NONE:
+                                        self.__bp.set_data(index, "")
+                                else:
                                     self.__bp.set_data(index, "")
                             else:
                                 self.__bp.set_data(index, "")
