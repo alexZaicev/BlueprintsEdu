@@ -94,5 +94,7 @@ class EnglishLanguage(Language):
         "ID_DISABLED": "Disabled",
         "ID_MUSIC": "Music",
         "ID_COLOR_ID": "Color ID",
-        "ID_COLORS": "Colors"
+        "ID_COLORS": "Colors",
+        "ID_SOUND": "Sound",
+        "ID_BACKGROUND": "Background"
     }

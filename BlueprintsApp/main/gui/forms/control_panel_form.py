@@ -167,6 +167,26 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
             self.display.blit(s[1], s[2])
 
+    def draw_system_color_selection(self):
+        self.__bp.color_selection.clear()
+        pos = 1
+        colors = self.__bp.get_blueprint().colors
+        if len(colors) > 0:
+            for t in colors:
+                r = pg.Rect((self.__bp.color_pressed[1].left, int(
+                    self.__bp.color_pressed[1].top + self.__bp.color_pressed[1].height * pos)),
+                            self.__bp.color_pressed[1].size)
+                font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+                txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+                rt = txt.get_rect()
+                rt.centery = r.centery
+                rt.left = r.left * 1.1
+                pos += 1
+                self.__bp.color_selection.append([r, txt, rt, t])
+            for s in self.__bp.color_selection:
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+                self.display.blit(s[1], s[2])
+
     def draw_system_music_selection(self):
         self.__bp.music_selection.clear()
         pos = 1
@@ -267,6 +287,8 @@ class ControlPanelForm(Form):
             elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
                 if self.__bp.music_pressed[0]:
                     self.draw_system_music_selection()
+                elif self.__bp.color_pressed[0]:
+                    self.draw_system_color_selection()
 
     def draw_system_data(self, data, pos, font, banner, margin):
         self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data.get(2)),
@@ -281,7 +303,15 @@ class ControlPanelForm(Form):
                   (int(self.get_rect().left + self.get_rect().width * .05),
                    int(banner.bottom * 1.1 + pos * margin)))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_COLOR_ID")), data.get(5),
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_SOUND")), data.get(5),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_BACKGROUND")), data.get(6),
+                  (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)))
+        pos += 1
+        self.blit(font, "{}:".format(StringUtils.get_string("ID_COLOR_ID")), data.get(7),
                   (int(self.get_rect().left + self.get_rect().width * .05),
                    int(banner.bottom * 1.1 + pos * margin)))
         pos += 1
@@ -299,16 +329,6 @@ class ControlPanelForm(Form):
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
         if not self.ta_populated:
             self.__tas.append(ta)
-        # BLUE
-        txt = font.render("Blue:", True, Themes.DEFAULT_THEME.get("text_area_text"))
-        rect_txt = txt.get_rect()
-        rect_txt.topleft = (int(ta.right + ta.width * .4),
-                            int(banner.bottom * 1.1 + pos * margin))
-        self.display.blit(txt, rect_txt)
-        ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
-        if not self.ta_populated:
-            self.__tas.append(ta)
         # GREEN
         txt = font.render("Green:", True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_txt = txt.get_rect()
@@ -319,7 +339,18 @@ class ControlPanelForm(Form):
         pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
         if not self.ta_populated:
             self.__tas.append(ta)
-        for i in range(6, 9, 1):
+        # BLUE
+        txt = font.render("Blue:", True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.topleft = (int(ta.right + ta.width * .4),
+                            int(banner.bottom * 1.1 + pos * margin))
+        self.display.blit(txt, rect_txt)
+        ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
+        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
+        if not self.ta_populated:
+            self.__tas.append(ta)
+
+        for i in range(8, 11, 1):
             txt = font.render(str(data.get(i)), True, Themes.DEFAULT_THEME.get("text_area_text"))
             rect_txt = txt.get_rect()
             rect_txt.center = self.__tas[i].center
@@ -541,8 +572,13 @@ class ControlPanelForm(Form):
                                 if self.__tas.index(ta) == 4:
                                     self.__bp.music_pressed = True, ta
                                     break
-                                elif self.__tas.index(ta) == 9:
+                                elif self.__tas.index(ta) == 6:
+                                    self.__bp.color_pressed = True, ta
+                                    break
+                                elif self.__tas.index(ta) == 11:
                                     self.__bp.add_color()
+                                    self.ta_populated = False
+                                    self.__tas.clear()
                                     break
                     else:
                         # statement not reached if break
@@ -601,17 +637,24 @@ class ControlPanelForm(Form):
     def __system_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
-                for ls in self.__bp.music_selection:
-                    if ls[0].collidepoint(event.pos) == 1:
-                        self.__bp.set_data(4, ls[3])
-                        self.__bp.reset_selection()
-                        break
+                if self.__bp.music_pressed[0]:
+                    for ls in self.__bp.music_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(4, ls[3])
+                            self.__bp.reset_selection()
+                            break
+                elif self.__bp.color_pressed[0]:
+                    for ls in self.__bp.color_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(6, ls[3])
+                            self.__bp.reset_selection()
+                            break
         elif event.type == KEYDOWN:
             c = Events.get_char(event.key, event_type=event.type)
             if c == Events.SPECIAL_KEYS.get("DELETE"):
                 if self.ta_populated and self.boarder_rect is not None:
-                    i = self.__tas.index(self.boarder_rect) - 9
-                    if 0 < i < (len(self.__tas) - 9):
+                    i = self.__tas.index(self.boarder_rect) - 11
+                    if 0 < i < (len(self.__tas) - 11):
                         j, key = 1, None
                         for k, v in self.__bp.get_blueprint().colors.items():
                             if j == i:
@@ -622,6 +665,8 @@ class ControlPanelForm(Form):
                         self.__bp.get_blueprint().colors.pop(key)
                         self.__tas.clear()
                         self.ta_populated, self.boarder_rect = False, None
+                        if self.__bp.get_blueprint().board_color not in self.__bp.get_blueprint().colors.keys():
+                            self.__bp.get_blueprint().board_color = StringUtils.get_string("ID_NONE")
 
     def __attribute_events(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -763,14 +808,14 @@ class ControlPanelForm(Form):
         elif isinstance(self.__bp, SpriteBlueprint):
             pass
         elif isinstance(self.__bp, SystemBlueprint):
-            if index == 2 or index == 3 or 5 < index < 9:
+            if index == 2 or index == 3 or 7 < index < 11:
                 if self.int_try_parse(dt)[0]:
                     for c in dt:
                         if c == "0":
                             dt = dt[1:]
                         else:
                             break
-                    if 5 < index < 9:
+                    if 7 < index < 11:
                         if len(dt) < 4 and int(dt) < 256:
                             __write_str(dt)
                     else:

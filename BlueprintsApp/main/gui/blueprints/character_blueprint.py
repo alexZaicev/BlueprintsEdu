@@ -1,4 +1,5 @@
 from gui.blueprints.blueprint import Blueprint
+from utils.app_utils import BlueprintError
 from utils.string_utils import StringUtils
 import pygame as pg
 from utils.gui_utils import Themes
@@ -31,22 +32,38 @@ class CharacterBlueprint(Blueprint):
         return data
 
     def set_data(self, index, data):
+        if 1 < index < 6:
+            if len(data) < 1:
+                data = "0"
+
         if index == 2:
-            t = list(self.get_blueprint().pos)
-            t[0] = int(data)
-            self.get_blueprint().pos = t
+            if 0 <= int(data) <= self.parent.size[0]:
+                t = list(self.get_blueprint().pos)
+                t[0] = int(data)
+                self.get_blueprint().pos = t
+            else:
+                raise BlueprintError("Character position cannot exceed system resolution")
         elif index == 3:
-            t = list(self.get_blueprint().pos)
-            t[1] = int(data)
-            self.get_blueprint().pos = t
+            if 0 <= int(data) <= self.parent.size[1]:
+                t = list(self.get_blueprint().pos)
+                t[1] = int(data)
+                self.get_blueprint().pos = t
+            else:
+                raise BlueprintError("Character position cannot exceed system resolution")
         elif index == 4:
-            t = list(self.get_blueprint().size)
-            t[0] = int(data)
-            self.get_blueprint().size = t
+            if 0 <= int(data) <= self.parent.size[0]:
+                t = list(self.get_blueprint().size)
+                t[0] = int(data)
+                self.get_blueprint().size = t
+            else:
+                raise BlueprintError("Character size cannot exceed system resolution")
         elif index == 5:
-            t = list(self.get_blueprint().size)
-            t[1] = int(data)
-            self.get_blueprint().size = t
+            if 0 <= int(data) <= self.parent.size[1]:
+                t = list(self.get_blueprint().size)
+                t[1] = int(data)
+                self.get_blueprint().size = t
+            else:
+                raise BlueprintError("Character size cannot exceed system resolution")
         elif index == 6:
             for key, value in Blueprint.CONDITIONAL_DICT.items():
                 if data == StringUtils.get_string(value):

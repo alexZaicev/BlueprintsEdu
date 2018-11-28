@@ -14,8 +14,7 @@ from gui.blueprints.system_blueprint import SystemBlueprint
 from gui.forms.form import Form
 from gui.popup import Popup
 from utils import logger_utils
-from utils.app_utils import SystemBlueprintError, SpriteBlueprintError, FunctionBlueprintError, CharacterBlueprintError, \
-    AttributeBlueprintError
+from utils.app_utils import BlueprintError
 from utils.gui_utils import Themes
 from utils.managers.blueprint_manager import BlueprintManager
 from utils.managers.execution_manager import ExecutionManager
@@ -47,7 +46,7 @@ class BlueprintControlForm(Form):
     def get_system_blueprint(self):
         for bp in self.__bps:
             if isinstance(bp, SystemBlueprint):
-                return bp
+                return bp.get_blueprint()
         else:
             return None
 
@@ -189,7 +188,7 @@ class BlueprintControlForm(Form):
             t = AttributeBlueprint(self.get_rect())
             self.__bps.append(t)
         else:
-            raise AttributeBlueprintError("Project must include system representation")
+            raise BlueprintError("Project must include system representation")
 
     def add_character(self):
         if self.check_system_exist():
@@ -197,7 +196,7 @@ class BlueprintControlForm(Form):
             t.parent = self.get_system_blueprint()
             self.__bps.append(t)
         else:
-            raise CharacterBlueprintError("Project must include system representation")
+            raise BlueprintError("Project must include system representation")
 
     def add_function(self, fun_type):
         if self.check_system_exist():
@@ -205,7 +204,7 @@ class BlueprintControlForm(Form):
             t.get_blueprint().func_type = fun_type
             self.__bps.append(t)
         else:
-            raise FunctionBlueprintError("Project must include system representation")
+            raise BlueprintError("Project must include system representation")
 
     def add_sprite(self):
         if self.check_system_exist():
@@ -213,14 +212,14 @@ class BlueprintControlForm(Form):
             t.parent = self.get_system_blueprint()
             self.__bps.append(t)
         else:
-            raise SpriteBlueprintError("Project must include system representation")
+            raise BlueprintError("Project must include system representation")
 
     def add_system(self):
         if not self.check_system_exist():
             t = SystemBlueprint(self.get_rect())
             self.__bps.append(t)
         else:
-            raise SystemBlueprintError("Project must have only one instance of a system")
+            raise BlueprintError("Project must have only one instance of a system")
 
     def save_project(self):
         """Description: function prepares blueprints in the current development
