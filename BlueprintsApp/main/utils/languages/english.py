@@ -96,5 +96,7 @@ class EnglishLanguage(Language):
         "ID_COLOR_ID": "Color ID",
         "ID_COLORS": "Colors",
         "ID_SOUND": "Sound",
-        "ID_BACKGROUND": "Background"
+        "ID_BACKGROUND": "Background",
+        "ID_RIDERS_ON_THE_STORM": "Riders on the Storm",
+        "ID_TOKYO_DRIFT": "Tokyo Drift"
     }

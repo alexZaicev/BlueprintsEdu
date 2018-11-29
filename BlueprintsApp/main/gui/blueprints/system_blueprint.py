@@ -20,6 +20,9 @@ class SystemBlueprint(Blueprint):
         self.music_selection = list()
         self.color_pressed = [False, None]
         self.color_selection = list()
+        self.music_effect_pressed = [False, None]
+        self.music_effect_selection = list()
+        self.color_counter, self.music_effect_counter = 0, 0
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .17)))
         self.color_name = ""
         self.red, self.green, self.blue = 0, 0, 0
@@ -33,6 +36,9 @@ class SystemBlueprint(Blueprint):
         self.music_selection = list()
         self.color_pressed = [False, None]
         self.color_selection = list()
+        self.music_effect_pressed = [False, None]
+        self.music_effect_selection = list()
+        self.color_counter, self.music_effect_counter = 0, 0
 
     def update_displayed_data(self, text):
         super().update_displayed_data(text)
@@ -60,8 +66,8 @@ class SystemBlueprint(Blueprint):
         r[1] = StringUtils.get_string("ID_SYSTEM")
         r[2] = bp.size[0]
         r[3] = bp.size[1]
-        r[4] = StringUtils.get_string(Blueprint.ENABLING_DICT.get(self.get_blueprint().music))
-        r[5] = bp.music_effect
+        r[4] = StringUtils.get_string(Blueprint.ENABLING_DICT.get(bp.music))
+        r[5] = StringUtils.get_string(SB.SOUND_EFFECTS.get(bp.music_effect))
         r[6] = bp.board_color
         r[7] = self.color_name
         r[8] = self.red

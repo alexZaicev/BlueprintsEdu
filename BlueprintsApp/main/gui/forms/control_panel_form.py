@@ -16,6 +16,7 @@ from utils import logger_utils
 from utils.app_utils import Events
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
+from blueprints.system_blueprint import SystemBlueprint as SYS_BP
 
 
 class ControlPanelForm(Form):
@@ -69,7 +70,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.data_type_selection.append([r, txt, rt, t])
         for s in self.__bp.data_type_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_character_state_selection(self):
@@ -88,7 +89,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.state_selection.append([r, txt, rt, t])
         for s in self.__bp.state_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_functions_type_selection(self):
@@ -107,7 +108,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.type_selection.append([r, txt, rt, t])
         for s in self.__bp.type_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_functions_orientation_selection(self):
@@ -126,7 +127,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.orient_selection.append([r, txt, rt, t])
         for s in self.__bp.orient_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_functions_direction_selection(self):
@@ -145,7 +146,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.direct_selection.append([r, txt, rt, t])
         for s in self.__bp.direct_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_functions_key_press_selection(self):
@@ -164,7 +165,7 @@ class ControlPanelForm(Form):
             pos += 1
             self.__bp.keys_selection.append([r, txt, rt, t])
         for s in self.__bp.keys_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def draw_system_color_selection(self):
@@ -172,38 +173,71 @@ class ControlPanelForm(Form):
         pos = 1
         colors = self.__bp.get_blueprint().colors
         if len(colors) > 0:
-            for t in colors:
-                r = pg.Rect((self.__bp.color_pressed[1].left, int(
-                    self.__bp.color_pressed[1].top + self.__bp.color_pressed[1].height * pos)),
-                            self.__bp.color_pressed[1].size)
+            i = 0
+            for key in list(colors.keys()):
+                if self.__bp.color_counter <= i < len(self.__bp.get_blueprint().colors):
+                    if i - self.__bp.color_counter < 5:
+                        r = pg.Rect((self.__bp.color_pressed[1].left, int(
+                            self.__bp.color_pressed[1].top + self.__bp.color_pressed[1].height * pos)),
+                                    self.__bp.color_pressed[1].size)
+                        font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+                        txt = font.render(key, True, Themes.DEFAULT_THEME.get("text_area_text"))
+                        rt = txt.get_rect()
+                        rt.centery = r.centery
+                        rt.left = r.left * 1.1
+                        pos += 1
+                        self.__bp.color_selection.append([r, txt, rt, key])
+                    else:
+                        break
+                i += 1
+            for s in self.__bp.color_selection:
+                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
+                self.display.blit(s[1], s[2])
+
+    def draw_system_music_selection(self):
+        self.__bp.music_selection.clear()
+        pos, i = 1, 0
+        for t in Blueprint.ENABLING_DICT:
+            if self.__bp.music_effect_counter <= i < len(Blueprint.ENABLING_DICT):
+                r = pg.Rect((self.__bp.music_pressed[1].left, int(
+                    self.__bp.music_pressed[1].top + self.__bp.music_pressed[1].height * pos)),
+                            self.__bp.music_pressed[1].size)
                 font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+                t = StringUtils.get_string(Blueprint.ENABLING_DICT.get(t))
                 txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
                 rt = txt.get_rect()
                 rt.centery = r.centery
                 rt.left = r.left * 1.1
                 pos += 1
-                self.__bp.color_selection.append([r, txt, rt, t])
-            for s in self.__bp.color_selection:
-                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
-                self.display.blit(s[1], s[2])
-
-    def draw_system_music_selection(self):
-        self.__bp.music_selection.clear()
-        pos = 1
-        for t in Blueprint.ENABLING_DICT:
-            r = pg.Rect((self.__bp.music_pressed[1].left, int(
-                self.__bp.music_pressed[1].top + self.__bp.music_pressed[1].height * pos)),
-                        self.__bp.music_pressed[1].size)
-            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
-            t = StringUtils.get_string(Blueprint.ENABLING_DICT.get(t))
-            txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
-            rt = txt.get_rect()
-            rt.centery = r.centery
-            rt.left = r.left * 1.1
-            pos += 1
-            self.__bp.music_selection.append([r, txt, rt, t])
+                self.__bp.music_selection.append([r, txt, rt, t])
+            else:
+                break
+            i += 1
         for s in self.__bp.music_selection:
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), s[0], 0)
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
+            self.display.blit(s[1], s[2])
+
+    def draw_system_music_effect_selection(self):
+        self.__bp.music_effect_selection.clear()
+        pos, i = 1, 0
+        for t in SYS_BP.SOUND_EFFECTS:
+            if self.__bp.music_effect_counter <= i < len(SYS_BP.SOUND_EFFECTS):
+                r = pg.Rect((self.__bp.music_effect_pressed[1].left, int(
+                    self.__bp.music_effect_pressed[1].top + self.__bp.music_effect_pressed[1].height * pos)),
+                            self.__bp.music_effect_pressed[1].size)
+                font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+                t = StringUtils.get_string(SYS_BP.SOUND_EFFECTS.get(t))
+                txt = font.render(t, True, Themes.DEFAULT_THEME.get("text_area_text"))
+                rt = txt.get_rect()
+                rt.centery = r.centery
+                rt.left = r.left * 1.1
+                pos += 1
+                self.__bp.music_effect_selection.append([r, txt, rt, t])
+            else:
+                break
+            i += 1
+        for s in self.__bp.music_effect_selection:
+            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), s[0], 0)
             self.display.blit(s[1], s[2])
 
     def blit(self, font, text, text2, coords, header=True):
@@ -289,6 +323,8 @@ class ControlPanelForm(Form):
                     self.draw_system_music_selection()
                 elif self.__bp.color_pressed[0]:
                     self.draw_system_color_selection()
+                elif self.__bp.music_effect_pressed[0]:
+                    self.draw_system_music_effect_selection()
 
     def draw_system_data(self, data, pos, font, banner, margin):
         self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data.get(2)),
@@ -368,17 +404,15 @@ class ControlPanelForm(Form):
         if not self.ta_populated:
             self.__tas.append(btn_add)
         pos += 1
-        # DRAW EXISTING COLORS
-        if len(self.__bp.get_blueprint().colors) > 0:
-            for k, v in self.__bp.get_blueprint().colors.items():
-                r = pg.Rect((int(self.get_rect().left + self.get_rect().width * .03),
-                             int(banner.bottom * 1.1 + pos * margin + margin * .3)),
-                            (self.size[0] * .03, self.size[0] * .03))
-                pg.draw.rect(self.display, v, r, 0)
-                self.blit(font, "{}:".format(k), str(v),
-                          (int(self.get_rect().left + self.get_rect().width * .08),
-                           int(banner.bottom * 1.1 + pos * margin)), header=False)
-                pos += 1
+        for k, v in self.__bp.get_blueprint().colors.items():
+            sample = pg.Rect((int(self.get_rect().left + self.get_rect().width * .03),
+                              int(banner.bottom * 1.1 + pos * margin + margin * .3)),
+                             (self.size[0] * .03, self.size[0] * .03))
+            pg.draw.rect(self.display, v, sample, 0)
+            self.blit(font, "{}:".format(k), str(v),
+                      (int(self.get_rect().left + self.get_rect().width * .08),
+                       int(banner.bottom * 1.1 + pos * margin)), header=False)
+            pos += 1
 
     def draw_attribute_data(self, data, pos, font, banner, margin):
         self.blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), data.get(2),
@@ -570,11 +604,17 @@ class ControlPanelForm(Form):
                                         break
                             elif isinstance(self.__bp, SystemBlueprint):
                                 if self.__tas.index(ta) == 4:
-                                    self.__bp.music_pressed = True, ta
-                                    break
+                                    if not self.__bp.music_effect_pressed[0] and not self.__bp.color_pressed[0]:
+                                        self.__bp.music_pressed = True, ta
+                                        break
+                                elif self.__tas.index(ta) == 5:
+                                    if not self.__bp.music_pressed[0] and not self.__bp.color_pressed[0]:
+                                        self.__bp.music_effect_pressed = True, ta
+                                        break
                                 elif self.__tas.index(ta) == 6:
-                                    self.__bp.color_pressed = True, ta
-                                    break
+                                    if not self.__bp.music_effect_pressed[0] and not self.__bp.music_pressed[0]:
+                                        self.__bp.color_pressed = True, ta
+                                        break
                                 elif self.__tas.index(ta) == 11:
                                     self.__bp.add_color()
                                     self.ta_populated = False
@@ -634,6 +674,28 @@ class ControlPanelForm(Form):
                         elif isinstance(c, str):
                             self.__set_str(index, c)
 
+    def __handle_system_scrolling(self, button):
+        if self.__bp.color_pressed[0]:
+            if button == 4:
+                self.__bp.color_counter -= 1
+            elif button == 5 and len(self.__bp.get_blueprint().colors) > 5:
+                self.__bp.color_counter += 1
+            if self.__bp.color_counter < 0:
+                self.__bp.color_counter = 0
+            elif len(self.__bp.get_blueprint().colors) > 5 and (
+                    self.__bp.color_counter > len(self.__bp.get_blueprint().colors) - 5):
+                self.__bp.color_counter = len(self.__bp.get_blueprint().colors) - 5
+        elif self.__bp.music_effect_pressed[0]:
+            if button == 4:
+                self.__bp.music_effect_counter -= 1
+            elif button == 5 and len(SYS_BP.SOUND_EFFECTS) > 5:
+                self.__bp.music_effect_counter += 1
+            if self.__bp.music_effect_counter < 0:
+                self.__bp.music_effect_counter = 0
+            elif len(SYS_BP.SOUND_EFFECTS) > 5 and (
+                    self.__bp.music_effect_counter > len(SYS_BP.SOUND_EFFECTS) - 5):
+                self.__bp.music_effect_counter = len(SYS_BP.SOUND_EFFECTS) - 5
+
     def __system_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
@@ -641,14 +703,19 @@ class ControlPanelForm(Form):
                     for ls in self.__bp.music_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(4, ls[3])
-                            self.__bp.reset_selection()
                             break
                 elif self.__bp.color_pressed[0]:
                     for ls in self.__bp.color_selection:
                         if ls[0].collidepoint(event.pos) == 1:
                             self.__bp.set_data(6, ls[3])
-                            self.__bp.reset_selection()
                             break
+                elif self.__bp.music_effect_pressed[0]:
+                    for ls in self.__bp.music_effect_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(5, ls[3])
+                            break
+            elif event.button == 4 or event.button == 5:
+                self.__handle_system_scrolling(event.button)
         elif event.type == KEYDOWN:
             c = Events.get_char(event.key, event_type=event.type)
             if c == Events.SPECIAL_KEYS.get("DELETE"):

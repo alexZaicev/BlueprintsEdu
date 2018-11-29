@@ -53,7 +53,8 @@ class Themes(Utils):
         "idle_blueprint": Colors.VAMPIRE_GREY,
         "active_blueprint": Colors.SILVER,
         "enabled_blueprint": Colors.SLATE_GREY,
-        "connection_line": Colors.RED
+        "connection_line": Colors.RED,
+        "drop_down_item": Colors.LIGHT_GREY
     }
     DAY_LIGHT_DICT = {
         "font": Colors.BLACK,
