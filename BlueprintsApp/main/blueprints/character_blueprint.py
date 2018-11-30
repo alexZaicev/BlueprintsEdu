@@ -3,7 +3,7 @@ from blueprints.blueprint import Blueprint
 
 class CharacterBlueprint(Blueprint):
 
-    def __init__(self, name=None, pos=None, size=None, alive=True, attributes=None, functions=None, sprites=None):
+    def __init__(self, name=None, pos=None, size=None, alive=True, attributes=None, functions=None, sprites=None, color=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("CHARACTER"), name=name)
         if pos is None:
             pos = (0, 0)
@@ -21,6 +21,7 @@ class CharacterBlueprint(Blueprint):
         self.attributes = attributes  # DATA RELATED TO CHARACTER
         self.functions = functions
         self.sprites = sprites
+        self.color = color
 
     def add_attribute(self, attribute):
         if attribute not in self.attributes:

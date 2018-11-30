@@ -346,29 +346,32 @@ class BlueprintControlForm(Form):
             if temp.focused:
                 bp = temp
                 break
-        # remove connections
-        conns = [[root, slave] for root, slave in self.__bps_connections if bp == root or bp == slave]
-        for conn in conns:
-            self.__bps_connections.remove(conn)
-        # finally remove blueprint
-        self.__bps.remove(bp)
-        # clear character and sprite connections
-        for temp in self.__bps:
-            root, slave = bp.get_blueprint(), temp.get_blueprint()
+        if bp is not None:
+            if isinstance(bp, SystemBlueprint):
+                raise BlueprintError("Cannot remove system instance from project")
+            # remove connections
+            conns = [[root, slave] for root, slave in self.__bps_connections if bp == root or bp == slave]
+            for conn in conns:
+                self.__bps_connections.remove(conn)
+            # finally remove blueprint
+            self.__bps.remove(bp)
+            # clear character and sprite connections
+            for temp in self.__bps:
+                root, slave = bp.get_blueprint(), temp.get_blueprint()
 
-            if isinstance(temp, CharacterBlueprint):
-                if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
-                    slave.attributes.remove(root)
-                elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
-                    slave.functions.remove(root)
-                elif isinstance(bp, SpriteBlueprint) and (root in slave.sprites):
-                    slave.sprites.remove(root)
-            elif isinstance(temp, SpriteBlueprint):
-                if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
-                    slave.attributes.remove(root)
-                elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
-                    slave.functions.remove(root)
-        self.__cont_panel.set_blueprint(None)
+                if isinstance(temp, CharacterBlueprint):
+                    if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
+                        slave.attributes.remove(root)
+                    elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
+                        slave.functions.remove(root)
+                    elif isinstance(bp, SpriteBlueprint) and (root in slave.sprites):
+                        slave.sprites.remove(root)
+                elif isinstance(temp, SpriteBlueprint):
+                    if isinstance(bp, AttributeBlueprint) and (root in slave.attributes):
+                        slave.attributes.remove(root)
+                    elif isinstance(bp, FunctionBlueprint) and (root in slave.functions):
+                        slave.functions.remove(root)
+            self.__cont_panel.set_blueprint(None)
 
     def update_connections(self):
         self.__bps_connections.clear()
