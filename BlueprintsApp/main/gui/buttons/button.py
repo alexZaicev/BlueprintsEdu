@@ -53,11 +53,14 @@ class Button(ABC):
     def set_custom_coordinates(self, pos):
         self.__x, self.__y = pos
 
-    def set_custom_size(self, size):
+    def set_custom_size(self, size, menu_button=False):
         self.__height = int(DisplaySettings.get_size_by_key()[1] * size[1])
         font = pg.font.Font(Themes.DEFAULT_THEME.get("button_font_style"), int(self.__height * .5))
         self.__text = font.render(self.__text_str, True, Themes.DEFAULT_THEME.get("font"))
-        self.__width = int(font.size(self.__text_str)[0] * size[0])
+        if not menu_button:
+            self.__width = int(font.size(self.__text_str)[0] * size[0])
+        else:
+            self.__width = font.size(self.__text_str)[0]
 
     def get_topleft(self):
         x = self.__x - int(self.__width * .5)

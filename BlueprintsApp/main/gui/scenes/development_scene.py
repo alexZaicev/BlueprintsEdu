@@ -90,23 +90,23 @@ class DevelopmentScene(SceneBuilder):
         # TODO investigate why r.left offset is different for each button
 
         close = CloseProjectButton()
-        close.set_custom_size(DevelopmentScene.BTN_SIZE)
-        close.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .001), r.bottom))
+        close.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        close.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), r.bottom))
         close.color = Themes.DEFAULT_THEME.get("menu_background")
 
         save = SaveButton()
-        save.set_custom_size(DevelopmentScene.BTN_SIZE)
-        save.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .006), close.get_rect().bottom))
+        save.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        save.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), close.get_rect().bottom))
         save.color = Themes.DEFAULT_THEME.get("menu_background")
 
         sae = SaveExitButton()
-        sae.set_custom_size(DevelopmentScene.BTN_SIZE)
-        sae.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), save.get_rect().bottom))
+        sae.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        sae.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), save.get_rect().bottom))
         sae.color = Themes.DEFAULT_THEME.get("menu_background")
 
         ex = ExitButton()
-        ex.set_custom_size(DevelopmentScene.BTN_SIZE)
-        ex.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .008), sae.get_rect().bottom))
+        ex.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        ex.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), sae.get_rect().bottom))
         ex.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([close, save, sae, ex])
@@ -117,45 +117,45 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_edit.get_rect()
 
         add_syst = AddSystemButton()
-        add_syst.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_syst.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), r.bottom))
+        add_syst.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        add_syst.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), r.bottom))
         add_syst.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_attr = AddAttrButton()
-        add_attr.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_attr.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_syst.get_rect().bottom))
+        add_attr.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        add_attr.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), add_syst.get_rect().bottom))
         add_attr.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_char = AddCharacterButton()
-        add_char.set_custom_size(DevelopmentScene.BTN_SIZE)
-        add_char.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_attr.get_rect().bottom))
+        add_char.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        add_char.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), add_attr.get_rect().bottom))
         add_char.color = Themes.DEFAULT_THEME.get("menu_background")
 
         move_func = MoveFunctionButton()
-        move_func.set_custom_size(DevelopmentScene.BTN_SIZE)
-        move_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), add_char.get_rect().bottom))
+        move_func.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        move_func.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), add_char.get_rect().bottom))
         move_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         custom_func = CustomFunctionButton()
-        custom_func.set_custom_size(DevelopmentScene.BTN_SIZE)
+        custom_func.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
         custom_func.set_topleft(
-            (int(r.left + DisplaySettings.get_size_by_key()[0] * .002), move_func.get_rect().bottom))
+            (int(r.left + DisplaySettings.get_size_by_key()[0] * .005), move_func.get_rect().bottom))
         custom_func.color = Themes.DEFAULT_THEME.get("menu_background")
 
         add_sprite = AddSpriteButton()
-        add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE)
+        add_sprite.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
         add_sprite.set_topleft(
-            (int(r.left + DisplaySettings.get_size_by_key()[0] * .004), custom_func.get_rect().bottom))
+            (int(r.left + DisplaySettings.get_size_by_key()[0] * .005), custom_func.get_rect().bottom))
         add_sprite.color = Themes.DEFAULT_THEME.get("menu_background")
 
         clear = ClearConnectionsButton()
-        clear.set_custom_size(DevelopmentScene.BTN_SIZE)
-        clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .0008), add_sprite.get_rect().bottom))
+        clear.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        clear.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), add_sprite.get_rect().bottom))
         clear.color = Themes.DEFAULT_THEME.get("menu_background")
 
         remove = RemoveButton()
-        remove.set_custom_size(DevelopmentScene.BTN_SIZE)
-        remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .006), clear.get_rect().bottom))
+        remove.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        remove.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), clear.get_rect().bottom))
         remove.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([add_syst, add_attr, add_char, move_func,
@@ -174,18 +174,18 @@ class DevelopmentScene(SceneBuilder):
         r = self.btn_run.get_rect()
 
         gen = GenerateButton()
-        gen.set_custom_size(DevelopmentScene.BTN_SIZE)
-        gen.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .004), r.bottom))
+        gen.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        gen.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), r.bottom))
         gen.color = Themes.DEFAULT_THEME.get("menu_background")
 
         gen_run = GenerateRunButton()
-        gen_run.set_custom_size(DevelopmentScene.BTN_SIZE)
-        gen_run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .002), gen.get_rect().bottom))
+        gen_run.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        gen_run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), gen.get_rect().bottom))
         gen_run.color = Themes.DEFAULT_THEME.get("menu_background")
 
         run = RunButton()
-        run.set_custom_size(DevelopmentScene.BTN_SIZE)
-        run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .009), gen_run.get_rect().bottom))
+        run.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
+        run.set_topleft((int(r.left + DisplaySettings.get_size_by_key()[0] * .005), gen_run.get_rect().bottom))
         run.color = Themes.DEFAULT_THEME.get("menu_background")
 
         result.extend([gen, gen_run, run])
