@@ -3,7 +3,8 @@ from blueprints.blueprint import Blueprint
 
 class CharacterBlueprint(Blueprint):
 
-    def __init__(self, name=None, pos=None, size=None, alive=True, attributes=None, functions=None, sprites=None, color=None):
+    def __init__(self, name=None, pos=None, size=None, alive=True, attributes=None, functions=None, sprites=None,
+                 color_scheme=None):
         Blueprint.__init__(self, type=Blueprint.TYPES.get("CHARACTER"), name=name)
         if pos is None:
             pos = (0, 0)
@@ -21,7 +22,13 @@ class CharacterBlueprint(Blueprint):
         self.attributes = attributes  # DATA RELATED TO CHARACTER
         self.functions = functions
         self.sprites = sprites
-        self.color = color
+        if color_scheme is None:
+            color_scheme = {
+                "BODY": None,
+                "TYRES": None,
+                "WINDOWS": None
+            }
+        self.color_scheme = color_scheme
 
     def add_attribute(self, attribute):
         if attribute not in self.attributes:
@@ -68,4 +75,5 @@ class CharacterBlueprint(Blueprint):
         for sp in self.sprites:
             d.append(sp.to_dict())
         r["SPRITES"] = d
+        r["COLOR_SCHEME"] = self.color_scheme
         return r

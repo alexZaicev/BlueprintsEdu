@@ -209,7 +209,6 @@ class BlueprintControlForm(Form):
     def add_sprite(self):
         if self.check_system_exist():
             t = SpriteBlueprint(self.get_rect())
-            t.parent = self.get_system_blueprint()
             self.__bps.append(t)
         else:
             raise BlueprintError("Project must include system representation")

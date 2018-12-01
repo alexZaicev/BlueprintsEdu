@@ -13,16 +13,20 @@ class GeneratorError(Exception):
     """Description: Special error definition for generator exceptions"""
 
 
-class ResponseParsingError(Exception):
+class ResponseParseError(Exception):
     """Description: Special error definition for JSON parsing exceptions"""
 
 
 class DownloadError(Exception):
-    """Description: Special error definition to project download exception"""
+    """Description: Special error definition for project download exception"""
 
 
 class BlueprintError(Exception):
-    """Description: Special error definition to project blueprint exception"""
+    """Description: Special error definition for project blueprint exception"""
+
+
+class BlueprintParseError(BlueprintError):
+    """Description: Special error definition for blueprint parsing"""
 
 
 class Events(Utils):

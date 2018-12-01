@@ -98,5 +98,8 @@ class EnglishLanguage(Language):
         "ID_SOUND": "Sound",
         "ID_BACKGROUND": "Background",
         "ID_RIDERS_ON_THE_STORM": "Riders on the Storm",
-        "ID_TOKYO_DRIFT": "Tokyo Drift"
+        "ID_TOKYO_DRIFT": "Tokyo Drift",
+        "ID_BODY_COLOR": "Body Color",
+        "ID_TYRE_COLOR": "Tyre Color",
+        "ID_WINDOW_COLOR": "Window Color"
     }

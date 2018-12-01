@@ -237,7 +237,7 @@ class GenerateButton(Button):
                     if r == Status.SUCCESS:
                         LOGGER.debug("Project archive downloaded")
         except ValueError:
-            raise app_utils.ResponseParsingError("Failed to parse generator response")
+            raise app_utils.ResponseParseError("Failed to parse generator response")
         except RequestException:
             raise app_utils.GeneratorError("Failed to generate project code")
 
@@ -282,7 +282,7 @@ class GenerateRunButton(Button):
                         LOGGER.debug("Project archive downloaded")
                         ExecutionManager.execute_program(project.get("PROJECT")[0], "app")
         except ValueError:
-            raise app_utils.ResponseParsingError("Failed to parse generator response")
+            raise app_utils.ResponseParseError("Failed to parse generator response")
         except RequestException:
             raise app_utils.GeneratorError("Failed to generate project code")
 

@@ -17,18 +17,34 @@ class CharacterBlueprint(Blueprint):
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
         self.state_pressed = [False, None]
         self.state_selection = list()
+        self.color_scheme_1_pressed = [False, None]
+        self.color_scheme_1_selection = list()
+        self.color_scheme_2_pressed = [False, None]
+        self.color_scheme_2_selection = list()
+        self.color_scheme_3_pressed = [False, None]
+        self.color_scheme_3_selection = list()
+        self.color_scheme_1_counter, self.color_scheme_2_counter, self.color_scheme_3_counter = 0, 0, 0
 
     def get_data(self):
         data = super().get_data()
         data[1] = StringUtils.get_string("ID_CHARACTER")
-        data[2] = self.get_blueprint().pos[0]
-        data[3] = self.get_blueprint().pos[1]
-        data[4] = self.get_blueprint().size[0]
-        data[5] = self.get_blueprint().size[1]
-        data[6] = self.get_blueprint().alive
-        data[7] = self.get_blueprint().attributes
-        data[8] = self.get_blueprint().functions
-        data[9] = self.get_blueprint().sprites
+        bp = self.get_blueprint()
+        data[2] = bp.pos[0]
+        data[3] = bp.pos[1]
+        data[4] = bp.size[0]
+        data[5] = bp.size[1]
+        data[6] = bp.alive
+        data[7] = bp.attributes
+        data[8] = bp.functions
+        data[9] = bp.sprites
+        # CHECK IF PARENT HAS COLORS
+        if len(self.parent.colors) < 1:
+            bp.color_scheme["BODY"] = None
+            bp.color_scheme["TYRES"] = None
+            bp.color_scheme["WINDOWS"] = None
+        data[10] = bp.color_scheme.get("BODY")
+        data[11] = bp.color_scheme.get("TYRES")
+        data[12] = bp.color_scheme.get("WINDOWS")
         return data
 
     def set_data(self, index, data):
@@ -67,7 +83,13 @@ class CharacterBlueprint(Blueprint):
         elif index == 6:
             for key, value in Blueprint.CONDITIONAL_DICT.items():
                 if data == StringUtils.get_string(value):
-                    self.get_blueprint().directional = key
+                    self.get_blueprint().alive = key
+        elif index == 10:
+            self.get_blueprint().color_scheme["BODY"] = data
+        elif index == 11:
+            self.get_blueprint().color_scheme["TYRES"] = data
+        elif index == 12:
+            self.get_blueprint().color_scheme["WINDOWS"] = data
         super().set_data(index, data)
         self.update_displayed_data(self.font.render(self.get_blueprint().name,
                                                     True, Themes.DEFAULT_THEME.get("font")))
@@ -80,6 +102,12 @@ class CharacterBlueprint(Blueprint):
         super().reset_selection()
         self.state_pressed = [False, None]
         self.state_selection = list()
+        self.color_scheme_1_pressed = [False, None]
+        self.color_scheme_1_selection = list()
+        self.color_scheme_2_pressed = [False, None]
+        self.color_scheme_2_selection = list()
+        self.color_scheme_3_pressed = [False, None]
+        self.color_scheme_3_selection = list()
 
     def update_displayed_data(self, text):
         super().update_displayed_data(text)

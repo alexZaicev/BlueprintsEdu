@@ -3,21 +3,23 @@ project '.blue' file configuration and loads that configuration to generate a wo
 selected game API
 """
 from __future__ import division
+
 import json
-from blueprints.blueprint import Blueprint
-from utils import logger_utils
+
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from blueprints.blueprint import Blueprint
 from blueprints.character_blueprint import CharacterBlueprint as CB
-from gui.blueprints.attribute_blueprint import AttributeBlueprint
-from gui.blueprints.character_blueprint import CharacterBlueprint
 from blueprints.function_blueprint import FunctionBlueprint as FB
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
+from blueprints.system_blueprint import SystemBlueprint as SYS_BP
+from gui.blueprints.attribute_blueprint import AttributeBlueprint
+from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.blueprints.sprite_blueprint import SpriteBlueprint
-from utils.app_utils import DisplaySettings
-from utils.managers.manager import Manager
-from blueprints.system_blueprint import SystemBlueprint as SYS_BP
 from gui.blueprints.system_blueprint import SystemBlueprint
+from utils import logger_utils
+from utils.app_utils import DisplaySettings, BlueprintParseError
+from utils.managers.manager import Manager
 
 
 class BlueprintManager(Manager):
@@ -87,11 +89,21 @@ class BlueprintManager(Manager):
         BlueprintManager.__LOGGER.debug(contents)
         for d in contents:
             r.append(BlueprintManager.call_reverse_parser(panel, d))
-        # FIND CHARACTER/SPRITE AND PARSE CONNECTIONS
+
         if len(r) > 0:
+            # FIND SYSTEM AND ASSIGN TO BLUEPRINTS
+            for b in r:
+                if isinstance(b, SystemBlueprint):
+                    parent = b.get_blueprint()
+                    break
+            else:
+                raise BlueprintParseError(
+                    "Failed to parse project state. System instance not present in the project")
+            # FIND CHARACTER/SPRITE AND PARSE CONNECTIONS
             for bp in r:
                 if bp.get_blueprint().get_type() == Blueprint.TYPES.get("CHARACTER"):
                     BlueprintManager.sort_character_connections(bp, r)
+                    bp.parent = parent
                 elif bp.get_blueprint().get_type() == Blueprint.TYPES.get("SPRITE"):
                     BlueprintManager.sort_sprite_connections(bp, r)
         return r
@@ -180,6 +192,7 @@ class BlueprintManager(Manager):
         for sp in data.sprites:
             d[sp.name] = sp.get_type()
         bp["SPRITES"] = d
+        bp["COLOR_SCHEME"] = data.color_scheme
         return bp
 
     @classmethod
@@ -253,7 +266,8 @@ class BlueprintManager(Manager):
     @classmethod
     def reverse_parse_character(cls, panel, data):
         d, r = data.get("BLUEPRINT"), BlueprintManager.extract_rect(data.get("RECTANGLE"))
-        bp = CB(name=d.get("NAME"), pos=d.get("POSITION"), size=d.get("SIZE"), alive=d.get("ALIVE"))
+        bp = CB(name=d.get("NAME"), pos=d.get("POSITION"), size=d.get("SIZE"), alive=d.get("ALIVE"),
+                color_scheme=d.get("COLOR_SCHEME"))
         for k, v in d.get("ATTRIBUTES").items():
             bp.attributes.append({k: v})
         for k, v in d.get("FUNCTIONS").items():
