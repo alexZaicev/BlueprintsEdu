@@ -87,7 +87,6 @@ class DevelopmentScene(SceneBuilder):
     def __init_file_menu(self):
         result = []
         r = self.btn_file.get_rect()
-        # TODO investigate why r.left offset is different for each button
 
         close = CloseProjectButton()
         close.set_custom_size(DevelopmentScene.BTN_SIZE, menu_button=True)
