@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
+
 import pygame as pg
+
 from utils import gui_utils
-from utils.gui_utils import Themes
 from utils import logger_utils
 from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
 
 
 class Button(ABC):

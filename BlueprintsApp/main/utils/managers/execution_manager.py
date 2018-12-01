@@ -1,6 +1,6 @@
+import os
 import subprocess
 import threading
-import os
 
 from utils import logger_utils
 from utils.managers.manager import Manager

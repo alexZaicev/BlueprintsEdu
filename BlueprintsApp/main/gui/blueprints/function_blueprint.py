@@ -1,8 +1,9 @@
-from gui.blueprints.blueprint import Blueprint
-from utils.string_utils import StringUtils
 import pygame as pg
-from utils.gui_utils import Themes
+
 from blueprints.function_blueprint import FunctionBlueprint as FB
+from gui.blueprints.blueprint import Blueprint
+from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class FunctionBlueprint(Blueprint):
@@ -77,7 +78,6 @@ class FunctionBlueprint(Blueprint):
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
         self.update_displayed_data(self.font.render("{}()".format(self.get_blueprint().name),
                                                     True, Themes.DEFAULT_THEME.get("font")))
-        # TODO add additional data
 
     def reset_selection(self):
         super().reset_selection()

@@ -1,8 +1,9 @@
-from gui.blueprints.blueprint import Blueprint
-from utils.string_utils import StringUtils
 import pygame as pg
-from utils.gui_utils import Themes
+
 from blueprints.sprite_blueprint import SpriteBlueprint as SB
+from gui.blueprints.blueprint import Blueprint
+from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class SpriteBlueprint(Blueprint):
@@ -27,7 +28,6 @@ class SpriteBlueprint(Blueprint):
     def initialize(self, coords, size, blueprint, panel):
         super().initialize(coords, size, blueprint, panel)
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .13)))
-        # TODO add additional data
 
     def reset_selection(self):
         super().reset_selection()

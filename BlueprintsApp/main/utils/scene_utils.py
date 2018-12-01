@@ -1,8 +1,8 @@
-from gui.scenes.welcome_scene import WelcomeScene
-from gui.scenes.load_scene import LoadScene
-from gui.scenes.development_scene import DevelopmentScene
 from gui.scenes.configuration_scene import ConfigurationScene
+from gui.scenes.development_scene import DevelopmentScene
+from gui.scenes.load_scene import LoadScene
 from gui.scenes.project_creation_scene import ProjectCreationScene
+from gui.scenes.welcome_scene import WelcomeScene
 
 # SCENE ENUMS
 WELCOME_SCENE = "W_S"

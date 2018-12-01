@@ -1,8 +1,8 @@
 from gui.buttons.button import Button
-from utils.string_utils import StringUtils
 from utils import scene_utils
-from utils.managers.project_manager import ProjectManager
 from utils.gui_utils import Themes
+from utils.managers.project_manager import ProjectManager
+from utils.string_utils import StringUtils
 
 
 class CreateButton(Button):

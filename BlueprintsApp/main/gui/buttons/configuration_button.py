@@ -1,7 +1,7 @@
-from utils.string_utils import StringUtils
 from gui.buttons.button import Button
 from utils import scene_utils
 from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class ConfigurationButton(Button):

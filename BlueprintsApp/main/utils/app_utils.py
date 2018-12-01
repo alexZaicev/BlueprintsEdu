@@ -1,7 +1,8 @@
-from utils.utils import Utils
-from utils.string_utils import StringUtils
-from pygame.locals import *
 import pygame as pg
+from pygame.locals import *
+
+from utils.string_utils import StringUtils
+from utils.utils import Utils
 
 CAPTION = "BlueprintEdu V1.0"
 

@@ -1,15 +1,16 @@
-from gui.scenes.scene_builder import SceneBuilder
-from utils import logger_utils
-from utils import app_utils
 import pygame as pg
-from gui.buttons.new_button import NewButton
-from gui.buttons.load_button import LoadButton
-from gui.buttons.configuration_button import ConfigurationButton
 from pygame.locals import *
-from utils.string_utils import StringUtils
-from utils.gui_utils import Themes
-from utils.app_utils import DisplaySettings
+
+from gui.buttons.configuration_button import ConfigurationButton
+from gui.buttons.load_button import LoadButton
+from gui.buttons.new_button import NewButton
 from gui.popup import Popup
+from gui.scenes.scene_builder import SceneBuilder
+from utils import app_utils
+from utils import logger_utils
+from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class WelcomeScene(SceneBuilder):

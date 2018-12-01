@@ -13,6 +13,7 @@ In the app there can be various types of blueprints:
             the user to create behaviour
 """
 from abc import ABC, abstractmethod
+
 from utils.string_utils import StringUtils
 
 

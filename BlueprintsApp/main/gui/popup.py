@@ -1,4 +1,5 @@
 import pygame as pg
+
 from utils.app_utils import DisplaySettings
 from utils.gui_utils import Themes
 

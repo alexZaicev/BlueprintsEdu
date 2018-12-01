@@ -1,7 +1,9 @@
-from utils.gui_utils import Themes
 from abc import ABC, abstractmethod
-import pygame as pg
 from random import randint
+
+import pygame as pg
+
+from utils.gui_utils import Themes
 
 
 class Blueprint(ABC):

@@ -1,15 +1,16 @@
-from gui.scenes.scene_builder import SceneBuilder
-from utils import logger_utils
 import pygame as pg
-from gui.buttons.config_menu_buttons import *
-from utils.gui_utils import Themes
-from utils import gui_utils
-from gui.forms.theme_selection_form import ThemeSelectionForm
 from pygame.locals import *
+
 from gui.buttons.back_button import BackButton
-from gui.forms.language_selection_form import LanguageSelectionForm
+from gui.buttons.config_menu_buttons import *
 from gui.forms.display_selection_form import DisplaySelectionForm
+from gui.forms.language_selection_form import LanguageSelectionForm
+from gui.forms.theme_selection_form import ThemeSelectionForm
+from gui.scenes.scene_builder import SceneBuilder
+from utils import gui_utils
+from utils import logger_utils
 from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
 
 
 class ConfigurationScene(SceneBuilder):

@@ -1,13 +1,13 @@
-from utils.utils import Utils
 from utils import logger_utils
-from utils.languages.english import EnglishLanguage
-from utils.languages.russian import RussianLanguage
-from utils.languages.german import GermanLanguage
-from utils.languages.french import FrenchLanguage
-from utils.languages.spanish import SpanishLanguage
-from utils.languages.norwegian import NorwegianLanguage
 from utils.languages.chineese import ChineseLanguage
+from utils.languages.english import EnglishLanguage
+from utils.languages.french import FrenchLanguage
+from utils.languages.german import GermanLanguage
 from utils.languages.italian import ItalianLanguage
+from utils.languages.norwegian import NorwegianLanguage
+from utils.languages.russian import RussianLanguage
+from utils.languages.spanish import SpanishLanguage
+from utils.utils import Utils
 
 
 class StringUtils(Utils):

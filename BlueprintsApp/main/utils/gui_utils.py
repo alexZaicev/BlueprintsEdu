@@ -1,9 +1,8 @@
-from utils.app_utils import Fonts
-from utils.app_utils import Colors
-from utils.utils import Utils
 from utils import logger_utils
+from utils.app_utils import Colors
+from utils.app_utils import Fonts
 from utils.string_utils import StringUtils
-
+from utils.utils import Utils
 
 # CONTROL PANEL
 CP_WIDTH = .3

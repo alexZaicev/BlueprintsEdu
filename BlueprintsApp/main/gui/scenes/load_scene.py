@@ -1,15 +1,16 @@
-from gui.scenes.scene_builder import SceneBuilder
 import pygame as pg
-from utils import logger_utils
 from pygame.locals import *
-from gui.buttons.select_button import SelectButton
-from gui.buttons.delete_button import DeleteButton
-from utils.string_utils import StringUtils
-from utils.managers.project_manager import ProjectManager
-from utils.gui_utils import Themes
+
 from gui.buttons.back_button import BackButton
-from utils.app_utils import DisplaySettings
+from gui.buttons.delete_button import DeleteButton
+from gui.buttons.select_button import SelectButton
+from gui.scenes.scene_builder import SceneBuilder
+from utils import logger_utils
 from utils import scene_utils
+from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
+from utils.managers.project_manager import ProjectManager
+from utils.string_utils import StringUtils
 
 
 class LoadScene(SceneBuilder):

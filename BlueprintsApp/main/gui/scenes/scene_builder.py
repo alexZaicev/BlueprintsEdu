@@ -1,5 +1,6 @@
 import abc
 from abc import abstractmethod
+
 from pygame.locals import *
 
 

@@ -1,9 +1,10 @@
+import pygame as pg
+
+from blueprints.character_blueprint import CharacterBlueprint as CB
 from gui.blueprints.blueprint import Blueprint
 from utils.app_utils import BlueprintError
-from utils.string_utils import StringUtils
-import pygame as pg
 from utils.gui_utils import Themes
-from blueprints.character_blueprint import CharacterBlueprint as CB
+from utils.string_utils import StringUtils
 
 
 class CharacterBlueprint(Blueprint):

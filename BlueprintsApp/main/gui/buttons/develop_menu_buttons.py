@@ -1,5 +1,6 @@
 from requests import RequestException
 
+from gui.blueprints.function_blueprint import FunctionBlueprint
 from gui.buttons.button import Button
 from utils import app_utils
 from utils import logger_utils
@@ -9,7 +10,6 @@ from utils.enums.status import Status
 from utils.gui_utils import Themes
 from utils.managers.execution_manager import ExecutionManager
 from utils.string_utils import StringUtils
-from gui.blueprints.function_blueprint import FunctionBlueprint
 
 LOGGER = logger_utils.get_logger(__name__)
 

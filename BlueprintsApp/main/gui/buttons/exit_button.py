@@ -1,7 +1,7 @@
 from gui.buttons.button import Button
-from utils.string_utils import StringUtils
 from utils.enums.status import Status
 from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class ExitButton(Button):

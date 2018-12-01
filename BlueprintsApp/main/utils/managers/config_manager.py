@@ -1,7 +1,6 @@
 import json
 import os
 
-from utils import app_utils
 from utils import logger_utils
 from utils.app_utils import DisplaySettings
 from utils.gui_utils import Themes

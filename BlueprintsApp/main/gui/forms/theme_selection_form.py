@@ -1,11 +1,12 @@
-from gui.forms.form import Form
 import pygame as pg
+from pygame.locals import *
+
+from gui.forms.form import Form
+from utils import logger_utils
+from utils.app_utils import DisplaySettings
+from utils.app_utils import Images
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
-from utils.app_utils import Images
-from utils.app_utils import DisplaySettings
-from pygame.locals import *
-from utils import logger_utils
 
 
 class ThemeSelectionForm(Form):

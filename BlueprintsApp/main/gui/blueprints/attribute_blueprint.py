@@ -1,9 +1,10 @@
-from gui.blueprints.blueprint import Blueprint
-from utils.string_utils import StringUtils
-from blueprints.attribute_blueprint import AttributeBlueprint as AB
-from utils import logger_utils
 import pygame as pg
+
+from blueprints.attribute_blueprint import AttributeBlueprint as AB
+from gui.blueprints.blueprint import Blueprint
+from utils import logger_utils
 from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class AttributeBlueprint(Blueprint):

@@ -1,10 +1,11 @@
+import pygame as pg
+from pygame.locals import *
+
 from gui.forms.form import Form
+from utils.app_utils import DisplaySettings
+from utils.app_utils import Images
 from utils.gui_utils import Themes
 from utils.string_utils import StringUtils
-from utils.app_utils import Images
-import pygame as pg
-from utils.app_utils import DisplaySettings
-from pygame.locals import *
 
 
 class DisplaySelectionForm(Form):

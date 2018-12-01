@@ -1,10 +1,11 @@
-from utils import logger_utils
-from utils import app_utils
 import pygame as pg
-from utils.enums.status import Status
+
+from utils import app_utils
+from utils import logger_utils
 from utils import scene_utils
-from utils.managers.config_manager import ConfigManager
 from utils.app_utils import DisplaySettings
+from utils.enums.status import Status
+from utils.managers.config_manager import ConfigManager
 
 
 class Board(object):

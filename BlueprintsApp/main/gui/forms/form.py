@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
-from utils.app_utils import DisplaySettings
+
 import pygame as pg
-from utils.gui_utils import Themes
+
 from gui.buttons.apply_button import ApplyButton
+from utils.app_utils import DisplaySettings
+from utils.gui_utils import Themes
 
 
 class Form(ABC):

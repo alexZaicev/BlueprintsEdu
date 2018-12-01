@@ -1,6 +1,6 @@
 from gui.buttons.button import Button
-from utils.string_utils import StringUtils
 from utils.gui_utils import Themes
+from utils.string_utils import StringUtils
 
 
 class LanguageButton(Button):

@@ -1,7 +1,7 @@
 from gui.buttons.button import Button
-from utils.string_utils import StringUtils
-from utils.managers.project_manager import ProjectManager
 from utils.gui_utils import Themes
+from utils.managers.project_manager import ProjectManager
+from utils.string_utils import StringUtils
 
 
 class DeleteButton(Button):

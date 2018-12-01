@@ -1,6 +1,7 @@
-from utils import logger_utils
-from board import Board
 import os
+
+from board import Board
+from utils import logger_utils
 from utils.managers.config_manager import ConfigManager
 
 os.path.join(os.path.split(__file__)[0], "resources")
