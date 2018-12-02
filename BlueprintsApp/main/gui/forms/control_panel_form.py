@@ -506,109 +506,126 @@ class ControlPanelForm(Form):
                 (int(self.get_rect().width * .90), int((pos - s) * margin)))
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
 
+    def attribute_box_selection(self, box):
+        if self.__tas.index(box) == 2:
+            self.__bp.data_type_pressed = True, box
+            return True
+        return False
+
+    def character_box_selection(self, box):
+        if self.__tas.index(box) == 6:
+            if not self.__bp.color_scheme_1_pressed[0] and \
+                    not self.__bp.color_scheme_2_pressed[0] and \
+                    not self.__bp.color_scheme_3_pressed[0]:
+                self.__bp.state_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 7:
+            if not self.__bp.state_pressed[0] and \
+                    not self.__bp.color_scheme_2_pressed[0] and \
+                    not self.__bp.color_scheme_3_pressed[0]:
+                self.__bp.color_scheme_1_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 8:
+            if not self.__bp.color_scheme_1_pressed[0] and \
+                    not self.__bp.state_pressed[0] and \
+                    not self.__bp.color_scheme_3_pressed[0]:
+                self.__bp.color_scheme_2_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 9:
+            if not self.__bp.color_scheme_1_pressed[0] and \
+                    not self.__bp.color_scheme_2_pressed[0] and \
+                    not self.__bp.state_pressed[0]:
+                self.__bp.color_scheme_3_pressed = True, box
+                return True
+        return False
+
+    def sprite_box_selection(self, box):
+        return False
+
+    def function_box_selection(self, box):
+        if self.__tas.index(box) == 2:
+            if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
+                    not self.__bp.keys_pressed[0]:
+                self.__bp.type_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 3:
+            if not self.__bp.type_pressed[0] and not self.__bp.direct_pressed[0] and \
+                    not self.__bp.keys_pressed[0]:
+                self.__bp.orient_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 4:
+            if not self.__bp.orient_pressed[0] and not self.__bp.type_pressed[0] and \
+                    not self.__bp.keys_pressed[0]:
+                self.__bp.direct_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 5:
+            if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
+                    not self.__bp.type_pressed[0]:
+                self.__bp.keys_pressed = True, box
+                return True
+        return False
+
+    def system_box_selection(self, box):
+        if self.__tas.index(box) == 4:
+            if not self.__bp.music_effect_pressed[0] and not self.__bp.color_pressed[0]:
+                self.__bp.music_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 5:
+            if not self.__bp.music_pressed[0] and not self.__bp.color_pressed[0]:
+                self.__bp.music_effect_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 6:
+            if not self.__bp.music_effect_pressed[0] and not self.__bp.music_pressed[0]:
+                self.__bp.color_pressed = True, box
+                return True
+        elif self.__tas.index(box) == 11:
+            self.__bp.add_color()
+            self.ta_populated = False
+            self.__tas.clear()
+            return True
+        return False
+
     def check_form_events(self, event):
 
-        def __check_textarea_selection():
+        def __check_box_selection():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    found = False
+                    self.boarder_rect = None
                     for ta in self.__tas:
                         if ta.collidepoint(event.pos) == 1:
                             self.boarder_rect = ta
-                            found = True
-                            if self.__tas.index(ta) == 2 and isinstance(self.__bp, AttributeBlueprint):
-                                # DATA TYPE SELECTION
-                                self.__bp.data_type_pressed = True, ta
+                            box_selection_calls = {
+                                BP.TYPES.get("ATTRIBUTE"): self.attribute_box_selection,
+                                BP.TYPES.get("CHARACTER"): self.character_box_selection,
+                                BP.TYPES.get("SPRITE"): self.sprite_box_selection,
+                                BP.TYPES.get("FUNCTION"): self.function_box_selection,
+                                BP.TYPES.get("SYSTEM"): self.system_box_selection
+                            }
+                            try:
+                                valid = box_selection_calls[self.__bp.get_blueprint().get_type()](ta)
+                            except KeyError:
+                                valid = False
+                            if valid:
                                 break
-                            elif isinstance(self.__bp, CharacterBlueprint):
-                                if self.__tas.index(ta) == 6:
-                                    if not self.__bp.color_scheme_1_pressed[0] and \
-                                            not self.__bp.color_scheme_2_pressed[0] and \
-                                            not self.__bp.color_scheme_3_pressed[0]:
-                                        self.__bp.state_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 7:
-                                    if not self.__bp.state_pressed[0] and \
-                                            not self.__bp.color_scheme_2_pressed[0] and \
-                                            not self.__bp.color_scheme_3_pressed[0]:
-                                        self.__bp.color_scheme_1_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 8:
-                                    if not self.__bp.color_scheme_1_pressed[0] and \
-                                            not self.__bp.state_pressed[0] and \
-                                            not self.__bp.color_scheme_3_pressed[0]:
-                                        self.__bp.color_scheme_2_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 9:
-                                    if not self.__bp.color_scheme_1_pressed[0] and \
-                                            not self.__bp.color_scheme_2_pressed[0] and \
-                                            not self.__bp.state_pressed[0]:
-                                        self.__bp.color_scheme_3_pressed = True, ta
-                                        break
-                            elif isinstance(self.__bp, FunctionBlueprint):
-                                if self.__tas.index(ta) == 2:
-                                    if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
-                                            not self.__bp.keys_pressed[0]:
-                                        self.__bp.type_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 3:
-                                    if not self.__bp.type_pressed[0] and not self.__bp.direct_pressed[0] and \
-                                            not self.__bp.keys_pressed[0]:
-                                        self.__bp.orient_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 4:
-                                    if not self.__bp.orient_pressed[0] and not self.__bp.type_pressed[0] and \
-                                            not self.__bp.keys_pressed[0]:
-                                        self.__bp.direct_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 5:
-                                    if not self.__bp.orient_pressed[0] and not self.__bp.direct_pressed[0] and \
-                                            not self.__bp.type_pressed[0]:
-                                        self.__bp.keys_pressed = True, ta
-                                        break
-                            elif isinstance(self.__bp, SystemBlueprint):
-                                if self.__tas.index(ta) == 4:
-                                    if not self.__bp.music_effect_pressed[0] and not self.__bp.color_pressed[0]:
-                                        self.__bp.music_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 5:
-                                    if not self.__bp.music_pressed[0] and not self.__bp.color_pressed[0]:
-                                        self.__bp.music_effect_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 6:
-                                    if not self.__bp.music_effect_pressed[0] and not self.__bp.music_pressed[0]:
-                                        self.__bp.color_pressed = True, ta
-                                        break
-                                elif self.__tas.index(ta) == 11:
-                                    self.__bp.add_color()
-                                    self.ta_populated = False
-                                    self.__tas.clear()
-                                    break
                     else:
                         # statement not reached if break
                         self.__bp.reset_selection()
-                    if not found:
-                        self.boarder_rect = None
 
         super().check_form_events(event)
         if self.__bp is not None:
-            if self.__bp.get_blueprint().get_type() == BP.TYPES.get("ATTRIBUTE"):
-                # ATTRIBUTE specific events
-                self.__attribute_events(event)
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
-                # CHARACTER specific events
-                self.__character_events(event)
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
-                # SPRITE specific events
-                self.__sprite_events(event)
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
-                # FUNCTION specific events
-                self.__function_event(event)
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
-                # FUNCTION specific events
-                self.__system_event(event)
+            events_calls = {
+                BP.TYPES.get("ATTRIBUTE"): self.__attribute_events,
+                BP.TYPES.get("CHARACTER"): self.__character_events,
+                BP.TYPES.get("SPRITE"): self.__sprite_events,
+                BP.TYPES.get("FUNCTION"): self.__function_events,
+                BP.TYPES.get("SYSTEM"): self.__system_events
+            }
+            try:
+                events_calls[self.__bp.get_blueprint().get_type()](event)
+            except KeyError:
+                pass
 
-            __check_textarea_selection()
+            __check_box_selection()
 
             if event.type == KEYDOWN or event.type == KEYUP:
                 if self.boarder_rect is not None and self.ta_populated:
@@ -692,7 +709,7 @@ class ControlPanelForm(Form):
                     self.__bp.color_scheme_3_counter > len(self.__bp.parent.colors) - 5):
                 self.__bp.color_scheme_3_counter = len(self.__bp.parent.colors) - 5
 
-    def __system_event(self, event):
+    def __system_events(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.__bp.music_pressed[0]:
@@ -734,15 +751,15 @@ class ControlPanelForm(Form):
     def __attribute_events(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
-                for ls in self.__bp.data_type_selection:
-                    if ls[0].collidepoint(event.pos) == 1:
-                        self.__bp.set_data(2, ls[3])
-                        self.__bp.reset_selection()
-                        if self.__bp.get_blueprint().get_data_type() == 'none':
-                            self.__bp.get_blueprint().set_value(StringUtils.get_string("ID_NONE"))
-                        else:
-                            self.__bp.get_blueprint().set_value("")
-                        break
+                if self.__bp.data_type_pressed[0]:
+                    for ls in self.__bp.data_type_selection:
+                        if ls[0].collidepoint(event.pos) == 1:
+                            self.__bp.set_data(2, ls[3])
+                            if self.__bp.get_blueprint().get_data_type() == 'none':
+                                self.__bp.get_blueprint().set_value(StringUtils.get_string("ID_NONE"))
+                            else:
+                                self.__bp.get_blueprint().set_value("")
+                            break
 
     def __character_events(self, event):
         if event.type == KEYDOWN:
@@ -801,7 +818,7 @@ class ControlPanelForm(Form):
                         self.ta_populated = False
                         self.boarder_rect = None
 
-    def __function_event(self, event):
+    def __function_events(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.__bp.type_pressed[0]:
@@ -825,7 +842,8 @@ class ControlPanelForm(Form):
                             self.__bp.set_data(5, ls[3])
                             break
 
-    def int_try_parse(self, num):
+    @staticmethod
+    def int_try_parse(num):
         try:
             if " " in num:
                 raise ValueError()
@@ -834,7 +852,8 @@ class ControlPanelForm(Form):
         except ValueError as ex:
             return False, num
 
-    def float_try_parse(self, num):
+    @staticmethod
+    def float_try_parse(num):
         try:
             if " " in num:
                 raise ValueError()
@@ -843,64 +862,80 @@ class ControlPanelForm(Form):
         except ValueError as ex:
             return False, num
 
+    def __write_str(self, index, data):
+        if len(data) < 15:
+            self.__bp.set_data(index, data)
+
     def __set_str(self, index, c):
         """Description: Method validates control panel input and sets data to
         the selected blueprint field
         """
-
-        def __write_str(data):
-            if len(data) < 15:
-                self.__bp.set_data(index, data)
-
         dt = str(self.__bp.get_data().get(index))
         if dt is None:
             dt = ""
         dt += c
-        # check blueprint specific input
-        if isinstance(self.__bp, AttributeBlueprint):
-            if index == 3:
-                if self.__bp.get_blueprint().get_data_type() == AB.NONE:
-                    __write_str(StringUtils.get_string("ID_NONE"))
-                elif self.__bp.get_blueprint().get_data_type() == AB.INT:
-                    if self.int_try_parse(dt)[0]:
-                        __write_str(dt)
-                    else:
-                        __write_str(dt[:-1])
-                elif self.__bp.get_blueprint().get_data_type() == AB.FLOAT:
-                    if self.float_try_parse(dt)[0]:
-                        __write_str(dt)
-                    else:
-                        __write_str(dt[:-1])
-                elif self.__bp.get_blueprint().get_data_type() == AB.STRING:
-                    __write_str(dt)
-                elif self.__bp.get_blueprint().get_data_type() == AB.CHAR:
-                    __write_str(c)
-            else:
-                __write_str(dt)
-        elif isinstance(self.__bp, FunctionBlueprint):
+        parsing_calls = {
+            BP.TYPES.get("ATTRIBUTE"): self.attribute_data_parsing,
+            BP.TYPES.get("CHARACTER"): self.character_data_parsing,
+            BP.TYPES.get("SPRITE"): self.sprite_data_parsing,
+            BP.TYPES.get("FUNCTION"): self.function_data_parsing,
+            BP.TYPES.get("SYSTEM"): self.system_data_parsing
+        }
+        try:
+            parsing_calls[self.__bp.get_blueprint().get_type()](index, dt)
+        except KeyError:
             pass
-        elif isinstance(self.__bp, CharacterBlueprint):
-            if 2 <= index <= 5:
-                if self.int_try_parse(dt)[0]:
-                    __write_str(dt)
+
+    def attribute_data_parsing(self, index, data):
+        if index == 3:
+            if self.__bp.get_blueprint().get_data_type() == AB.NONE:
+                self.__write_str(index, StringUtils.get_string("ID_NONE"))
+            elif self.__bp.get_blueprint().get_data_type() == AB.INT:
+                if self.int_try_parse(data)[0]:
+                    self.__write_str(index, data)
                 else:
-                    __write_str(dt[:-1])
-        elif isinstance(self.__bp, SpriteBlueprint):
-            pass
-        elif isinstance(self.__bp, SystemBlueprint):
-            if index == 2 or index == 3 or 7 < index < 11:
-                if self.int_try_parse(dt)[0]:
-                    for c in dt:
-                        if c == "0":
-                            dt = dt[1:]
-                        else:
-                            break
-                    if 7 < index < 11:
-                        if len(dt) < 4 and int(dt) < 256:
-                            __write_str(dt)
-                    else:
-                        __write_str(dt)
+                    self.__write_str(index, data[:-1])
+            elif self.__bp.get_blueprint().get_data_type() == AB.FLOAT:
+                if self.float_try_parse(data)[0]:
+                    self.__write_str(index, data)
                 else:
-                    __write_str(dt[:-1])
+                    self.__write_str(index, data[:-1])
+            elif self.__bp.get_blueprint().get_data_type() == AB.STRING:
+                self.__write_str(index, data)
+            elif self.__bp.get_blueprint().get_data_type() == AB.CHAR:
+                self.__write_str(index, data[-1])
+        else:
+            self.__write_str(index, data)
+
+    def character_data_parsing(self, index, data):
+        if 2 <= index <= 5:
+            if self.int_try_parse(data)[0]:
+                self.__write_str(index, data)
             else:
-                __write_str(dt)
+                self.__write_str(index, data[:-1])
+        else:
+            self.__write_str(index, data)
+
+    def function_data_parsing(self, index, data):
+        pass
+
+    def sprite_data_parsing(self, index, data):
+        pass
+
+    def system_data_parsing(self, index, data):
+        if index == 2 or index == 3 or 7 < index < 11:
+            if self.int_try_parse(data)[0]:
+                for c in data:
+                    if c == "0":
+                        data = data[1:]
+                    else:
+                        break
+                if 7 < index < 11:
+                    if len(data) < 4 and int(data) < 256:
+                        self.__write_str(index, data)
+                else:
+                    self.__write_str(index, data)
+            else:
+                self.__write_str(index, data[:-1])
+        else:
+            self.__write_str(index, data)
