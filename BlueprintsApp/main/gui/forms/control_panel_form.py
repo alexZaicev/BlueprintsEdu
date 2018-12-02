@@ -3,15 +3,10 @@ from pygame.locals import *
 
 from blueprints.attribute_blueprint import AttributeBlueprint as AB
 from blueprints.blueprint import Blueprint as BP
-from blueprints.function_blueprint import FunctionBlueprint as FB
-from blueprints.sprite_blueprint import SpriteBlueprint as SB
 from blueprints.system_blueprint import SystemBlueprint as SYS_BP
 from gui.blueprints.attribute_blueprint import AttributeBlueprint
 from gui.blueprints.blueprint import Blueprint
-from gui.blueprints.character_blueprint import CharacterBlueprint
 from gui.blueprints.function_blueprint import FunctionBlueprint
-from gui.blueprints.sprite_blueprint import SpriteBlueprint
-from gui.blueprints.system_blueprint import SystemBlueprint
 from gui.forms.form import Form
 from utils import logger_utils
 from utils.app_utils import Events
@@ -28,6 +23,18 @@ class ControlPanelForm(Form):
         self.ta_populated = False
         self.__tas = list()
         self.boarder_rect = None
+        self.__displayed_data = list()
+        self.__counter = 0
+        self.__max_number_boxes = 0
+        self.__drop_down_activated = False
+
+    def find_max_number_boxes(self, size):
+        temp, num = size, 0
+        while temp < self.get_rect().height:
+            self.__logger.debug("HEIGHT: {}, TEMP: {}".format(self.get_rect().height, temp))
+            num += 1
+            temp += size
+        return num
 
     def set_blueprint(self, bp):
         if self.__bp is not None:
@@ -35,6 +42,8 @@ class ControlPanelForm(Form):
         self.__tas.clear()
         self.ta_populated = False
         self.__bp = bp
+        self.__max_number_boxes = 0
+        self.__drop_down_activated = False
 
     def update_form(self, coords=None, size=None):
         super().update_form(coords, size)
@@ -46,13 +55,7 @@ class ControlPanelForm(Form):
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_background"), form_rect, 2)
         else:
             pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_disabled"), form_rect, 0)
-
-        font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(form_rect.width * .08))
-        txt = font.render(StringUtils.get_string("ID_CONTROL_PANEL"), True, Themes.DEFAULT_THEME.get("font"))
-        rect_txt = txt.get_rect()
-        rect_txt.topleft = (int(form_rect.topleft[0] * 1.015), int(form_rect.topleft[1] * 1.015))
-        self.display.blit(txt, rect_txt)
-        self.display_data(rect_txt)
+        self.display_data()
 
     def draw_drop_down_selection(self, selection, data, box, assignment=True, scrolling=False, size=None, counter=None):
         """Description: Generic drop down drawer.
@@ -99,182 +102,249 @@ class ControlPanelForm(Form):
                 self.display.blit(item[1], item[2])
         return selection
 
-    def blit(self, font, text, text2, coords, header=True):
-        if text is not None:
-            text = str(text)
-            t = font.render(text, True, Themes.DEFAULT_THEME.get("text_area_text"))
-            r = t.get_rect()
-            r.topleft = coords
-            if text2 is None and not header:
-                br = pg.Rect((int(r.left * .72), r.top), (int(r.width * 1.44), r.height))
-                if not self.ta_populated:
-                    self.__tas.append(br)
-                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("panel_background"), br, 0)
+    def get_data_row(self, font, top_left, text_1=None, text_2=None):
+        """Description: Creates a row of data to display in control panel
 
-            self.display.blit(t, r)
+        :param font: Pygame font object
+        :param top_left: Row starting coordinates
+        :param text_1: Row header string
+        :param text_2: Text area string value
+        :return: Array of row data to display
+        """
+        txt, rect_txt, box = None, None, None
+        if text_1 is not None:
+            txt = font.render(text_1, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rect_txt = txt.get_rect()
+            rect_txt.topleft = top_left
+            data_1 = (txt, rect_txt)
+        else:
+            data_1 = None
 
-        if text2 is not None:
-            br = pg.Rect((0, 0),
-                         (int(self.get_rect().width * .5), font.size(text2)[1]))
-            br.topright = (int(self.get_rect().right - self.get_rect().width * .05), coords[1])
-            if not self.ta_populated:
-                self.__tas.append(br)
-            t2 = font.render(text2, True, Themes.DEFAULT_THEME.get("text_area_text"))
-            r2 = t2.get_rect()
-            r2.centery = br.centery
-            r2.left = br.left * 1.1
+        if text_2 is not None:
+            box = pg.Rect((0, 0),
+                          (int(self.get_rect().width * .5), font.size(text_2)[1]))
+            self.__logger.debug(font.size(text_2)[1])
+            box.topright = (int(self.get_rect().right - self.get_rect().width * .05), top_left[1])
+            txt = font.render(text_2, True, Themes.DEFAULT_THEME.get("text_area_text"))
+            rect_txt = txt.get_rect()
+            rect_txt.centery = box.centery
+            rect_txt.left = box.left * 1.1
+            data_2 = (box, Themes.DEFAULT_THEME.get("text_area_background"))
+            data_3 = (txt, rect_txt)
+        else:
+            data_2, data_3 = None, None
 
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), br, 0)
-            self.display.blit(t2, r2)
+        if not self.ta_populated and box is not None:
+            self.__tas.append(box)
 
-    def display_data(self, banner):
+        return data_1, data_2, data_3
+
+    def gather_data(self, banner):
+        """Description: Function populates blueprint properties
+
+        :param banner:
+        :return: Boolean status of successful data gathering
+        """
+        self.__displayed_data.clear()
+        data = self.__bp.get_data()
+        pos = 0 - self.__counter
+        font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
+        margin = int(font.size("SOME_TEXT")[1] * .35) + font.size(data.get(1))[1]
+
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_NAME")),
+            data.get(0)))
+        pos += 1
+
+        if self.__max_number_boxes < 1:
+            self.__max_number_boxes = self.find_max_number_boxes(margin)
+
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_TYPE")),
+            data.get(1)))
+        pos += 1
+        func_calls = {
+            BP.TYPES.get("ATTRIBUTE"): self.draw_attribute_data,
+            BP.TYPES.get("CHARACTER"): self.draw_character_data,
+            BP.TYPES.get("SPRITE"): self.draw_sprite_data,
+            BP.TYPES.get("FUNCTION"): self.draw_function_data,
+            BP.TYPES.get("SYSTEM"): self.draw_system_data
+        }
+        try:
+            func_calls[self.__bp.get_blueprint().get_type()](
+                data, pos, font, banner, margin
+            )
+        except KeyError:
+            return False
+
+        return True
+
+    def draw_attribute_drop_down(self):
+        if self.__bp.data_type_pressed[0]:
+            self.__bp.data_type_selection = self.draw_drop_down_selection(
+                selection=self.__bp.data_type_selection,
+                data=AttributeBlueprint.DATA_TYPE,
+                box=self.__bp.data_type_pressed[1])
+
+    def draw_character_drop_down(self):
+        if self.__bp.state_pressed[0]:
+            # self.draw_character_state_selection()
+            self.__bp.state_selection = self.draw_drop_down_selection(
+                selection=self.__bp.state_selection,
+                data=Blueprint.CONDITIONAL_DICT,
+                box=self.__bp.state_pressed[1]
+            )
+        elif self.__bp.color_scheme_1_pressed[0]:
+            self.__bp.color_scheme_1_selection = self.draw_drop_down_selection(
+                selection=self.__bp.color_scheme_1_selection,
+                data=self.__bp.parent.colors,
+                box=self.__bp.color_scheme_1_pressed[1],
+                assignment=False,
+                scrolling=True,
+                size=5,
+                counter=self.__bp.color_scheme_1_counter
+            )
+        elif self.__bp.color_scheme_2_pressed[0]:
+            self.__bp.color_scheme_2_selection = self.draw_drop_down_selection(
+                selection=self.__bp.color_scheme_2_selection,
+                data=self.__bp.parent.colors,
+                box=self.__bp.color_scheme_2_pressed[1],
+                assignment=False,
+                scrolling=True,
+                size=5,
+                counter=self.__bp.color_scheme_2_counter
+            )
+        elif self.__bp.color_scheme_3_pressed[0]:
+            self.__bp.color_scheme_3_selection = self.draw_drop_down_selection(
+                selection=self.__bp.color_scheme_3_selection,
+                data=self.__bp.parent.colors,
+                box=self.__bp.color_scheme_3_pressed[1],
+                assignment=False,
+                scrolling=True,
+                size=5,
+                counter=self.__bp.color_scheme_3_counter
+            )
+
+    def draw_sprite_drop_down(self):
+        pass
+
+    def draw_function_drop_down(self):
+        if self.__bp.type_pressed[0]:
+            self.__bp.type_selection = self.draw_drop_down_selection(
+                selection=self.__bp.type_selection,
+                data=FunctionBlueprint.TYPE,
+                box=self.__bp.type_pressed[1]
+            )
+        elif self.__bp.orient_pressed[0]:
+            self.__bp.orient_selection = self.draw_drop_down_selection(
+                selection=self.__bp.orient_selection,
+                data=FunctionBlueprint.ORIENTATION,
+                box=self.__bp.orient_pressed[1]
+            )
+        elif self.__bp.direct_pressed[0]:
+            self.__bp.direct_selection = self.draw_drop_down_selection(
+                selection=self.__bp.direct_selection,
+                data=Blueprint.CONDITIONAL_DICT,
+                box=self.__bp.direct_pressed[1]
+            )
+        elif self.__bp.keys_pressed[0]:
+            self.__bp.keys_selection = self.draw_drop_down_selection(
+                selection=self.__bp.keys_selection,
+                data=FunctionBlueprint.KEY_PRESSES,
+                box=self.__bp.keys_pressed[1]
+            )
+
+    def draw_system_drop_down(self):
+        if self.__bp.music_pressed[0]:
+            self.__bp.music_selection = self.draw_drop_down_selection(
+                selection=self.__bp.music_selection,
+                data=Blueprint.ENABLING_DICT,
+                box=self.__bp.music_pressed[1]
+            )
+        elif self.__bp.color_pressed[0]:
+            self.__bp.color_selection = self.draw_drop_down_selection(
+                selection=self.__bp.color_selection,
+                data=self.__bp.get_blueprint().colors,
+                box=self.__bp.color_pressed[1],
+                assignment=False,
+                scrolling=True,
+                size=5,
+                counter=self.__bp.color_counter
+            )
+        elif self.__bp.music_effect_pressed[0]:
+            self.__bp.music_effect_selection = self.draw_drop_down_selection(
+                selection=self.__bp.music_effect_selection,
+                data=SYS_BP.SOUND_EFFECTS,
+                box=self.__bp.music_effect_pressed[1],
+                assignment=True,
+                scrolling=True,
+                size=5,
+                counter=self.__bp.music_effect_counter
+            )
+
+    def display_data(self):
         if self.__bp is not None and self.__bp.focused:
-            dt = self.__bp.get_data()
-            pos = 2
-            font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().width * .05))
-            margin = int(font.size("SOME_TEXT")[1] * .35) + font.size(dt.get(1))[1]
-            # DRAW GENERIC BLUEPRINT DATA
-            self.blit(font, "{}:".format(StringUtils.get_string("ID_NAME")), dt.get(0),
-                      (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1)))
-            self.blit(font, "{}:".format(StringUtils.get_string("ID_TYPE")), dt.get(1),
-                      (int(self.get_rect().left + self.get_rect().width * .05),
-                       int(banner.bottom * 1.1 + margin)))
+            banner = pg.Rect(
+                self.get_rect().topleft, (self.get_rect().width, 20)
+            )
+            if self.gather_data(banner):
+                for data_1, data_2, data_3 in self.__displayed_data:
+                    if data_2[0].top >= banner.bottom:
+                        if data_1 is not None:
+                            self.display.blit(data_1[0], data_1[1])
+                        if data_2 is not None:
+                            pg.draw.rect(self.display, data_2[1], data_2[0], 0)
+                        if data_3 is not None:
+                            self.display.blit(data_3[0], data_3[1])
+                self.ta_populated = True
 
-            if self.__bp.get_blueprint().get_type() == BP.TYPES.get("ATTRIBUTE"):
-                # ATTRIBUTE RELATED INFORMATION
-                self.draw_attribute_data(dt, pos, font, banner, margin)
-                if self.__bp.data_type_pressed[0]:
-                    self.__bp.data_type_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.data_type_selection,
-                        data=AttributeBlueprint.DATA_TYPE,
-                        box=self.__bp.data_type_pressed[1])
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("FUNCTION"):
-                # FUNCTION RELATED INFORMATION
-                self.draw_function_data(dt, pos, font, banner, margin)
-                if self.__bp.type_pressed[0]:
-                    self.__bp.type_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.type_selection,
-                        data=FunctionBlueprint.TYPE,
-                        box=self.__bp.type_pressed[1]
-                    )
-                elif self.__bp.orient_pressed[0]:
-                    self.__bp.orient_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.orient_selection,
-                        data=FunctionBlueprint.ORIENTATION,
-                        box=self.__bp.orient_pressed[1]
-                    )
-                elif self.__bp.direct_pressed[0]:
-                    self.__bp.direct_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.direct_selection,
-                        data=Blueprint.CONDITIONAL_DICT,
-                        box=self.__bp.direct_pressed[1]
-                    )
-                elif self.__bp.keys_pressed[0]:
-                    self.__bp.keys_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.keys_selection,
-                        data=FunctionBlueprint.KEY_PRESSES,
-                        box=self.__bp.keys_pressed[1]
-                    )
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("CHARACTER"):
-                # CHARACTER RELATED INFORMATION
-                self.draw_character_data(dt, pos, font, banner, margin)
-                if self.__bp.state_pressed[0]:
-                    # self.draw_character_state_selection()
-                    self.__bp.state_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.state_selection,
-                        data=Blueprint.CONDITIONAL_DICT,
-                        box=self.__bp.state_pressed[1]
-                    )
-                elif self.__bp.color_scheme_1_pressed[0]:
-                    self.__bp.color_scheme_1_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.color_scheme_1_selection,
-                        data=self.__bp.parent.colors,
-                        box=self.__bp.color_scheme_1_pressed[1],
-                        assignment=False,
-                        scrolling=True,
-                        size=5,
-                        counter=self.__bp.color_scheme_1_counter
-                    )
-                elif self.__bp.color_scheme_2_pressed[0]:
-                    self.__bp.color_scheme_2_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.color_scheme_2_selection,
-                        data=self.__bp.parent.colors,
-                        box=self.__bp.color_scheme_2_pressed[1],
-                        assignment=False,
-                        scrolling=True,
-                        size=5,
-                        counter=self.__bp.color_scheme_2_counter
-                    )
-                elif self.__bp.color_scheme_3_pressed[0]:
-                    self.__bp.color_scheme_3_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.color_scheme_3_selection,
-                        data=self.__bp.parent.colors,
-                        box=self.__bp.color_scheme_3_pressed[1],
-                        assignment=False,
-                        scrolling=True,
-                        size=5,
-                        counter=self.__bp.color_scheme_3_counter
-                    )
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SPRITE"):
-                # SPRITE RELATED INFORMATION
-                self.draw_sprite_data(dt, pos, font, banner, margin)
-            elif self.__bp.get_blueprint().get_type() == BP.TYPES.get("SYSTEM"):
-                # SYSTEM (BOARD) RELATED INFORMATION
-                self.draw_system_data(dt, pos, font, banner, margin)
-                if self.__bp.music_pressed[0]:
-                    self.__bp.music_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.music_selection,
-                        data=Blueprint.ENABLING_DICT,
-                        box=self.__bp.music_pressed[1]
-                    )
-                elif self.__bp.color_pressed[0]:
-                    self.__bp.color_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.color_selection,
-                        data=self.__bp.get_blueprint().colors,
-                        box=self.__bp.color_pressed[1],
-                        assignment=False,
-                        scrolling=True,
-                        size=5,
-                        counter=self.__bp.color_counter
-                    )
-                elif self.__bp.music_effect_pressed[0]:
-                    self.__bp.music_effect_selection = self.draw_drop_down_selection(
-                        selection=self.__bp.music_effect_selection,
-                        data=SYS_BP.SOUND_EFFECTS,
-                        box=self.__bp.music_effect_pressed[1],
-                        assignment=True,
-                        scrolling=True,
-                        size=5,
-                        counter=self.__bp.music_effect_counter
-                    )
-            self.ta_populated = True
-            if self.boarder_rect is not None:
-                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
+                drop_down_calls = {
+                    BP.TYPES.get("ATTRIBUTE"): self.draw_attribute_drop_down,
+                    BP.TYPES.get("CHARACTER"): self.draw_character_drop_down,
+                    BP.TYPES.get("SPRITE"): self.draw_sprite_drop_down,
+                    BP.TYPES.get("FUNCTION"): self.draw_function_drop_down,
+                    BP.TYPES.get("SYSTEM"): self.draw_system_drop_down
+                }
+                try:
+                    drop_down_calls[self.__bp.get_blueprint().get_type()]()
+                except KeyError:
+                    self.__logger.error("Failed to draw drop down of unknown blueprint type {}"
+                                        .format(self.__bp.get_blueprint().get_type()))
+                if self.boarder_rect is not None:
+                    pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), self.boarder_rect, 2)
 
     def draw_system_data(self, data, pos, font, banner, margin):
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data.get(2)),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_WIDTH")),
+            str(data.get(2))))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_HEIGHT")), str(data.get(3)),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_HEIGHT")),
+            str(data.get(3))))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_MUSIC")), data.get(4),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_MUSIC")),
+            str(data.get(4))))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_SOUND")), data.get(5),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_SOUND")),
+            str(data.get(5))))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_BACKGROUND")), data.get(6),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_BACKGROUND")),
+            str(data.get(6))))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_COLOR_ID")), data.get(7),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_COLOR_ID")),
+            str(data.get(7))))
         pos += 1
         # custom RBG input areas
         size = list(font.size("000"))
@@ -285,88 +355,121 @@ class ControlPanelForm(Form):
         rect_txt = txt.get_rect()
         rect_txt.topleft = (int(self.get_rect().left + self.get_rect().width * .05),
                             int(banner.bottom * 1.1 + pos * margin))
-        self.display.blit(txt, rect_txt)
         ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
         if not self.ta_populated:
             self.__tas.append(ta)
+        data_1 = (txt, rect_txt)
+        data_2 = (ta, Themes.DEFAULT_THEME.get("text_area_background"))
+
+        txt = font.render(str(data.get(8)), True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.center = ta.center
+
+        data_3 = (txt, rect_txt)
+
+        self.__displayed_data.append(
+            (data_1, data_2, data_3)
+        )
+
         # GREEN
         txt = font.render("Green:", True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_txt = txt.get_rect()
         rect_txt.topleft = (int(ta.right + ta.width * .4),
                             int(banner.bottom * 1.1 + pos * margin))
-        self.display.blit(txt, rect_txt)
+
         ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
         if not self.ta_populated:
             self.__tas.append(ta)
+        data_1 = (txt, rect_txt)
+        data_2 = (ta, Themes.DEFAULT_THEME.get("text_area_background"))
+
+        txt = font.render(str(data.get(9)), True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.center = ta.center
+
+        data_3 = (txt, rect_txt)
+        self.__displayed_data.append(
+            (data_1, data_2, data_3)
+        )
+
         # BLUE
         txt = font.render("Blue:", True, Themes.DEFAULT_THEME.get("text_area_text"))
         rect_txt = txt.get_rect()
         rect_txt.topleft = (int(ta.right + ta.width * .4),
                             int(banner.bottom * 1.1 + pos * margin))
-        self.display.blit(txt, rect_txt)
         ta = pg.Rect((int(rect_txt.right + offset), int(rect_txt.top)), size)
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("text_area_background"), ta, 0)
         if not self.ta_populated:
             self.__tas.append(ta)
+        data_1 = (txt, rect_txt)
+        data_2 = (ta, Themes.DEFAULT_THEME.get("text_area_background"))
 
-        for i in range(8, 11, 1):
-            txt = font.render(str(data.get(i)), True, Themes.DEFAULT_THEME.get("text_area_text"))
-            rect_txt = txt.get_rect()
-            rect_txt.center = self.__tas[i].center
-            self.display.blit(txt, rect_txt)
+        txt = font.render(str(data.get(10)), True, Themes.DEFAULT_THEME.get("text_area_text"))
+        rect_txt = txt.get_rect()
+        rect_txt.center = ta.center
+
+        data_3 = (txt, rect_txt)
+        self.__displayed_data.append(
+            (data_1, data_2, data_3)
+        )
+
         pos += 1
         # ADD BUTTON
-        txt = font.render(StringUtils.get_string("ID_ADD"), True, Themes.DEFAULT_THEME.get("font"))
         size = font.size(StringUtils.get_string("ID_ADD"))
         btn_add = pg.Rect((0, 0), (int(size[0] * 1.6), size[1]))
         btn_add.topright = (ta.right, int(banner.bottom * 1.1 + pos * margin))
-        pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("button_dark"), btn_add, 0)
+        txt = font.render(StringUtils.get_string("ID_ADD"), True, Themes.DEFAULT_THEME.get("font"))
         rect_txt = txt.get_rect()
         rect_txt.center = btn_add.center
-        self.display.blit(txt, rect_txt)
         if not self.ta_populated:
             self.__tas.append(btn_add)
+        data_2 = (btn_add, Themes.DEFAULT_THEME.get("button_dark"))
+        data_3 = (txt, rect_txt)
+
+        self.__displayed_data.append((None, data_2, data_3))
         pos += 1
         for k, v in self.__bp.get_blueprint().colors.items():
-            sample = pg.Rect((int(self.get_rect().left + self.get_rect().width * .03),
-                              int(banner.bottom * 1.1 + pos * margin + margin * .3)),
-                             (self.size[0] * .03, self.size[0] * .03))
-            pg.draw.rect(self.display, v, sample, 0)
-            self.blit(font, "{}:".format(k), str(v),
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)), header=False)
+            self.__displayed_data.append(
+                self.get_data_row(font, (int(self.get_rect().left + self.get_rect().width * .08),
+                                         int(banner.bottom * 1.1 + pos * margin)),
+                                  "{}:".format(k), str(v)))
             pos += 1
 
     def draw_attribute_data(self, data, pos, font, banner, margin):
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_DATA_TYPE")), data.get(2),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_DATA_TYPE")),
+            data.get(2)))
         pos += 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_VALUE")), str(data.get(3)),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_VALUE")),
+            str(data.get(3))))
+        pos += 1
 
     def draw_function_data(self, data, pos, font, banner, margin):
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_FUNCTION")), data.get(2),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin)))
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_FUNCTION")),
+            data.get(2)))
         pos += 1
 
         if StringUtils.get_string("ID_MOVEMENT") == StringUtils.get_string(
                 FunctionBlueprint.TYPE.get(self.__bp.get_blueprint().func_type)):
-            self.blit(font, "{}:".format(StringUtils.get_string("ID_ORIENTATION")), data.get(3),
-                      (int(self.get_rect().left + self.get_rect().width * .05),
-                       int(banner.bottom * 1.1 + pos * margin)))
+            self.__displayed_data.append(self.get_data_row(
+                font, (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_ORIENTATION")),
+                data.get(3)))
             pos += 1
-            self.blit(font, "{}:".format(StringUtils.get_string("ID_DIRECTIONAL")), data.get(4),
-                      (int(self.get_rect().left + self.get_rect().width * .05),
-                       int(banner.bottom * 1.1 + pos * margin)))
+            self.__displayed_data.append(self.get_data_row(
+                font, (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)), "{}:".format(StringUtils.get_string("ID_DIRECTIONAL")),
+                data.get(4)))
             pos += 1
-            self.blit(font, "{}:".format(StringUtils.get_string("ID_ON_KEY_PRESS")), data.get(5),
-                      (int(self.get_rect().left + self.get_rect().width * .05),
-                       int(banner.bottom * 1.1 + pos * margin)))
+            self.__displayed_data.append(self.get_data_row(
+                font, (int(self.get_rect().left + self.get_rect().width * .05),
+                       int(banner.bottom * 1.1 + pos * margin)),
+                "{}:".format(StringUtils.get_string("ID_ON_KEY_PRESS")),
+                data.get(5)))
             pos += 1
         elif StringUtils.get_string("ID_CUSTOM") == StringUtils.get_string(
                 FunctionBlueprint.TYPE.get(self.__bp.get_blueprint().func_type)):
@@ -374,137 +477,59 @@ class ControlPanelForm(Form):
             pass
 
     def draw_sprite_data(self, data, pos, font, banner, margin):
-        s = pos = pos + 1
-        if len(self.__bp.get_blueprint().attributes) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().attributes:
-                if isinstance(bp, AB):
-                    self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
-                              None,
-                              (int(self.get_rect().left + self.get_rect().width * .12),
-                               int(banner.bottom * 1.1 + pos * margin)), header=False)
-                    pos += 1
-
-            r = pg.Rect(
-                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                (int(self.get_rect().width * .90), int((pos - s) * margin)))
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
-            s = pos = pos + 1
-        if len(self.__bp.get_blueprint().functions) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().functions:
-                if isinstance(bp, FB):
-                    self.blit(font, "{}()".format(bp.name), None,
-                              (int(self.get_rect().left + self.get_rect().width * .12),
-                               int(banner.bottom * 1.1 + pos * margin)), header=False)
-                    pos += 1
-            r = pg.Rect(
-                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                (int(self.get_rect().width * .90), int((pos - s) * margin)))
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+        # TODO re-implement method based on US - 36
+        pass
 
     def draw_character_data(self, data, pos, font, banner, margin):
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_POS_X")), str(data[2]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_POS_Y")), str(data[3]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_WIDTH")), str(data[4]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_HEIGHT")), str(data[5]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_ALIVE")), str(data[6]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        ######
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_BODY_COLOR")), str(data[10]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_TYRE_COLOR")), str(data[11]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        self.blit(font, "{}:".format(StringUtils.get_string("ID_WINDOW_COLOR")), str(data[12]),
-                  (int(self.get_rect().left + self.get_rect().width * .05),
-                   int(banner.bottom * 1.1 + pos * margin))
-                  )
-        s = pos = pos + 1
-        ######
-        if len(self.__bp.get_blueprint().attributes) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_ATTRIBUTES")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().attributes:
-                if isinstance(bp, AB):
-                    self.blit(font, "{}  ::  {}".format(bp.get_data_type(), bp.get_value()),
-                              None,
-                              (int(self.get_rect().left + self.get_rect().width * .12),
-                               int(banner.bottom * 1.1 + pos * margin)), header=False)
-                    pos += 1
-
-            r = pg.Rect(
-                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                (int(self.get_rect().width * .90), int((pos - s) * margin)))
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
-
-            s = pos = pos + 1
-        if len(self.__bp.get_blueprint().functions) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_FUNCTIONS")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().functions:
-                if isinstance(bp, FB):
-                    self.blit(font, "{}()".format(bp.name), None,
-                              (int(self.get_rect().left + self.get_rect().width * .12),
-                               int(banner.bottom * 1.1 + pos * margin)), header=False)
-                    pos += 1
-
-            r = pg.Rect(
-                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                (int(self.get_rect().width * .90), int((pos - s) * margin)))
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
-
-            s = pos = pos + 1
-        if len(self.__bp.get_blueprint().sprites) > 0:
-            self.blit(font, "{}".format(StringUtils.get_string("ID_SPRITES")), None,
-                      (int(self.get_rect().left + self.get_rect().width * .08),
-                       int(banner.bottom * 1.1 + pos * margin)))
-            pos += 1
-            for bp in self.__bp.get_blueprint().sprites:
-                if isinstance(bp, SB):
-                    self.blit(font, "{}".format(bp.name), None,
-                              (int(self.get_rect().left + self.get_rect().width * .12),
-                               int(banner.bottom * 1.1 + pos * margin)), header=False)
-                    pos += 1
-
-            r = pg.Rect(
-                (int(self.get_rect().left + self.get_rect().width * .05), int(banner.bottom * 1.1 + s * margin)),
-                (int(self.get_rect().width * .90), int((pos - s) * margin)))
-            pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selection_boarder"), r, 1)
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_POS_X")),
+            str(data.get(2))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_POS_Y")),
+            str(data.get(3))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_WIDTH")),
+            str(data.get(4))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_HEIGHT")),
+            str(data.get(5))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_ALIVE")),
+            str(data.get(6))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_BODY_COLOR")),
+            str(data.get(10))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_TYRE_COLOR")),
+            str(data.get(11))))
+        pos += 1
+        self.__displayed_data.append(self.get_data_row(
+            font, (int(self.get_rect().left + self.get_rect().width * .05),
+                   int(banner.bottom * 1.1 + pos * margin)),
+            "{}:".format(StringUtils.get_string("ID_WINDOW_COLOR")),
+            str(data.get(12))))
+        pos += 1
+        # TODO re-implement method based on US - 36
 
     def attribute_box_selection(self, box):
         if self.__tas.index(box) == 2:
@@ -582,8 +607,25 @@ class ControlPanelForm(Form):
             self.__bp.add_color()
             self.ta_populated = False
             self.__tas.clear()
+            self.boarder_rect = None
             return True
         return False
+
+    def __check_panel_event(self, event):
+        if event.type == MOUSEBUTTONDOWN:
+            if (event.button == 4 or event.button == 5) and not self.__drop_down_activated:
+                if event.button == 4:
+                    self.__counter -= 1
+                elif event.button == 5 and len(self.__displayed_data) > self.__max_number_boxes:
+                    self.__counter += 1
+                if self.__counter < 0:
+                    self.__counter = 0
+                elif len(self.__displayed_data) >= self.__max_number_boxes and \
+                        (self.__counter > len(self.__displayed_data) - self.__max_number_boxes):
+                    self.__counter = len(self.__displayed_data) - self.__max_number_boxes
+                self.ta_populated = False
+                self.boarder_rect = None
+                self.__tas.clear()
 
     def check_form_events(self, event):
 
@@ -602,17 +644,20 @@ class ControlPanelForm(Form):
                                 BP.TYPES.get("SYSTEM"): self.system_box_selection
                             }
                             try:
-                                valid = box_selection_calls[self.__bp.get_blueprint().get_type()](ta)
+                                self.__drop_down_activated = box_selection_calls[self.__bp.get_blueprint().get_type()](
+                                    ta)
                             except KeyError:
-                                valid = False
-                            if valid:
+                                self.__drop_down_activated = False
+                            if self.__drop_down_activated:
                                 break
                     else:
                         # statement not reached if break
+                        self.__drop_down_activated = False
                         self.__bp.reset_selection()
 
         super().check_form_events(event)
         if self.__bp is not None:
+            self.__check_panel_event(event)
             events_calls = {
                 BP.TYPES.get("ATTRIBUTE"): self.__attribute_events,
                 BP.TYPES.get("CHARACTER"): self.__character_events,
@@ -745,6 +790,8 @@ class ControlPanelForm(Form):
                         self.__bp.get_blueprint().colors.pop(key)
                         self.__tas.clear()
                         self.ta_populated, self.boarder_rect = False, None
+                        if self.__counter > 0:
+                            self.__counter -= 1
                         if self.__bp.get_blueprint().board_color not in self.__bp.get_blueprint().colors.keys():
                             self.__bp.get_blueprint().board_color = StringUtils.get_string("ID_NONE")
 

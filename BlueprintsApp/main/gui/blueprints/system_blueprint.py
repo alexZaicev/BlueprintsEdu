@@ -80,7 +80,7 @@ class SystemBlueprint(Blueprint):
         return r
 
     def set_data(self, index, data):
-        if index == 2 or index == 3 or 5 < index < 9:
+        if index == 2 or index == 3 or 8 < index < 10:
             if len(data) == 0:
                 data = "0"
 
