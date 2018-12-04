@@ -28,7 +28,7 @@ class Blueprint(ABC):
         self.__height = self.__panel.height * .2
         self.__x = randint(int(panel.topleft[0] * 1.05), int(panel.topleft[0] + panel.width * .9 - self.__width))
         self.__y = randint(int(panel.topleft[1] * 1.05), int(panel.topleft[1] + panel.height * .9 - self.__height))
-        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
+        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .13))
         self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     @abstractmethod
@@ -44,8 +44,7 @@ class Blueprint(ABC):
         self.__blueprint = blueprint
         self.__x, self.__y = coords
         self.__width, self.__height = size
-        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
-        self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
+        self.update_text_size(int(self.__height * .13))
 
     def get_rect(self):
         return pg.Rect((self.__x, self.__y), (self.__width, self.__height))
@@ -70,7 +69,15 @@ class Blueprint(ABC):
         self.__width = int(self.__panel.width * size[0])
         self.__height = int(self.__panel.height * size[1])
         # UPDATE TEXT ACCORDING TO NEW SIZE
-        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.__height * .2))
+        self.update_text_size(int(self.__height * .13))
+
+    def scale_size(self, width, height, font_size=.13):
+        self.__width *= width
+        self.__height *= height
+        self.update_text_size(int(self.__height * font_size))
+
+    def update_text_size(self, size):
+        self.font = pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(size))
         self.__text = self.font.render(self.__blueprint.name, True, Themes.DEFAULT_THEME.get("font"))
 
     def change_font(self, font):
@@ -91,7 +98,7 @@ class Blueprint(ABC):
         return self.__text
 
     def is_hovered(self):
-        return self.get_rect().collidepoint(pg.mouse.get_pos()) == 1
+        return self.get_rect().collidepoint(pg.mouse.get_pos())
 
     @abstractmethod
     def get_data(self):

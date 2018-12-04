@@ -31,6 +31,9 @@ class SystemBlueprint(Blueprint):
         super().initialize(coords, size, blueprint, panel)
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .17)))
 
+    def scale_size(self, width, height, font_size=.17):
+        super().scale_size(width, height, font_size)
+
     def reset_selection(self):
         self.music_pressed = [False, None]
         self.music_selection = list()

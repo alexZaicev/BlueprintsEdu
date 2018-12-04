@@ -301,6 +301,7 @@ class Colors(Utils):
     LIGHT_PINK = (255, 182, 193)
     PINK = (255, 192, 203)
     MEDIUM_ORCHID = (186, 85, 211)
+    LIGHT_SKY = (218, 226, 239)
 
 
 

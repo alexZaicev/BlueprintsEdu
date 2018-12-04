@@ -53,7 +53,8 @@ class Themes(Utils):
         "active_blueprint": Colors.SILVER,
         "enabled_blueprint": Colors.SLATE_GREY,
         "connection_line": Colors.RED,
-        "drop_down_item": Colors.LIGHT_GREY
+        "drop_down_item": Colors.LIGHT_GREY,
+        "selected_drop_down_item": Colors.LIGHT_SKY
     }
     DAY_LIGHT_DICT = {
         "font": Colors.BLACK,

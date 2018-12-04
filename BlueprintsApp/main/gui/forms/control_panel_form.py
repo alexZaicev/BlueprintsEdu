@@ -98,7 +98,11 @@ class ControlPanelForm(Form):
                     selection.append(generate_data(item))
                     pos += 1
             for item in selection:
-                pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), item[0], 0)
+                pos = pg.mouse.get_pos()
+                if item[0].collidepoint(pos):
+                    pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("selected_drop_down_item"), item[0], 0)
+                else:
+                    pg.draw.rect(self.display, Themes.DEFAULT_THEME.get("drop_down_item"), item[0], 0)
                 self.display.blit(item[1], item[2])
         return selection
 
@@ -614,18 +618,19 @@ class ControlPanelForm(Form):
     def __check_panel_event(self, event):
         if event.type == MOUSEBUTTONDOWN:
             if (event.button == 4 or event.button == 5) and not self.__drop_down_activated:
-                if event.button == 4:
-                    self.__counter -= 1
-                elif event.button == 5 and len(self.__displayed_data) > self.__max_number_boxes:
-                    self.__counter += 1
-                if self.__counter < 0:
-                    self.__counter = 0
-                elif len(self.__displayed_data) >= self.__max_number_boxes and \
-                        (self.__counter > len(self.__displayed_data) - self.__max_number_boxes):
-                    self.__counter = len(self.__displayed_data) - self.__max_number_boxes
-                self.ta_populated = False
-                self.boarder_rect = None
-                self.__tas.clear()
+                if self.get_rect().collidepoint(event.pos):
+                    if event.button == 4:
+                        self.__counter -= 1
+                    elif event.button == 5 and len(self.__displayed_data) > self.__max_number_boxes:
+                        self.__counter += 1
+                    if self.__counter < 0:
+                        self.__counter = 0
+                    elif len(self.__displayed_data) >= self.__max_number_boxes and \
+                            (self.__counter > len(self.__displayed_data) - self.__max_number_boxes):
+                        self.__counter = len(self.__displayed_data) - self.__max_number_boxes
+                    self.ta_populated = False
+                    self.boarder_rect = None
+                    self.__tas.clear()
 
     def check_form_events(self, event):
 

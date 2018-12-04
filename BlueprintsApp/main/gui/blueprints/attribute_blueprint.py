@@ -27,6 +27,9 @@ class AttributeBlueprint(Blueprint):
         self.data_type_selection = list()
         self.change_font(pg.font.Font(Themes.DEFAULT_THEME.get("text_font_style"), int(self.get_rect().height * .23)))
 
+    def scale_size(self, width, height, font_size=.23):
+        super().scale_size(width, height, font_size)
+
     def reset_selection(self):
         super().reset_selection()
         self.data_type_pressed = [False, None]

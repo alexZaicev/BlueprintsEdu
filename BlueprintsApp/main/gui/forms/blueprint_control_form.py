@@ -31,6 +31,8 @@ class BlueprintControlForm(Form):
         self.__bps = list()
         self.__bps_connections = list()
         self.generated = generated
+        self.__ratio = 0
+        self.__ratio_active = False
         self.popup = None
 
     def update_form(self, coords=None, size=None):
@@ -152,7 +154,16 @@ class BlueprintControlForm(Form):
                             for bp_1 in self.__bps:
                                 if bp != bp_1 and bp_1.focused:
                                     self.connect_blueprints(bp_1, bp)
-
+            elif event.button == 4:
+                if self.__ratio > -100 and self.__ratio_active and self.get_rect().collidepoint(event.pos):
+                    for bp in self.__bps:
+                        bp.scale_size(.975, .975)
+                    self.__ratio -= 5
+            elif event.button == 5:
+                if self.__ratio < 100 and self.__ratio_active and self.get_rect().collidepoint(event.pos):
+                    for bp in self.__bps:
+                        bp.scale_size(1.025, 1.025)
+                    self.__ratio += 5
         elif event.type == MOUSEBUTTONUP:
             if event.button == 1:  # LEFT MOUSE BUTTON
                 pos = pg.mouse.get_pos()
@@ -168,6 +179,12 @@ class BlueprintControlForm(Form):
                         mx, my = event.pos
                         bp.set_topleft((mx + bp.offset[0], my + bp.offset[1]))
                         self.__check_blueprint_inbound(bp)
+        elif event.type == KEYDOWN:
+            if event.key == K_LCTRL or event.key == K_RCTRL:
+                self.__ratio_active = True
+        elif event.type == KEYUP:
+            if event.key == K_LCTRL or event.key == K_RCTRL:
+                self.__ratio_active = False
 
     def __check_blueprint_inbound(self, blueprint):
         r = self.get_rect()
@@ -183,10 +200,19 @@ class BlueprintControlForm(Form):
             top = r.bottom - bp.height
         blueprint.set_topleft((left, top))
 
+    def scale_blueprint(self, bp):
+        if self.__ratio < 0:
+            for i in range(self.__ratio, 0, 5):
+                bp.scale_size(.975, .975)
+        elif self.__ratio > 0:
+            for i in range(0, self.__ratio, 5):
+                bp.scale_size(1.025, 1.025)
+        return bp
+
     def add_attribute(self):
         if self.check_system_exist():
             t = AttributeBlueprint(self.get_rect())
-            self.__bps.append(t)
+            self.__bps.append(self.scale_blueprint(t))
         else:
             raise BlueprintError("Project must include system representation")
 
@@ -194,7 +220,7 @@ class BlueprintControlForm(Form):
         if self.check_system_exist():
             t = CharacterBlueprint(self.get_rect())
             t.parent = self.get_system_blueprint()
-            self.__bps.append(t)
+            self.__bps.append(self.scale_blueprint(t))
         else:
             raise BlueprintError("Project must include system representation")
 
@@ -202,21 +228,21 @@ class BlueprintControlForm(Form):
         if self.check_system_exist():
             t = FunctionBlueprint(self.get_rect())
             t.get_blueprint().func_type = fun_type
-            self.__bps.append(t)
+            self.__bps.append(self.scale_blueprint(t))
         else:
             raise BlueprintError("Project must include system representation")
 
     def add_sprite(self):
         if self.check_system_exist():
             t = SpriteBlueprint(self.get_rect())
-            self.__bps.append(t)
+            self.__bps.append(self.scale_blueprint(t))
         else:
             raise BlueprintError("Project must include system representation")
 
     def add_system(self):
         if not self.check_system_exist():
             t = SystemBlueprint(self.get_rect())
-            self.__bps.append(t)
+            self.__bps.append(self.scale_blueprint(t))
         else:
             raise BlueprintError("Project must have only one instance of a system")
 
@@ -227,6 +253,13 @@ class BlueprintControlForm(Form):
         data = list()
         for bp in self.__bps:
             d = list()
+
+            if self.__ratio > 0:
+                for i in range(0, self.__ratio, 5):
+                    bp.scale_size(.975, .975)
+            elif self.__ratio < 0:
+                for i in range(self.__ratio, 0, 5):
+                    bp.scale_size(1.025, 1.025)
 
             d.append(bp.get_blueprint())
             r = bp.get_rect()
